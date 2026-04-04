@@ -1,0 +1,455 @@
+/**
+ * Shared type definitions for the authentication system
+ */
+
+export interface User {
+  id: string;
+  username: string;
+  email: string;
+  phone?: string;
+  avatar?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface UpdateProfilePayload {
+  username?: string;
+  phone?: string;
+  avatar?: string;
+}
+
+export interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface ProfileResponse {
+  success: boolean;
+  data?: User;
+  message?: string;
+  error?: string;
+}
+
+export interface AuthResponse<T = User> {
+  success: boolean;
+  data?: {
+    user: T;
+    accessToken: string;
+    refreshToken?: string;
+    expiresIn?: number;
+  };
+  message?: string;
+  error?: string;
+  errors?: Record<string, string[]>;
+}
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+  rememberMe?: boolean;
+}
+
+export interface RegisterPayload {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
+export interface ResetPasswordPayload {
+  token: string;
+  password: string;
+}
+
+export interface ValidationError {
+  field: string;
+  message: string;
+}
+
+export interface ApiError {
+  code: string;
+  message: string;
+  statusCode: number;
+  errors?: ValidationError[];
+}
+
+export type AuthStatus = 'idle' | 'loading' | 'success' | 'error';
+
+/**
+ * Seller/Product types for store management
+ */
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image?: string;
+  status: 'available' | 'unavailable';
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface CreateProductPayload {
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  status: 'available' | 'unavailable';
+  image?: File;
+}
+
+export interface UpdateProductPayload {
+  name?: string;
+  description?: string;
+  price?: number;
+  category?: string;
+  status?: 'available' | 'unavailable';
+  image?: File;
+}
+
+export interface OrderItem {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  image?: string;
+}
+
+export interface Order {
+  id: string;
+  orderNumber: string;
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  deliveryAddress: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  items: OrderItem[];
+  subtotal: number;
+  tax: number;
+  deliveryFee: number;
+  total: number;
+  status: 'pending' | 'confirmed' | 'delivering' | 'completed' | 'cancelled';
+  notes?: string;
+  createdAt: string;
+  estimatedDelivery?: string;
+}
+
+export interface UpdateOrderStatusPayload {
+  status: 'pending' | 'confirmed' | 'delivering' | 'completed' | 'cancelled';
+}
+
+/**
+ * Food browsing system types
+ */
+
+export interface Category {
+  id: string;
+  name: string;
+  image?: string;
+  description?: string;
+}
+
+export interface ProductFilters {
+  category?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  search?: string;
+  sortBy?: 'price_asc' | 'price_desc' | 'popularity' | 'newest';
+}
+
+export interface ProductsResponse {
+  success: boolean;
+  data?: {
+    products: Product[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+  message?: string;
+  error?: string;
+}
+
+export interface ProductDetailResponse {
+  success: boolean;
+  data?: Product;
+  message?: string;
+  error?: string;
+}
+
+export interface CategoriesResponse {
+  success: boolean;
+  data?: Category[];
+  message?: string;
+  error?: string;
+}
+
+export interface CartItem {
+  id: string;
+  product: Product;
+  quantity: number;
+  subtotal: number; // price * quantity
+}
+
+export interface Cart {
+  items: CartItem[];
+  total: number;
+}
+
+export interface CartResponse {
+  success: boolean;
+  data?: Cart;
+  message?: string;
+  error?: string;
+}
+
+export interface AddToCartPayload {
+  productId: string;
+  quantity: number;
+}
+
+export interface UpdateCartItemPayload {
+  quantity: number;
+}
+
+/**
+ * Review & Rating System Types
+ */
+
+export interface Review {
+  id: string;
+  productId: string;
+  userId: string;
+  user: {
+    id: string;
+    username: string;
+    avatar?: string;
+  };
+  rating: number; // 1-5 stars
+  title?: string;
+  content: string;
+  images?: string[];
+  isVerifiedPurchase: boolean;
+  helpful: number; // number of helpful votes
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface RatingBreakdown {
+  1: number;
+  2: number;
+  3: number;
+  4: number;
+  5: number;
+}
+
+export interface ProductReviewsData {
+  reviews: Review[];
+  averageRating: number;
+  totalReviews: number;
+  ratingBreakdown: RatingBreakdown;
+  canReview: boolean;
+  userReview?: Review;
+}
+
+/**
+ * Voucher & Promotion System Types
+ */
+
+export interface Voucher {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  discountType: 'percentage' | 'fixed';
+  discountValue: number; // percentage (0-100) or fixed amount
+  maxDiscount?: number; // max discount for percentage vouchers
+  minOrderValue?: number; // minimum order value to apply
+  expiryDate: string;
+  isActive: boolean;
+  usageLimit?: number;
+  usedCount: number;
+  applicableCategories?: string[]; // category IDs this voucher applies to
+  applicableProducts?: string[]; // product IDs this voucher applies to
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface VoucherResponse {
+  success: boolean;
+  data?: Voucher;
+  message?: string;
+  error?: string;
+}
+
+export interface VouchersResponse {
+  success: boolean;
+  data?: Voucher[];
+  message?: string;
+  error?: string;
+}
+
+export interface ApplyVoucherPayload {
+  voucherCode: string;
+  cartTotal: number;
+  cartItems: CartItem[];
+}
+
+export interface ApplyVoucherResponse {
+  success: boolean;
+  data?: {
+    voucher: Voucher;
+    discountAmount: number;
+    finalTotal: number;
+    message?: string;
+  };
+  message?: string;
+  error?: string;
+}
+
+export interface RemoveVoucherResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+}
+
+export interface ProductReviewsData {
+  reviews: Review[];
+  averageRating: number;
+  totalReviews: number;
+  ratingBreakdown: RatingBreakdown;
+  userReview?: Review; // if current user has reviewed this product
+  canReview: boolean; // if user can submit a review
+}
+
+export interface CreateReviewPayload {
+  productId: string;
+  rating: number;
+  title?: string;
+  content: string;
+  images?: File[];
+}
+
+export interface UpdateReviewPayload {
+  rating?: number;
+  title?: string;
+  content?: string;
+  images?: File[];
+}
+
+export interface ReviewsResponse {
+  success: boolean;
+  data?: ProductReviewsData;
+  message?: string;
+  error?: string;
+}
+
+export interface CreateReviewResponse {
+  success: boolean;
+  data?: Review;
+  message?: string;
+  error?: string;
+}
+
+export interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+  ratingBreakdown: RatingBreakdown;
+}
+
+export interface SellerStats {
+  totalOrders: number;
+  revenue: number;
+  products: number;
+  rating: number;
+  trend: {
+    orders: number;
+    revenue: number;
+  };
+}
+
+export interface SellerDashboard {
+  stats: SellerStats;
+  recentOrders: Order[];
+  topProducts: Product[];
+}
+
+/**
+ * Favorite/Wishlist System Types
+ */
+
+export interface Favorite {
+  id: string;
+  productId: string;
+  product: Product;
+  userId: string;
+  createdAt: string;
+}
+
+export interface FavoritesResponse {
+  success: boolean;
+  data?: Favorite[];
+  message?: string;
+  error?: string;
+}
+
+export interface AddToFavoritesResponse {
+  success: boolean;
+  data?: Favorite;
+  message?: string;
+  error?: string;
+}
+
+export interface RemoveFromFavoritesResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+}
+
+/**
+ * Order System Types
+ */
+
+export interface OrderResponse {
+  success: boolean;
+  data?: Order;
+  message?: string;
+  error?: string;
+}
+
+export interface OrdersResponse {
+  success: boolean;
+  data?: Order[];
+  message?: string;
+  error?: string;
+}
+
+export interface CreateOrderPayload {
+  cartItems: CartItem[];
+  deliveryAddress: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
+  notes?: string;
+}
+
+export interface CancelOrderResponse {
+  success: boolean;
+  data?: Order;
+  message?: string;
+  error?: string;
+}

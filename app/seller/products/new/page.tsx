@@ -1,0 +1,297 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth-context';
+import { SellerLayout } from '@/components/seller/SellerLayout';
+import { Input } from '@/components/auth/Input';
+import { Button } from '@/components/auth/Button';
+
+const categories = ['Pizza', 'Burgers', 'Salad', 'Drinks', 'Desserts', 'Appetizers', 'Other'];
+
+export default function AddProductPage() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    price: '',
+    category: 'Pizza',
+    status: 'available',
+    image: null as File | null,
+  });
+
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors((prev) => ({ ...prev, image: 'File size must be less than 5MB' }));
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        setErrors((prev) => ({ ...prev, image: 'Please select an image file' }));
+        return;
+      }
+
+      setFormData((prev) => ({ ...prev, image: file }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      setErrors((prev) => ({ ...prev, image: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.name.trim()) newErrors.name = 'Product name is required';
+    if (!formData.description.trim()) newErrors.description = 'Description is required';
+    if (!formData.price) newErrors.price = 'Price is required';
+    else if (parseFloat(formData.price) <= 0) newErrors.price = 'Price must be greater than 0';
+
+    return newErrors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors = validateForm();
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // TODO: Replace with actual API call
+      // const formDataObj = new FormData();
+      // formDataObj.append('name', formData.name);
+      // formDataObj.append('description', formData.description);
+      // formDataObj.append('price', formData.price);
+      // formDataObj.append('category', formData.category);
+      // formDataObj.append('status', formData.status);
+      // if (formData.image) formDataObj.append('image', formData.image);
+      // await addProduct(formDataObj);
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setSuccessMessage('Product added successfully!');
+      setTimeout(() => {
+        router.push('/seller/products');
+      }, 2000);
+    } catch (error) {
+      setErrors({ submit: 'Failed to add product. Please try again.' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!user) {
+    return (
+      <SellerLayout>
+        <div className="text-center py-12">
+          <p className="text-gray-600">Please log in as a seller</p>
+        </div>
+      </SellerLayout>
+    );
+  }
+
+  return (
+    <SellerLayout user={user}>
+      <div className="max-w-2xl mx-auto space-y-6">
+        {/* Header */}
+        <div>
+          <button
+            onClick={() => router.back()}
+            className="text-green-600 hover:text-green-700 font-semibold mb-4"
+          >
+            ← Back to Products
+          </button>
+          <h1 className="text-3xl font-bold text-gray-900">Add New Product</h1>
+        </div>
+
+        {/* Error Messages */}
+        {errors.submit && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">
+            {errors.submit}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-green-700 text-sm">
+            ✓ {successMessage}
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 border border-gray-200 space-y-6">
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-900 mb-2">
+              Product Image
+            </label>
+            <div className="flex gap-6">
+              {/* Image Preview */}
+              <div className="w-32 h-32 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-4xl">📦</span>
+                )}
+              </div>
+
+              {/* Upload Area */}
+              <div className="flex-1">
+                <label className="flex flex-col items-center justify-center px-6 py-10 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-green-500 hover:bg-green-50 transition-colors">
+                  <span className="text-3xl mb-2">📤</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    Click to upload image
+                  </span>
+                  <span className="text-xs text-gray-500">PNG, JPG up to 5MB</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </label>
+                {errors.image && <p className="text-sm text-red-500 mt-2">{errors.image}</p>}
+              </div>
+            </div>
+          </div>
+
+          {/* Product Name */}
+          <Input
+            label="Product Name"
+            name="name"
+            placeholder="e.g., Margherita Pizza"
+            value={formData.name}
+            onChange={handleInputChange}
+            error={errors.name}
+            disabled={isLoading}
+          />
+
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Description
+            </label>
+            <textarea
+              name="description"
+              placeholder="Describe your product..."
+              value={formData.description}
+              onChange={handleInputChange}
+              rows={4}
+              className={`w-full px-4 py-3 rounded-lg border-2 transition-colors focus:outline-none ${
+                errors.description
+                  ? 'border-red-500 focus:border-red-500'
+                  : 'border-gray-200 focus:border-green-500'
+              }`}
+              disabled={isLoading}
+            />
+            {errors.description && (
+              <p className="text-sm text-red-500 mt-2">{errors.description}</p>
+            )}
+          </div>
+
+          {/* Price & Category */}
+          <div className="grid grid-cols-2 gap-4">
+            <Input
+              label="Price"
+              name="price"
+              type="number"
+              placeholder="0.00"
+              value={formData.price}
+              onChange={handleInputChange}
+              error={errors.price}
+              disabled={isLoading}
+              step="0.01"
+              min="0"
+            />
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category
+              </label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-green-500 focus:outline-none"
+                disabled={isLoading}
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Status */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="status"
+                  value="available"
+                  checked={formData.status === 'available'}
+                  onChange={handleInputChange}
+                  disabled={isLoading}
+                />
+                <span className="text-sm text-gray-700">Available</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="status"
+                  value="unavailable"
+                  checked={formData.status === 'unavailable'}
+                  onChange={handleInputChange}
+                  disabled={isLoading}
+                />
+                <span className="text-sm text-gray-700">Unavailable</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-4 pt-4">
+            <Button type="submit" isLoading={isLoading} disabled={isLoading} fullWidth>
+              Add Product
+            </Button>
+            <button
+              type="button"
+              onClick={() => router.back()}
+              disabled={isLoading}
+              className="w-full px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-semibold transition-colors disabled:opacity-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </SellerLayout>
+  );
+}
