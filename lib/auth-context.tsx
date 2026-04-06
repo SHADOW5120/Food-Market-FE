@@ -1,82 +1,51 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User } from './types';
+import { createContext, useContext, useEffect, ReactNode } from 'react';
+import { useAuthStore } from './auth-store';
+import { User, UserRole } from './types';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  role: UserRole | null;
   isLoading: boolean;
+  intendedRoute: string | null;
   login: (user: User, token: string) => void;
   logout: () => void;
   setUser: (user: User | null) => void;
   updateUser: (updatedUser: Partial<User>) => void;
+  setIntendedRoute: (route: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const store = useAuthStore();
 
-  // Initialize auth state from localStorage
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    const storedUser = localStorage.getItem('user');
-
-    if (token && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('user');
-      }
-    }
-
-    setIsLoading(false);
+    store.initializeAuth();
   }, []);
 
-  const login = (userData: User, token: string) => {
-    setUser(userData);
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('user', JSON.stringify(userData));
+  const value: AuthContextType = {
+    user: store.user,
+    isAuthenticated: store.isAuthenticated,
+    role: store.role,
+    isLoading: store.isLoading,
+    intendedRoute: store.intendedRoute,
+    login: store.login,
+    logout: store.logout,
+    setUser: store.setUser,
+    updateUser: store.updateUser,
+    setIntendedRoute: store.setIntendedRoute,
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('user');
-  };
-
-  const updateUser = (updatedUser: Partial<User>) => {
-    if (user) {
-      const newUser = { ...user, ...updatedUser };
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
-    }
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        logout,
-        setUser,
-        updateUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 }

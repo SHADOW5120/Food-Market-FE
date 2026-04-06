@@ -64,18 +64,32 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  async function safeParseJson<T>(response: Response): Promise<T | null> {
+    const text = await response.text();
+    if (!text) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(text) as T;
+    } catch (error) {
+      console.error('Failed to parse voucher API JSON:', error, text);
+      return null;
+    }
+  }
+
   const loadVouchers = async (): Promise<void> => {
     setIsLoading(true);
     setError(null);
 
     try {
       const response = await fetch('/api/vouchers');
-      const data = await response.json();
+      const data = await safeParseJson<{ success: boolean; data?: Voucher[]; error?: string }>(response);
 
-      if (data.success && data.data) {
+      if (data?.success && data.data) {
         setAvailableVouchers(data.data);
       } else {
-        setError(data.error || 'Failed to load vouchers');
+        setError(data?.error || 'Failed to load vouchers');
       }
     } catch (error) {
       setError('Network error while loading vouchers');
@@ -119,7 +133,7 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
     // Check applicable categories/products
     if (voucher.applicableCategories && voucher.applicableCategories.length > 0) {
       const hasApplicableCategory = cartItems.some(item =>
-        voucher.applicableCategories!.includes(item.product.category)
+        voucher.applicableCategories!.includes(item.product.categoryId)
       );
       if (!hasApplicableCategory) {
         return { valid: false, reason: 'Voucher not applicable to items in cart' };
@@ -145,10 +159,10 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
     try {
       // First, get voucher details
       const voucherResponse = await fetch(`/api/vouchers/code/${code}`);
-      const voucherData = await voucherResponse.json();
+      const voucherData = await safeParseJson<{ success: boolean; data?: Voucher; error?: string }>(voucherResponse);
 
-      if (!voucherData.success || !voucherData.data) {
-        setError(voucherData.error || 'Invalid voucher code');
+      if (!voucherData?.success || !voucherData.data) {
+        setError(voucherData?.error || 'Invalid voucher code');
         return false;
       }
 
@@ -174,14 +188,14 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
         }),
       });
 
-      const applyData = await applyResponse.json();
+      const applyData = await safeParseJson<{ success: boolean; data?: { discountAmount: number }; error?: string }>(applyResponse);
 
-      if (applyData.success && applyData.data) {
+      if (applyData?.success && applyData.data) {
         setAppliedVoucher(voucher);
         setDiscountAmount(applyData.data.discountAmount);
         return true;
       } else {
-        setError(applyData.error || 'Failed to apply voucher');
+        setError(applyData?.error || 'Failed to apply voucher');
         return false;
       }
     } catch (error) {
@@ -202,13 +216,13 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
         method: 'DELETE',
       });
 
-      const data = await response.json();
+      const data = await safeParseJson<{ success: boolean; error?: string }>(response);
 
-      if (data.success) {
+      if (data?.success) {
         setAppliedVoucher(null);
         setDiscountAmount(0);
       } else {
-        setError(data.error || 'Failed to remove voucher');
+        setError(data?.error || 'Failed to remove voucher');
       }
     } catch (error) {
       setError('Network error while removing voucher');

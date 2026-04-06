@@ -61,7 +61,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <div className="flex items-center justify-between">
           <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-            {product.category}
+            {product.categoryId}
           </span>
           <div className="text-orange-500 group-hover:translate-x-1 transition-transform duration-200">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

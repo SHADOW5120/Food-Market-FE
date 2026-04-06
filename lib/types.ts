@@ -2,12 +2,15 @@
  * Shared type definitions for the authentication system
  */
 
+export type UserRole = 'user' | 'seller' | 'admin';
+
 export interface User {
   id: string;
   username: string;
   email: string;
   phone?: string;
   avatar?: string;
+  role: UserRole;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -21,7 +24,7 @@ export interface UpdateProfilePayload {
 export interface ChangePasswordPayload {
   currentPassword: string;
   newPassword: string;
-  confirmPassword: string;
+  confirmPassword?: string;
 }
 
 export interface ProfileResponse {
@@ -44,10 +47,58 @@ export interface AuthResponse<T = User> {
   errors?: Record<string, string[]>;
 }
 
+export type AuthLoginResponse = AuthResponse<User>;
+
 export interface LoginPayload {
   email: string;
   password: string;
   rememberMe?: boolean;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  image?: string;
+  categoryId: string;
+  storeId: string;
+  rating?: number;
+  reviewCount?: number;
+  status?: 'available' | 'unavailable';
+  isAvailable?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  image?: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+  errors?: Record<string, string[]>;
+}
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  data?: {
+    items: T[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+  message?: string;
+  error?: string;
 }
 
 export interface RegisterPayload {
@@ -83,24 +134,13 @@ export type AuthStatus = 'idle' | 'loading' | 'success' | 'error';
  * Seller/Product types for store management
  */
 
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  image?: string;
-  status: 'available' | 'unavailable';
-  createdAt?: string;
-  updatedAt?: string;
-}
-
 export interface CreateProductPayload {
   name: string;
   description: string;
   price: number;
-  category: string;
-  status: 'available' | 'unavailable';
+  categoryId: string;
+  storeId: string;
+  status?: 'available' | 'unavailable';
   image?: File;
 }
 
@@ -108,7 +148,8 @@ export interface UpdateProductPayload {
   name?: string;
   description?: string;
   price?: number;
-  category?: string;
+  categoryId?: string;
+  storeId?: string;
   status?: 'available' | 'unavailable';
   image?: File;
 }
@@ -153,13 +194,6 @@ export interface UpdateOrderStatusPayload {
 /**
  * Food browsing system types
  */
-
-export interface Category {
-  id: string;
-  name: string;
-  image?: string;
-  description?: string;
-}
 
 export interface ProductFilters {
   category?: string;
@@ -325,15 +359,6 @@ export interface RemoveVoucherResponse {
   error?: string;
 }
 
-export interface ProductReviewsData {
-  reviews: Review[];
-  averageRating: number;
-  totalReviews: number;
-  ratingBreakdown: RatingBreakdown;
-  userReview?: Review; // if current user has reviewed this product
-  canReview: boolean; // if user can submit a review
-}
-
 export interface CreateReviewPayload {
   productId: string;
   rating: number;
@@ -445,11 +470,51 @@ export interface CreateOrderPayload {
     zip: string;
   };
   notes?: string;
+  voucherCode?: string;
 }
 
 export interface CancelOrderResponse {
   success: boolean;
   data?: Order;
+  message?: string;
+  error?: string;
+}
+
+/**
+ * Store System Types
+ */
+
+export interface Store {
+  id: string;
+  name: string;
+  logo: string;
+  banner: string;
+  description: string;
+  rating: number;
+  deliveryTime?: string;
+  productCount?: number;
+}
+
+export interface StoreResponse {
+  success: boolean;
+  data?: Store;
+  message?: string;
+  error?: string;
+}
+
+export interface StoresResponse {
+  success: boolean;
+  data?: Store[];
+  message?: string;
+  error?: string;
+}
+
+export interface StoreProductsResponse {
+  success: boolean;
+  data?: {
+    products: Product[];
+    categories: Category[];
+  };
   message?: string;
   error?: string;
 }

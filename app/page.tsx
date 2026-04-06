@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { SearchBar } from '@/components/filter/SearchBar';
 import { ProductCard } from '@/components/product/ProductCard';
 import { VoucherList } from '@/components/voucher';
-import { getProducts, getCategories } from '@/lib/api';
-import { Product, Category } from '@/lib/types';
+import { Navbar } from '@/components/ui/Navbar';
+import { productApi, categoryApi } from '@/lib/api';
+import { Product, Category, ProductsResponse, CategoriesResponse } from '@/lib/types';
 
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -18,13 +19,13 @@ export default function HomePage() {
     const loadData = async () => {
       try {
         // Load featured/popular products
-        const productsResponse = await getProducts({}, 1, 8);
+        const productsResponse: ProductsResponse = await productApi.getProducts({}, 1, 8);
         if (productsResponse.success && productsResponse.data) {
           setFeaturedProducts(productsResponse.data.products);
         }
 
         // Load categories
-        const categoriesResponse = await getCategories();
+        const categoriesResponse: CategoriesResponse = await categoryApi.getCategories();
         if (categoriesResponse.success && categoriesResponse.data) {
           setCategories(categoriesResponse.data);
         }
@@ -40,28 +41,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="text-3xl">🍽️</div>
-              <h1 className="text-2xl font-bold text-gray-900">Food Market</h1>
-            </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-gray-700 hover:text-orange-600 font-medium">
-                Home
-              </Link>
-              <Link href="/products" className="text-gray-700 hover:text-orange-600 font-medium">
-                Menu
-              </Link>
-              <Link href="/login" className="text-orange-600 hover:text-orange-700 font-medium">
-                Sign In
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Hero Banner */}
       <section className="bg-gradient-to-r from-orange-50 to-red-50 py-16">
@@ -77,7 +57,9 @@ export default function HomePage() {
 
             {/* Search Bar */}
             <div className="max-w-md mx-auto mb-8">
-              <SearchBar />
+              <Suspense fallback={<div className="h-12 bg-gray-200 rounded-lg animate-pulse"></div>}>
+                <SearchBar />
+              </Suspense>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

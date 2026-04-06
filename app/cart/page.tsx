@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { CartList } from '@/components/cart/CartList';
 import { CartSummary } from '@/components/cart/CartSummary';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { Navbar } from '@/components/ui/Navbar';
 import { useCart } from '@/lib/cart-context';
 
 export default function CartPage() {
@@ -26,31 +28,11 @@ export default function CartPage() {
   }, [loadCart]);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="text-3xl">🍽️</div>
-              <h1 className="text-2xl font-bold text-gray-900">Food Market</h1>
-            </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-gray-700 hover:text-orange-600 font-medium">
-                Home
-              </Link>
-              <Link href="/products" className="text-gray-700 hover:text-orange-600 font-medium">
-                Menu
-              </Link>
-              <Link href="/cart" className="text-orange-600 hover:text-orange-700 font-medium">
-                Cart
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-white">
+        <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2">
@@ -133,5 +115,6 @@ export default function CartPage() {
         </div>
       )}
     </div>
+    </ProtectedRoute>
   );
 }

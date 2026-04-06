@@ -189,7 +189,7 @@ export default function ProductDetailPage() {
                 <FavoriteButton product={product} variant="button" />
               </div>
               <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium mb-4">
-                {product.category}
+                {product.categoryId}
               </span>
             </div>
 
@@ -227,7 +227,7 @@ export default function ProductDetailPage() {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-gray-500">Category:</span>
-                  <span className="ml-2 font-medium">{product.category}</span>
+                  <span className="ml-2 font-medium">{product.categoryId}</span>
                 </div>
                 <div>
                   <span className="text-gray-500">Status:</span>

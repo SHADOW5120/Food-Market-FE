@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -7,13 +9,16 @@ import { AuthCard } from '@/components/auth/AuthCard';
 import { Input } from '@/components/auth/Input';
 import { Button } from '@/components/auth/Button';
 import { MailIcon, LockIcon } from '@/components/auth/Icons';
-import { login } from '@/lib/api';
-import { useAuth } from '@/lib/auth-context';
+import { authApi } from '@/lib/api';
+import { useAuthStore } from '@/lib/auth-store';
 import { validateLoginForm } from '@/lib/validators';
+import { AuthLoginResponse } from '@/lib/types';
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login: loginUser } = useAuth();
+  const authStore = useAuthStore();
+  const [redirectRoute, setRedirectRoute] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const [formData, setFormData] = useState({
@@ -23,9 +28,11 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const emailInputRef = useRef<HTMLInputElement>(null);
 
-  // Autofocus first input
+  // Autofocus first input and capture redirect param from URL
   useEffect(() => {
     emailInputRef.current?.focus();
+    const searchParams = new URLSearchParams(window.location.search);
+    setRedirectRoute(searchParams.get('redirect'));
   }, []);
 
   const isFormValid = formData.email && formData.password && Object.keys(errors).length === 0;
@@ -58,19 +65,38 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const response = await login({
+      const response: AuthLoginResponse = await authApi.login({
         email: formData.email,
         password: formData.password,
       });
 
       if (response.success && response.data) {
-        loginUser(response.data.user, response.data.accessToken);
-        router.push('/');
+        const { user, accessToken } = response.data;
+        authStore.login(user, accessToken);
+
+        toast.success('Login successful!');
+
+        // Redirect logic
+        const intendedRoute = authStore.intendedRoute || redirectRoute;
+        if (intendedRoute) {
+          authStore.setIntendedRoute(null);
+          router.push(intendedRoute);
+        } else {
+          // Role-based redirect
+          if (user.role === 'seller') {
+            router.push('/seller');
+          } else {
+            router.push('/');
+          }
+        }
       } else {
         setApiError(response.error || 'Login failed');
+        toast.error(response.error || 'Login failed');
       }
     } catch (error) {
-      setApiError('An unexpected error occurred');
+      const errorMessage = 'An unexpected error occurred';
+      setApiError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
