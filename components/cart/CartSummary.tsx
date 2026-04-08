@@ -22,7 +22,7 @@ export function CartSummary() {
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
-      router.push('/auth/login');
+      router.push('/login');
       return;
     }
     router.push('/checkout');

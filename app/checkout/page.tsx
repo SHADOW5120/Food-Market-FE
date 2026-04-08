@@ -31,7 +31,7 @@ export default function CheckoutPage() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push('/auth/login?redirect=/checkout');
+      router.push('/login?redirect=/checkout');
       return;
     }
   }, [isAuthenticated, router]);

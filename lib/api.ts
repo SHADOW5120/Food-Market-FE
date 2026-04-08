@@ -26,7 +26,7 @@ import {
   ApiResponse,
 } from './types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api';
 
 class ApiClient {
   private baseURL: string;

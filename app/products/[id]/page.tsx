@@ -110,7 +110,7 @@ export default function ProductDetailPage() {
               <Link href="/products" className="text-orange-600 hover:text-orange-700 font-medium">
                 Menu
               </Link>
-              <Link href="/auth/login" className="text-gray-700 hover:text-orange-600 font-medium">
+              <Link href="/login" className="text-gray-700 hover:text-orange-600 font-medium">
                 Sign In
               </Link>
             </nav>

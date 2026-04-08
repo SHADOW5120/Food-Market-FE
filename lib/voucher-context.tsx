@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { API_BASE_URL } from './api';
 import { Voucher, CartItem } from './types';
 
 interface VoucherContextType {
@@ -70,6 +71,12 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
       return null;
     }
 
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      console.error('Expected JSON response from voucher API but received:', contentType, text);
+      return null;
+    }
+
     try {
       return JSON.parse(text) as T;
     } catch (error) {
@@ -83,8 +90,13 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const response = await fetch('/api/vouchers');
+      const response = await fetch(`${API_BASE_URL}/vouchers`);
       const data = await safeParseJson<{ success: boolean; data?: Voucher[]; error?: string }>(response);
+
+      if (!response.ok) {
+        setError(data?.error || `Failed to load vouchers (${response.status})`);
+        return;
+      }
 
       if (data?.success && data.data) {
         setAvailableVouchers(data.data);
@@ -158,8 +170,13 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
 
     try {
       // First, get voucher details
-      const voucherResponse = await fetch(`/api/vouchers/code/${code}`);
+      const voucherResponse = await fetch(`${API_BASE_URL}/vouchers/code/${code}`);
       const voucherData = await safeParseJson<{ success: boolean; data?: Voucher; error?: string }>(voucherResponse);
+
+      if (!voucherResponse.ok) {
+        setError(voucherData?.error || `Invalid voucher code (${voucherResponse.status})`);
+        return false;
+      }
 
       if (!voucherData?.success || !voucherData.data) {
         setError(voucherData?.error || 'Invalid voucher code');
@@ -176,7 +193,7 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
       }
 
       // Apply voucher via API
-      const applyResponse = await fetch('/api/vouchers/apply', {
+      const applyResponse = await fetch(`${API_BASE_URL}/vouchers/apply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -212,7 +229,7 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const response = await fetch('/api/vouchers/remove', {
+      const response = await fetch(`${API_BASE_URL}/vouchers/remove`, {
         method: 'DELETE',
       });
 

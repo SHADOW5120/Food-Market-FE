@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { useAuth } from '@/lib/auth-context';
 import { Favorite, Product } from './types';
 import { getFavorites, addToFavorites, removeFromFavorites } from './api';
 
@@ -21,52 +22,32 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated } = useAuth();
 
-  // Load favorites from localStorage on mount
-  useEffect(() => {
-    const loadInitialFavorites = async () => {
-      setIsLoading(true);
-      try {
-        // Check if user is logged in
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-          // Load from API if logged in
-          const response = await getFavorites();
-          if (response.success && response.data) {
-            setFavorites(response.data);
-            const ids = new Set(response.data.map(fav => fav.productId));
-            setFavoriteIds(ids);
-          }
-        } else {
-          // Load from localStorage if not logged in
-          const stored = localStorage.getItem('favorites');
-          if (stored) {
-            try {
-              const parsedIds = JSON.parse(stored);
-              setFavoriteIds(new Set(parsedIds));
-            } catch (error) {
-              console.error('Failed to parse favorites from localStorage', error);
-            }
-          }
+  const loadFavorites = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      if (isAuthenticated) {
+        const response = await getFavorites();
+        if (response.success && response.data) {
+          setFavorites(response.data);
+          setFavoriteIds(new Set(response.data.map(fav => fav.productId)));
+          return;
         }
-      } catch (error) {
-        console.error('Failed to load favorites', error);
-      } finally {
-        setIsLoading(false);
       }
-    };
 
-    loadInitialFavorites();
-  }, []);
-
-  // Persist favoriteIds to localStorage whenever they change
-  useEffect(() => {
-    if (favoriteIds.size > 0) {
-      localStorage.setItem('favorites', JSON.stringify(Array.from(favoriteIds)));
-    } else {
-      localStorage.removeItem('favorites');
+      setFavorites([]);
+      setFavoriteIds(new Set());
+    } catch (error) {
+      console.error('Failed to load favorites', error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [favoriteIds]);
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    loadFavorites();
+  }, [loadFavorites]);
 
   const isFavorited = (productId: string): boolean => {
     return favoriteIds.has(productId);
@@ -82,28 +63,23 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   };
 
   const addFavorite = async (product: Product): Promise<boolean> => {
+    if (!isAuthenticated) {
+      return false;
+    }
+
     try {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        // User is logged in, sync with backend
-        const response = await addToFavorites(product.id);
-        if (response.success && response.data) {
-          const favoriteData = response.data;
-          // Update local state with the favorite from backend
-          setFavorites(prev => {
-            const exists = prev.some(fav => fav.productId === product.id);
-            if (exists) return prev;
-            return [...prev, favoriteData];
-          });
-          setFavoriteIds(prev => new Set([...prev, product.id]));
-          return true;
-        }
-        return false;
-      } else {
-        // User is not logged in, just update local state
+      const response = await addToFavorites(product.id);
+      if (response.success && response.data) {
+        const favoriteData = response.data;
+        setFavorites(prev => {
+          const exists = prev.some(fav => fav.productId === product.id);
+          if (exists) return prev;
+          return [...prev, favoriteData];
+        });
         setFavoriteIds(prev => new Set([...prev, product.id]));
         return true;
       }
+      return false;
     } catch (error) {
       console.error('Failed to add favorite', error);
       return false;
@@ -111,23 +87,14 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   };
 
   const removeFavorite = async (productId: string): Promise<boolean> => {
+    if (!isAuthenticated) {
+      return false;
+    }
+
     try {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        // User is logged in, sync with backend
-        const response = await removeFromFavorites(productId);
-        if (response.success) {
-          setFavorites(prev => prev.filter(fav => fav.productId !== productId));
-          setFavoriteIds(prev => {
-            const newSet = new Set(prev);
-            newSet.delete(productId);
-            return newSet;
-          });
-          return true;
-        }
-        return false;
-      } else {
-        // User is not logged in, just update local state
+      const response = await removeFromFavorites(productId);
+      if (response.success) {
+        setFavorites(prev => prev.filter(fav => fav.productId !== productId));
         setFavoriteIds(prev => {
           const newSet = new Set(prev);
           newSet.delete(productId);
@@ -135,28 +102,10 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         });
         return true;
       }
+      return false;
     } catch (error) {
       console.error('Failed to remove favorite', error);
       return false;
-    }
-  };
-
-  const loadFavorites = async () => {
-    setIsLoading(true);
-    try {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        const response = await getFavorites();
-        if (response.success && response.data) {
-          setFavorites(response.data);
-          const ids = new Set(response.data.map(fav => fav.productId));
-          setFavoriteIds(ids);
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load favorites', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

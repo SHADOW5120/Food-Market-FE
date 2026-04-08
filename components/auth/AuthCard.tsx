@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 interface AuthCardProps {
   children: React.ReactNode;
   title: string;
@@ -14,13 +16,21 @@ export function AuthCard({ children, title, subtitle, imageSrc }: AuthCardProps)
         {/* Left side - Form */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center">
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 animate-slide-up">
-            <div className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-                {title}
-              </h1>
-              {subtitle && (
-                <p className="text-gray-600">{subtitle}</p>
-              )}
+            <div className="mb-8 flex items-start justify-between gap-4">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                  {title}
+                </h1>
+                {subtitle && (
+                  <p className="text-gray-600">{subtitle}</p>
+                )}
+              </div>
+              <Link
+                href="/"
+                className="rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-medium text-orange-600 transition hover:bg-orange-100"
+              >
+                Go Home
+              </Link>
             </div>
             {children}
           </div>
