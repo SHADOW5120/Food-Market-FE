@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { OrdersList } from '@/components/order/OrdersList';
+import { useAuth } from '@/lib/auth-context';
 import { useOrder } from '@/lib/order-context';
 import type { Order } from '@/lib/types';
 
@@ -11,12 +12,15 @@ type FilterStatus = 'all' | 'pending' | 'confirmed' | 'delivering' | 'completed'
 
 export default function OrdersPage() {
   const { orders, isLoading, error, loadOrders } = useOrder();
+  const { isAuthenticated } = useAuth();
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
 
   useEffect(() => {
-    loadOrders();
-  }, []);
+    if (isAuthenticated) {
+      loadOrders();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (filterStatus === 'all') {

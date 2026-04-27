@@ -28,6 +28,24 @@ import {
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api';
 
+export class ApiError extends Error {
+  status: number;
+  body: any;
+  isAuthError: boolean;
+
+  constructor(message: string, status: number, body: any = null, isAuthError = false) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.body = body;
+    this.isAuthError = isAuthError;
+  }
+}
+
+interface RequestConfig {
+  authRequired?: boolean;
+}
+
 class ApiClient {
   private baseURL: string;
 
@@ -49,12 +67,47 @@ class ApiClient {
     }
   }
 
+  private async waitForHydration(timeoutMs = 5000): Promise<void> {
+    const state = useAuthStore.getState();
+    if (state.hasHydrated) {
+      return;
+    }
+
+    return new Promise<void>((resolve, reject) => {
+      const unsubscribe = useAuthStore.subscribe((nextState) => {
+        if (nextState.hasHydrated) {
+          unsubscribe();
+          window.clearTimeout(timeout);
+          resolve();
+        }
+      });
+
+      const timeout = window.setTimeout(() => {
+        unsubscribe();
+        reject(new ApiError('Auth hydration timed out', 503, null, false));
+      }, timeoutMs);
+    });
+  }
+
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    config: RequestConfig = {}
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    const token = useAuthStore.getState().accessToken;
+    const authRequired = config.authRequired === true;
+
+    if (authRequired && !useAuthStore.getState().hasHydrated) {
+      await this.waitForHydration();
+    }
+
+    const authState = useAuthStore.getState();
+    const token = authState.accessToken && authState.accessToken !== 'null' ? authState.accessToken : null;
+    const hadToken = Boolean(token);
+
+    if (authRequired && (!authState.hasHydrated || !token || !authState.isAuthenticated)) {
+      throw new ApiError('Authentication required', 401, null, false);
+    }
 
     const headers = new Headers(options.headers || undefined);
     if (!(options.body instanceof FormData) && !headers.has('Content-Type')) {
@@ -64,31 +117,28 @@ class ApiClient {
       headers.set('Authorization', `Bearer ${token}`);
     }
 
-    const config: RequestInit = {
+    const configRequest: RequestInit = {
       ...options,
       headers,
     };
 
     try {
-      const response = await fetch(url, config);
+      const response = await fetch(url, configRequest);
       const data = await this.parseJsonResponse<any>(response);
 
       if (response.status === 401) {
-        // Unauthorized - logout and redirect
-        useAuthStore.getState().logout();
-        window.location.href = '/login';
-        throw new Error('Unauthorized');
+        throw new ApiError('Unauthorized', 401, data, hadToken);
       }
 
       if (response.status === 403) {
         toast.error('You do not have permission to perform this action');
-        throw new Error('Forbidden');
+        throw new ApiError('Forbidden', 403, data, false);
       }
 
       if (!response.ok) {
         const errorMessage = data?.message || data?.error || `HTTP ${response.status}`;
         toast.error(errorMessage);
-        throw new Error(errorMessage);
+        throw new ApiError(errorMessage, response.status, data, false);
       }
 
       return data as T;
@@ -100,36 +150,36 @@ class ApiClient {
     }
   }
 
-  async get<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: 'GET' });
+  async get<T>(endpoint: string, options?: RequestInit, config?: RequestConfig): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'GET' }, config);
   }
 
-  async post<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
+  async post<T>(endpoint: string, data?: any, options?: RequestInit, config?: RequestConfig): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: 'POST',
       body: data ? JSON.stringify(data) : undefined,
-    });
+    }, config);
   }
 
-  async postForm<T>(endpoint: string, formData: FormData, options?: RequestInit): Promise<T> {
+  async postForm<T>(endpoint: string, formData: FormData, options?: RequestInit, config?: RequestConfig): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: 'POST',
       body: formData,
-    });
+    }, config);
   }
 
-  async put<T>(endpoint: string, data?: any, options?: RequestInit): Promise<T> {
+  async put<T>(endpoint: string, data?: any, options?: RequestInit, config?: RequestConfig): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
       method: 'PUT',
       body: data ? JSON.stringify(data) : undefined,
-    });
+    }, config);
   }
 
-  async delete<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: 'DELETE' });
+  async delete<T>(endpoint: string, options?: RequestInit, config?: RequestConfig): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'DELETE' }, config);
   }
 }
 
@@ -154,18 +204,18 @@ export const authApi = {
   },
 
   me: async (): Promise<ProfileResponse> => {
-    return apiClient.get('/auth/me');
+    return apiClient.get('/auth/me', undefined, { authRequired: true });
   },
 };
 
 // User API functions
 export const userApi = {
   updateProfile: async (data: any) => {
-    return apiClient.put('/user/profile', data);
+    return apiClient.put('/user/profile', data, undefined, { authRequired: true });
   },
 
   changePassword: async (data: any) => {
-    return apiClient.put('/user/change-password', data);
+    return apiClient.put('/user/change-password', data, undefined, { authRequired: true });
   },
 };
 
@@ -192,15 +242,15 @@ export const productApi = {
   },
 
   createProduct: async (data: any) => {
-    return apiClient.post('/products', data);
+    return apiClient.post('/products', data, undefined, { authRequired: true });
   },
 
   updateProduct: async (id: string, data: any) => {
-    return apiClient.put(`/products/${id}`, data);
+    return apiClient.put(`/products/${id}`, data, undefined, { authRequired: true });
   },
 
   deleteProduct: async (id: string) => {
-    return apiClient.delete(`/products/${id}`);
+    return apiClient.delete(`/products/${id}`, undefined, { authRequired: true });
   },
 };
 
@@ -213,17 +263,17 @@ export const categoryApi = {
 
 // Favorites API functions
 export const favoriteApi = {
-  getFavorites: async (): Promise<FavoritesResponse> => apiClient.get<FavoritesResponse>('/favorites'),
-  addToFavorites: async (productId: string): Promise<AddToFavoritesResponse> => apiClient.post<AddToFavoritesResponse>('/favorites', { productId }),
-  removeFromFavorites: async (productId: string): Promise<RemoveFromFavoritesResponse> => apiClient.delete<RemoveFromFavoritesResponse>(`/favorites/${productId}`),
+  getFavorites: async (): Promise<FavoritesResponse> => apiClient.get<FavoritesResponse>('/favorites', undefined, { authRequired: true }),
+  addToFavorites: async (productId: string): Promise<AddToFavoritesResponse> => apiClient.post<AddToFavoritesResponse>('/favorites', { productId }, undefined, { authRequired: true }),
+  removeFromFavorites: async (productId: string): Promise<RemoveFromFavoritesResponse> => apiClient.delete<RemoveFromFavoritesResponse>(`/favorites/${productId}`, undefined, { authRequired: true }),
 };
 
 // Order API functions
 export const orderApi = {
-  getUserOrders: async (): Promise<OrdersResponse> => apiClient.get<OrdersResponse>('/orders'),
-  getUserOrderById: async (orderId: string): Promise<OrderResponse> => apiClient.get<OrderResponse>(`/orders/${orderId}`),
-  cancelOrder: async (orderId: string): Promise<CancelOrderResponse> => apiClient.post<CancelOrderResponse>(`/orders/${orderId}/cancel`),
-  createOrder: async (payload: CreateOrderPayload): Promise<OrderResponse> => apiClient.post<OrderResponse>('/orders', payload),
+  getUserOrders: async (): Promise<OrdersResponse> => apiClient.get<OrdersResponse>('/orders', undefined, { authRequired: true }),
+  getUserOrderById: async (orderId: string): Promise<OrderResponse> => apiClient.get<OrderResponse>(`/orders/${orderId}`, undefined, { authRequired: true }),
+  cancelOrder: async (orderId: string): Promise<CancelOrderResponse> => apiClient.post<CancelOrderResponse>(`/orders/${orderId}/cancel`, undefined, undefined, { authRequired: true }),
+  createOrder: async (payload: CreateOrderPayload): Promise<OrderResponse> => apiClient.post<OrderResponse>('/orders', payload, undefined, { authRequired: true }),
 };
 
 // Store API functions
@@ -235,24 +285,24 @@ export const storeApi = {
 
 // Profile API functions
 export const profileApi = {
-  getProfile: async () => apiClient.get<ProfileResponse>('/user/profile'),
-  updateProfile: async (data: UpdateProfilePayload) => apiClient.put<ApiResponse<{ user: User }>>('/user/profile', data),
+  getProfile: async () => apiClient.get<ProfileResponse>('/user/profile', undefined, { authRequired: true }),
+  updateProfile: async (data: UpdateProfilePayload) => apiClient.put<ApiResponse<{ user: User }>>('/user/profile', data, undefined, { authRequired: true }),
   uploadAvatar: async (file: File) => {
     const formData = new FormData();
     formData.append('avatar', file);
-    return apiClient.postForm<ApiResponse<{ url: string }>>('/user/avatar', formData);
+    return apiClient.postForm<ApiResponse<{ url: string }>>('/user/avatar', formData, undefined, { authRequired: true });
   },
-  changePassword: async (data: ChangePasswordPayload) => apiClient.put<ApiResponse<null>>('/user/change-password', data),
+  changePassword: async (data: ChangePasswordPayload) => apiClient.put<ApiResponse<null>>('/user/change-password', data, undefined, { authRequired: true }),
 };
 
 // Review API functions
 export const reviewApi = {
   getProductReviews: async (productId: string, page = 1, limit = 10) =>
     apiClient.get<ReviewsResponse>(`/products/${productId}/reviews?page=${page}&limit=${limit}`),
-  createReview: async (payload: CreateReviewPayload) => apiClient.post<CreateReviewResponse>('/reviews', payload),
-  updateReview: async (reviewId: string, payload: UpdateReviewPayload) => apiClient.put<CreateReviewResponse>(`/reviews/${reviewId}`, payload),
-  deleteReview: async (reviewId: string) => apiClient.delete<ApiResponse<null>>(`/reviews/${reviewId}`),
-  markReviewHelpful: async (reviewId: string) => apiClient.post<ApiResponse<null>>(`/reviews/${reviewId}/helpful`),
+  createReview: async (payload: CreateReviewPayload) => apiClient.post<CreateReviewResponse>('/reviews', payload, undefined, { authRequired: true }),
+  updateReview: async (reviewId: string, payload: UpdateReviewPayload) => apiClient.put<CreateReviewResponse>(`/reviews/${reviewId}`, payload, undefined, { authRequired: true }),
+  deleteReview: async (reviewId: string) => apiClient.delete<ApiResponse<null>>(`/reviews/${reviewId}`, undefined, { authRequired: true }),
+  markReviewHelpful: async (reviewId: string) => apiClient.post<ApiResponse<null>>(`/reviews/${reviewId}/helpful`, undefined, undefined, { authRequired: true }),
 };
 
 // Top-level convenience export helpers

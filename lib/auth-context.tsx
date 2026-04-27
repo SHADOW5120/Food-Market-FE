@@ -9,6 +9,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   role: UserRole | null;
   isLoading: boolean;
+  hasHydrated: boolean;
   intendedRoute: string | null;
   login: (user: User, token: string) => void;
   logout: () => void;
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated: store.isAuthenticated,
     role: store.role,
     isLoading: store.isLoading,
+    hasHydrated: store.hasHydrated,
     intendedRoute: store.intendedRoute,
     login: store.login,
     logout: store.logout,

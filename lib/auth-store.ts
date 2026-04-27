@@ -8,6 +8,7 @@ interface AuthState {
   isAuthenticated: boolean;
   role: UserRole | null;
   isLoading: boolean;
+  hasHydrated: boolean;
   intendedRoute: string | null;
   login: (user: User, token: string) => void;
   logout: () => void;
@@ -20,12 +21,13 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set, get, api) => ({
       user: null,
       accessToken: null,
       isAuthenticated: false,
       role: null,
       isLoading: true,
+      hasHydrated: false,
       intendedRoute: null,
 
       login: (user: User, token: string) => {
@@ -35,7 +37,10 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: true,
           role: user.role,
           isLoading: false,
+          hasHydrated: true,
         });
+        // Set cookie for middleware
+        document.cookie = `accessToken=${token}; path=/; max-age=86400`;
       },
 
       logout: () => {
@@ -45,10 +50,13 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: false,
           role: null,
           isLoading: false,
+          hasHydrated: true,
           intendedRoute: null,
         });
         // Clear localStorage
         localStorage.removeItem('auth-storage');
+        // Clear cookie
+        document.cookie = 'accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
       },
 
       setUser: (user: User | null) => {
@@ -69,46 +77,73 @@ export const useAuthStore = create<AuthState>()(
 
       setLoading: (loading: boolean) => set({ isLoading: loading }),
 
-      setIntendedRoute: (route: string | null) => set({ intendedRoute: route }),
+      setIntendedRoute: (route: string | null) => {
+        if (get().intendedRoute !== route) {
+          set({ intendedRoute: route });
+        }
+      },
 
       initializeAuth: async () => {
-        const { accessToken } = get();
-        if (accessToken) {
-          try {
-            // Call /me to get user info
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api'}/auth/me`, {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
+        if (!get().hasHydrated) {
+          await new Promise<void>((resolve) => {
+            const unsubscribe = api.subscribe((state) => {
+              if (state.hasHydrated) {
+                unsubscribe();
+                clearTimeout(timer);
+                resolve();
+              }
             });
 
-            if (response.ok) {
-              const data = await response.json();
-              if (data.success && data.data) {
-                const user = data.data;
-                set({
-                  user,
-                  role: user.role,
-                  isAuthenticated: true,
-                  isLoading: false,
-                });
-              } else {
-                // Invalid token, logout
-                get().logout();
-              }
-            } else if (response.status === 401) {
-              // Token expired, logout
-              get().logout();
+            const timer = setTimeout(() => {
+              unsubscribe();
+              set({ hasHydrated: true, isLoading: false });
+              resolve();
+            }, 100);
+          });
+        }
+
+        const accessToken = get().accessToken;
+        const validToken = accessToken && accessToken !== 'null' ? accessToken : null;
+
+        if (!validToken) {
+          set({
+            accessToken: null,
+            user: null,
+            role: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
+          return;
+        }
+
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api'}/auth/me`, {
+            headers: {
+              Authorization: `Bearer ${validToken}`,
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.data) {
+              const user = data.data;
+              set({
+                user,
+                role: user.role,
+                isAuthenticated: true,
+                isLoading: false,
+              });
             } else {
-              // Other error, logout
               get().logout();
             }
-          } catch (error) {
-            console.error('Failed to fetch user info:', error);
+          } else if (response.status === 401) {
+            get().logout();
+          } else {
             get().logout();
           }
-        } else {
-          set({ isLoading: false });
+        } catch (error) {
+          console.error('Failed to fetch user info:', error);
+          get().logout();
         }
       },
     }),
@@ -120,6 +155,16 @@ export const useAuthStore = create<AuthState>()(
         role: state.role,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error('Failed to hydrate auth store', error);
+        }
+
+        if (state) {
+          state.hasHydrated = true;
+          state.isLoading = false;
+        }
+      },
     }
   )
 );

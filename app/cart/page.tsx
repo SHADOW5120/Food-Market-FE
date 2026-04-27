@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CartList } from '@/components/cart/CartList';
 import { CartSummary } from '@/components/cart/CartSummary';
@@ -10,6 +11,7 @@ import { useCart } from '@/lib/cart-context';
 
 export default function CartPage() {
   const { items, isLoading, loadCart } = useCart();
+  const router = useRouter();
   const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
@@ -107,7 +109,7 @@ export default function CartPage() {
       {items.length > 0 && (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
           <button
-            onClick={() => (window.location.href = '/checkout')}
+            onClick={() => router.push('/checkout')}
             className="w-full py-3 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors"
           >
             Proceed to Checkout

@@ -17,28 +17,32 @@ export function ProtectedRoute({
   requiredRoles = [],
   fallbackPath = '/'
 }: ProtectedRouteProps) {
-  const { isAuthenticated, role, isLoading } = useAuth();
+  const { isAuthenticated, role, isLoading, hasHydrated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!isLoading) {
-      if (!isAuthenticated) {
-        // Save intended route
-        const authStore = useAuthStore.getState();
-        authStore.setIntendedRoute(pathname);
-        router.push('/login');
-        return;
-      }
-
-      if (requiredRoles.length > 0 && role && !requiredRoles.includes(role)) {
-        router.push(fallbackPath);
-        return;
-      }
+    if (!hasHydrated || isLoading) {
+      return;
     }
-  }, [isLoading, isAuthenticated, role, requiredRoles, router, pathname, fallbackPath]);
 
-  if (isLoading) {
+    if (!isAuthenticated) {
+      // Save intended route
+      const authStore = useAuthStore.getState();
+      if (authStore.intendedRoute !== pathname) {
+        authStore.setIntendedRoute(pathname);
+      }
+      router.push('/login');
+      return;
+    }
+
+    if (requiredRoles.length > 0 && role && !requiredRoles.includes(role)) {
+      router.push(fallbackPath);
+      return;
+    }
+  }, [hasHydrated, isLoading, isAuthenticated, role, requiredRoles, router, pathname, fallbackPath]);
+
+  if (!hasHydrated || isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

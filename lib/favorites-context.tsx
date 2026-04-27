@@ -22,9 +22,13 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, hasHydrated } = useAuth();
 
   const loadFavorites = useCallback(async () => {
+    if (!hasHydrated) {
+      return;
+    }
+
     setIsLoading(true);
     try {
       if (isAuthenticated) {
@@ -43,7 +47,7 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [hasHydrated, isAuthenticated]);
 
   useEffect(() => {
     loadFavorites();
