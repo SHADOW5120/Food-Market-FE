@@ -7,6 +7,7 @@ import { SearchBar } from '@/components/filter/SearchBar';
 import { ProductCard } from '@/components/product/ProductCard';
 import { VoucherList } from '@/components/voucher';
 import { Navbar } from '@/components/ui/Navbar';
+import { AuthFooterLink } from '@/components/ui/AuthFooterLink';
 import { productApi, categoryApi } from '@/lib/api';
 import { Product, Category, ProductsResponse, CategoriesResponse } from '@/lib/types';
 
@@ -229,7 +230,7 @@ export default function HomePage() {
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/" className="hover:text-white">Home</Link></li>
                 <li><Link href="/products" className="hover:text-white">Menu</Link></li>
-                <li><Link href="/login" className="hover:text-white">Sign In</Link></li>
+                <AuthFooterLink />
               </ul>
             </div>
             <div>

@@ -25,33 +25,29 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated, hasHydrated } = useAuth();
 
   const loadFavorites = useCallback(async () => {
-    if (!hasHydrated) {
-      return;
-    }
+    if (!isAuthenticated) return;
 
     setIsLoading(true);
-    try {
-      if (isAuthenticated) {
-        const response = await getFavorites();
-        if (response.success && response.data) {
-          setFavorites(response.data);
-          setFavoriteIds(new Set(response.data.map(fav => fav.productId)));
-          return;
-        }
-      }
 
-      setFavorites([]);
-      setFavoriteIds(new Set());
+    try {
+      const response = await getFavorites();
+
+      if (response.success && response.data) {
+        setFavorites(response.data);
+        setFavoriteIds(new Set(response.data.map(fav => fav.productId)));
+      }
     } catch (error) {
       console.error('Failed to load favorites', error);
     } finally {
       setIsLoading(false);
     }
-  }, [hasHydrated, isAuthenticated]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
+    if (!hasHydrated || !isAuthenticated) return;
+
     loadFavorites();
-  }, [loadFavorites]);
+  }, [hasHydrated, isAuthenticated]);
 
   const isFavorited = (productId: string): boolean => {
     return favoriteIds.has(productId);

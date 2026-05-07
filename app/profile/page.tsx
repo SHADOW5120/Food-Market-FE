@@ -5,31 +5,43 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { ProfileCard } from '@/components/profile/ProfileCard';
 import { getProfile } from '@/lib/api';
+import { User } from '@/lib/types';
 
 export default function ProfilePage() {
-  const { user, logout, refetchUserProfile, isLoading: authLoading } = useAuth();
+  const {logout, isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Redirect if not authenticated
-    if (!authLoading && !user) {
+    if (!authLoading && !isAuthenticated) {
       router.push('/login');
       return;
     }
-    setIsLoading(false);
-  }, [user, authLoading, router]);
 
-  useEffect(() => {
-    // Refetch latest user profile when page mounts to ensure fresh data
-    if (user && !authLoading) {
-      refetchUserProfile().catch((error) => {
-        console.error('Failed to refetch user profile:', error);
-      });
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+
+        if (response.success && response.data) {
+          setUser(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchProfile();
+    } else if (!authLoading) {
+      setIsLoading(false);
     }
-  }, [authLoading]); // Only run once on mount
+  }, [authLoading, isAuthenticated, router]);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);

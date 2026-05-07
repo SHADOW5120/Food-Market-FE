@@ -202,10 +202,6 @@ export const authApi = {
   resetPassword: async (payload: { token: string; password: string }): Promise<ApiResponse<null>> => {
     return apiClient.post('/auth/reset-password', payload);
   },
-
-  me: async (): Promise<ProfileResponse> => {
-    return apiClient.get('/user/me', undefined, { authRequired: true });
-  },
 };
 
 // User API functions
@@ -217,6 +213,18 @@ export const userApi = {
   changePassword: async (data: any) => {
     return apiClient.put('/user/change-password', data, undefined, { authRequired: true });
   },
+};
+
+// Profile API functions
+export const profileApi = {
+  getProfile: async () => apiClient.get<ProfileResponse>('/user/me', undefined, { authRequired: true }),
+  updateProfile: async (data: UpdateProfilePayload) => apiClient.put<ApiResponse<{ user: User }>>('/user/profile', data, undefined, { authRequired: true }),
+  uploadAvatar: async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return apiClient.postForm<ApiResponse<{ url: string }>>('/user/avatar', formData, undefined, { authRequired: true });
+  },
+  changePassword: async (data: ChangePasswordPayload) => apiClient.put<ApiResponse<null>>('/user/change-password', data, undefined, { authRequired: true }),
 };
 
 // Product API functions
@@ -283,18 +291,6 @@ export const storeApi = {
   getStoreProducts: async (storeId: string): Promise<StoreProductsResponse> => apiClient.get<StoreProductsResponse>(`/stores/${storeId}/products`),
 };
 
-// Profile API functions
-export const profileApi = {
-  getProfile: async () => apiClient.get<ProfileResponse>('/user/profile', undefined, { authRequired: true }),
-  updateProfile: async (data: UpdateProfilePayload) => apiClient.put<ApiResponse<{ user: User }>>('/user/profile', data, undefined, { authRequired: true }),
-  uploadAvatar: async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    return apiClient.postForm<ApiResponse<{ url: string }>>('/user/avatar', formData, undefined, { authRequired: true });
-  },
-  changePassword: async (data: ChangePasswordPayload) => apiClient.put<ApiResponse<null>>('/user/change-password', data, undefined, { authRequired: true }),
-};
-
 // Review API functions
 export const reviewApi = {
   getProductReviews: async (productId: string, page = 1, limit = 10) =>
@@ -310,7 +306,6 @@ export const login = authApi.login;
 export const register = authApi.register;
 export const forgotPassword = authApi.forgotPassword;
 export const resetPassword = authApi.resetPassword;
-export const me = authApi.me;
 
 export const getProducts = productApi.getProducts;
 export const getProductById = productApi.getProduct;

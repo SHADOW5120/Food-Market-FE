@@ -16,7 +16,7 @@ export function ChangePasswordForm({ onSuccess, onError }: ChangePasswordFormPro
   const [formData, setFormData] = useState({
     currentPassword: '',
     newPassword: '',
-    confirmPassword: '',
+    confirmNewPassword: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -63,6 +63,7 @@ export function ChangePasswordForm({ onSuccess, onError }: ChangePasswordFormPro
       const response = await changePassword({
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
+        confirmNewPassword: formData.confirmNewPassword,
       });
 
       if (!response.success) {
@@ -75,7 +76,7 @@ export function ChangePasswordForm({ onSuccess, onError }: ChangePasswordFormPro
       setFormData({
         currentPassword: '',
         newPassword: '',
-        confirmPassword: '',
+        confirmNewPassword: '',
       });
 
       onSuccess();
@@ -175,11 +176,11 @@ export function ChangePasswordForm({ onSuccess, onError }: ChangePasswordFormPro
         {/* Confirm Password */}
         <Input
           label="Confirm New Password"
-          name="confirmPassword"
+          name="confirmNewPassword"
           type="password"
-          value={formData.confirmPassword}
+          value={formData.confirmNewPassword}
           onChange={handleInputChange}
-          error={errors.confirmPassword}
+          error={errors.confirmNewPassword}
           placeholder="Confirm your new password"
           disabled={isLoading}
           showPasswordToggle
@@ -209,7 +210,7 @@ export function ChangePasswordForm({ onSuccess, onError }: ChangePasswordFormPro
             disabled={
               !formData.currentPassword ||
               !formData.newPassword ||
-              !formData.confirmPassword ||
+              !formData.confirmNewPassword ||
               isLoading
             }
             fullWidth

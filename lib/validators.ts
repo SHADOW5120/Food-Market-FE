@@ -33,10 +33,10 @@ export function validateUsername(username: string): string | undefined {
 
 export function validateConfirmPassword(
   password: string,
-  confirmPassword: string
+  confirmNewPassword: string
 ): string | undefined {
-  if (!confirmPassword) return 'Please confirm your password';
-  if (password !== confirmPassword) return 'Passwords do not match';
+  if (!confirmNewPassword) return 'Please confirm your password';
+  if (password !== confirmNewPassword) return 'Passwords do not match';
   return undefined;
 }
 
@@ -59,7 +59,7 @@ export function validateRegisterForm(data: {
   username: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  confirmNewPassword: string;
 }): FormErrors {
   const errors: FormErrors = {};
 
@@ -72,8 +72,8 @@ export function validateRegisterForm(data: {
   const passwordError = validatePassword(data.password);
   if (passwordError) errors.password = passwordError;
 
-  const confirmError = validateConfirmPassword(data.password, data.confirmPassword);
-  if (confirmError) errors.confirmPassword = confirmError;
+  const confirmError = validateConfirmPassword(data.password, data.confirmNewPassword);
+  if (confirmError) errors.confirmNewPassword = confirmError;
 
   return errors;
 }
@@ -122,7 +122,7 @@ export function validatePasswordStrength(password: string): {
 export function validateChangePasswordForm(data: {
   currentPassword: string;
   newPassword: string;
-  confirmPassword: string;
+  confirmNewPassword: string;
 }): FormErrors {
   const errors: FormErrors = {};
 
@@ -139,9 +139,9 @@ export function validateChangePasswordForm(data: {
     errors.newPassword = 'New password must be different from current password';
   }
 
-  const confirmError = validateConfirmPassword(data.newPassword, data.confirmPassword);
+  const confirmError = validateConfirmPassword(data.newPassword, data.confirmNewPassword);
   if (confirmError) {
-    errors.confirmPassword = confirmError;
+    errors.confirmNewPassword = confirmError;
   }
 
   return errors;

@@ -73,6 +73,7 @@ export default function LoginPage() {
       if (response.success && response.data) {
         const { user, accessToken } = response.data;
         authStore.login(user, accessToken);
+        await authStore.refetchUserProfile();
 
         toast.success('Login successful!');
 

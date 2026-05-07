@@ -4,25 +4,43 @@ import { useAuth } from '@/lib/auth-context';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { EditProfileForm } from '@/components/profile/EditProfileForm';
+import { getProfile } from '@/lib/api';
 import { User } from '@/lib/types';
 
 export default function EditProfilePage() {
-  const { user, updateUser, isLoading: authLoading } = useAuth();
+  const { updateUser, isLoading: authLoading, isAuthenticated } = useAuth();
   const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Redirect if not authenticated
-    if (!authLoading && !user) {
+    if (!authLoading && !isAuthenticated) {
       router.push('/login');
       return;
     }
-    setIsLoading(false);
-  }, [user, authLoading, router]);
+
+    const fetchProfile = async () => {
+      try {
+        const response = await getProfile();
+        if (response.success && response.data) {
+          setUser(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to load profile for edit:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchProfile();
+    } else if (!authLoading) {
+      setIsLoading(false);
+    }
+  }, [authLoading, isAuthenticated, router]);
 
   const handleSuccess = (updatedUser: User) => {
-    // Update the complete user object in auth store with latest data from API
     updateUser({
       username: updatedUser.username,
       phone: updatedUser.phone,
@@ -31,8 +49,7 @@ export default function EditProfilePage() {
       id: updatedUser.id,
       role: updatedUser.role,
     });
-    
-    // Redirect back to profile after 2 seconds
+
     setTimeout(() => {
       router.push('/profile');
     }, 2000);

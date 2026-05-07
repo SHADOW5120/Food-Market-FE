@@ -118,7 +118,7 @@ export const useAuthStore = create<AuthState>()(
         }
 
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api'}/auth/me`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api'}/user/me`, {
             headers: {
               Authorization: `Bearer ${validToken}`,
             },

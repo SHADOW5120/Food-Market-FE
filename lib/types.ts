@@ -24,7 +24,7 @@ export interface UpdateProfilePayload {
 export interface ChangePasswordPayload {
   currentPassword: string;
   newPassword: string;
-  confirmPassword?: string;
+  confirmNewPassword?: string;
 }
 
 export interface ProfileResponse {

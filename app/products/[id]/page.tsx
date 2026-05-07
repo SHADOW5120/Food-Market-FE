@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAuth } from '@/lib/auth-context';
 import { QuantitySelector } from '@/components/ui/QuantitySelector';
 import { AddToCartButton } from '@/components/ui/AddToCartButton';
 import { FavoriteButton } from '@/components/favorite/FavoriteButton';
@@ -14,6 +15,7 @@ import { Product } from '@/lib/types';
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { isAuthenticated, hasHydrated, logout } = useAuth();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -110,9 +112,22 @@ export default function ProductDetailPage() {
               <Link href="/products" className="text-orange-600 hover:text-orange-700 font-medium">
                 Menu
               </Link>
-              <Link href="/login" className="text-gray-700 hover:text-orange-600 font-medium">
-                Sign In
-              </Link>
+              {hasHydrated && isAuthenticated ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    router.push('/');
+                  }}
+                  className="text-gray-700 hover:text-red-600 font-medium"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link href="/login" className="text-gray-700 hover:text-orange-600 font-medium">
+                  Sign In
+                </Link>
+              )}
             </nav>
           </div>
         </div>

@@ -13,14 +13,14 @@ import { validateRegisterForm } from '@/lib/validators';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { login: loginUser } = useAuth();
+  const { login: loginUser, refetchUserProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState('');
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    confirmNewPassword: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const usernameInputRef = useRef<HTMLInputElement>(null);
@@ -34,7 +34,7 @@ export default function RegisterPage() {
     formData.username &&
     formData.email &&
     formData.password &&
-    formData.confirmPassword &&
+    formData.confirmNewPassword &&
     Object.keys(errors).length === 0;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,6 +73,7 @@ export default function RegisterPage() {
 
       if (response.success && response.data) {
         loginUser(response.data.user, response.data.accessToken);
+        await refetchUserProfile();
         router.push('/');
       } else {
         setApiError(response.error || 'Registration failed');
@@ -145,13 +146,13 @@ export default function RegisterPage() {
 
         <Input
           label="Confirm Password"
-          name="confirmPassword"
+          name="confirmNewPassword"
           type="password"
           placeholder="••••••••"
-          value={formData.confirmPassword}
+          value={formData.confirmNewPassword}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
-          error={errors.confirmPassword}
+          error={errors.confirmNewPassword}
           icon={<LockIcon />}
           showPasswordToggle
           disabled={isLoading}

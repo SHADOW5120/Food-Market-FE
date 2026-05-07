@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '@/lib/auth-context';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { SearchBar } from '@/components/filter/SearchBar';
 import { CategoryFilter } from '@/components/filter/CategoryFilter';
@@ -66,6 +67,14 @@ export default function ProductsPageClient() {
     window.location.reload(); // Simple reload for now
   };
 
+  const { isAuthenticated, hasHydrated, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/');
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -83,9 +92,19 @@ export default function ProductsPageClient() {
               <Link href="/products" className="text-orange-600 hover:text-orange-700 font-medium">
                 Menu
               </Link>
-              <Link href="/login" className="text-gray-700 hover:text-orange-600 font-medium">
-                Sign In
-              </Link>
+              {hasHydrated && isAuthenticated ? (
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-gray-700 hover:text-red-600 font-medium"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link href="/login" className="text-gray-700 hover:text-orange-600 font-medium">
+                  Sign In
+                </Link>
+              )}
             </nav>
           </div>
         </div>

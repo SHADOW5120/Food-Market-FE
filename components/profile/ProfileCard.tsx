@@ -22,9 +22,9 @@ export function ProfileCard({ user, onLogout, isLoggingOut = false }: ProfileCar
       {/* Avatar */}
       <div className="flex flex-col items-center mb-8">
         <div className="w-24 h-24 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-5xl overflow-hidden mb-4 flex-shrink-0">
-          {user.avatar ? (
+          {user.avatarUrl ? (
             <img
-              src={user.avatar}
+              src={user.avatarUrl}
               alt={user.username}
               className="w-full h-full object-cover"
             />
