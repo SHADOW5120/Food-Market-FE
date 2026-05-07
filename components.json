@@ -1,0 +1,21 @@
+{
+  "name": "food-market-fe",
+  "path": "components/ui/shadcn",
+  "components": [
+    "button",
+    "input",
+    "card",
+    "dialog",
+    "dropdown-menu",
+    "toast"
+  ],
+  "dependencies": [
+    "@radix-ui/react-dialog",
+    "@radix-ui/react-dropdown-menu",
+    "@radix-ui/react-slot",
+    "class-variance-authority",
+    "clsx",
+    "tailwind-merge",
+    "react-hot-toast"
+  ]
+}

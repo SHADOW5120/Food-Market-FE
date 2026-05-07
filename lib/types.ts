@@ -9,7 +9,7 @@ export interface User {
   username: string;
   email: string;
   phone?: string;
-  avatar?: string;
+  avatarUrl?: string;
   role: UserRole;
   createdAt?: string;
   updatedAt?: string;
@@ -18,7 +18,7 @@ export interface User {
 export interface UpdateProfilePayload {
   username?: string;
   phone?: string;
-  avatar?: string;
+  avatarUrl?: string;
 }
 
 export interface ChangePasswordPayload {

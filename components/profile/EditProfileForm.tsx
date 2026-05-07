@@ -63,10 +63,32 @@ export function EditProfileForm({ user, onSuccess, onError }: EditProfileFormPro
     try {
       let updatedUserData: User = user;
 
+      // Upload avatar if provided
+      if (avatarFile) {
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', avatarFile);
+
+        const avatarResponse = await uploadAvatar(avatarFile);
+
+        if (!avatarResponse.success) {
+          onError(avatarResponse.message || 'Failed to upload avatar');
+          setIsLoading(false);
+          return;
+        }
+
+        if (avatarResponse.data?.url) {
+          updatedUserData = {
+            ...updatedUserData,
+            avatarUrl: avatarResponse.data.url,
+          };
+        }
+      }
+
       // Update profile
       const profileResponse = await updateProfile({
         username: formData.username,
         phone: formData.phone,
+        avatarUrl: updatedUserData.avatarUrl,
       });
 
       if (!profileResponse.success) {
@@ -79,19 +101,7 @@ export function EditProfileForm({ user, onSuccess, onError }: EditProfileFormPro
         updatedUserData = profileResponse.data.user;
       }
 
-      // Upload avatar if provided
-      if (avatarFile) {
-        const avatarResponse = await uploadAvatar(avatarFile);
-        if (!avatarResponse.success) {
-          onError(avatarResponse.error || 'Failed to upload avatar');
-          setIsLoading(false);
-          return;
-        }
-
-        if (avatarResponse.data?.url) {
-          updatedUserData = { ...updatedUserData, avatar: avatarResponse.data.url };
-        }
-      }
+      
 
       setSuccessMessage('Profile updated successfully!');
       setHasChanges(false);
@@ -127,7 +137,7 @@ export function EditProfileForm({ user, onSuccess, onError }: EditProfileFormPro
         <div className="border-b border-gray-200 pb-8">
           <h2 className="text-lg font-bold text-gray-900 mb-6">Profile Picture</h2>
           <AvatarUpload
-            currentAvatar={user.avatar}
+            currentAvatar={user.avatarUrl}
             username={user.username}
             onAvatarChange={handleAvatarChange}
             isLoading={isLoading}

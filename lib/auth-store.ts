@@ -17,6 +17,7 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
   setIntendedRoute: (route: string | null) => void;
   initializeAuth: () => Promise<void>;
+  refetchUserProfile: () => Promise<User | null>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -145,6 +146,41 @@ export const useAuthStore = create<AuthState>()(
           console.error('Failed to fetch user info:', error);
           get().logout();
         }
+      },
+
+      refetchUserProfile: async () => {
+        const accessToken = get().accessToken;
+        const validToken = accessToken && accessToken !== 'null' ? accessToken : null;
+
+        if (!validToken) {
+          return null;
+        }
+
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api'}/user/me`, {
+            headers: {
+              Authorization: `Bearer ${validToken}`,
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.data) {
+              const user = data.data;
+              set({
+                user,
+                role: user.role,
+                isAuthenticated: true,
+              });
+              return user;
+            }
+          } else if (response.status === 401) {
+            get().logout();
+          }
+        } catch (error) {
+          console.error('Failed to refetch user profile:', error);
+        }
+        return null;
       },
     }),
     {

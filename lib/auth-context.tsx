@@ -16,6 +16,7 @@ interface AuthContextType {
   setUser: (user: User | null) => void;
   updateUser: (updatedUser: Partial<User>) => void;
   setIntendedRoute: (route: string | null) => void;
+  refetchUserProfile: () => Promise<User | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -39,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser: store.setUser,
     updateUser: store.updateUser,
     setIntendedRoute: store.setIntendedRoute,
+    refetchUserProfile: store.refetchUserProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

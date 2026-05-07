@@ -204,7 +204,7 @@ export const authApi = {
   },
 
   me: async (): Promise<ProfileResponse> => {
-    return apiClient.get('/auth/me', undefined, { authRequired: true });
+    return apiClient.get('/user/me', undefined, { authRequired: true });
   },
 };
 
@@ -289,7 +289,7 @@ export const profileApi = {
   updateProfile: async (data: UpdateProfilePayload) => apiClient.put<ApiResponse<{ user: User }>>('/user/profile', data, undefined, { authRequired: true }),
   uploadAvatar: async (file: File) => {
     const formData = new FormData();
-    formData.append('avatar', file);
+    formData.append('file', file);
     return apiClient.postForm<ApiResponse<{ url: string }>>('/user/avatar', formData, undefined, { authRequired: true });
   },
   changePassword: async (data: ChangePasswordPayload) => apiClient.put<ApiResponse<null>>('/user/change-password', data, undefined, { authRequired: true }),

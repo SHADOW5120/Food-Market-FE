@@ -22,10 +22,14 @@ export default function EditProfilePage() {
   }, [user, authLoading, router]);
 
   const handleSuccess = (updatedUser: User) => {
+    // Update the complete user object in auth store with latest data from API
     updateUser({
       username: updatedUser.username,
       phone: updatedUser.phone,
-      avatar: updatedUser.avatar,
+      avatarUrl: updatedUser.avatarUrl,
+      email: updatedUser.email,
+      id: updatedUser.id,
+      role: updatedUser.role,
     });
     
     // Redirect back to profile after 2 seconds

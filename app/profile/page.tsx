@@ -7,7 +7,7 @@ import { ProfileCard } from '@/components/profile/ProfileCard';
 import { getProfile } from '@/lib/api';
 
 export default function ProfilePage() {
-  const { user, logout, updateUser, isLoading: authLoading } = useAuth();
+  const { user, logout, refetchUserProfile, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -21,6 +21,15 @@ export default function ProfilePage() {
     }
     setIsLoading(false);
   }, [user, authLoading, router]);
+
+  useEffect(() => {
+    // Refetch latest user profile when page mounts to ensure fresh data
+    if (user && !authLoading) {
+      refetchUserProfile().catch((error) => {
+        console.error('Failed to refetch user profile:', error);
+      });
+    }
+  }, [authLoading]); // Only run once on mount
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
