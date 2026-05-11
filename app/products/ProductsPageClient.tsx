@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { ProductGrid } from '@/components/product/ProductGrid';
 import { SearchBar } from '@/components/filter/SearchBar';
@@ -67,49 +66,10 @@ export default function ProductsPageClient() {
     window.location.reload(); // Simple reload for now
   };
 
-  const { isAuthenticated, hasHydrated, logout } = useAuth();
-  const router = useRouter();
-
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
+  const { isAuthenticated, hasHydrated } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="text-3xl">🍽️</div>
-              <h1 className="text-2xl font-bold text-gray-900">Food Market</h1>
-            </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-gray-700 hover:text-orange-600 font-medium">
-                Home
-              </Link>
-              <Link href="/products" className="text-orange-600 hover:text-orange-700 font-medium">
-                Menu
-              </Link>
-              {hasHydrated && isAuthenticated ? (
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="text-gray-700 hover:text-red-600 font-medium"
-                >
-                  Logout
-                </button>
-              ) : (
-                <Link href="/login" className="text-gray-700 hover:text-orange-600 font-medium">
-                  Sign In
-                </Link>
-              )}
-            </nav>
-          </div>
-        </div>
-      </header>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">

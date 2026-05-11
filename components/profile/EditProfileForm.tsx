@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { User } from '@/lib/types';
+import { User, UserProfile } from '@/lib/types';
 import { Input } from '../auth/Input';
 import { Button } from '../auth/Button';
 import { AvatarUpload } from './AvatarUpload';
@@ -10,15 +10,15 @@ import { updateProfile, uploadAvatar } from '@/lib/api';
 import Link from 'next/link';
 
 interface EditProfileFormProps {
-  user: User;
-  onSuccess: (updatedUser: User) => void;
+  userProfile: UserProfile;
+  onSuccess: (updatedUserProfile: UserProfile) => void;
   onError: (error: string) => void;
 }
 
-export function EditProfileForm({ user, onSuccess, onError }: EditProfileFormProps) {
+export function EditProfileForm({ userProfile, onSuccess, onError }: EditProfileFormProps) {
   const [formData, setFormData] = useState({
-    username: user.username || '',
-    phone: user.phone || '',
+    username: userProfile.username || '',
+    phone: userProfile.phone || '',
   });
 
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -61,7 +61,7 @@ export function EditProfileForm({ user, onSuccess, onError }: EditProfileFormPro
     setIsLoading(true);
 
     try {
-      let updatedUserData: User = user;
+      let updatedUserData: UserProfile = userProfile;
 
       // Upload avatar if provided
       if (avatarFile) {
@@ -97,8 +97,8 @@ export function EditProfileForm({ user, onSuccess, onError }: EditProfileFormPro
         return;
       }
 
-      if (profileResponse.data?.user) {
-        updatedUserData = profileResponse.data.user;
+      if (profileResponse.data?.userProfile) {
+        updatedUserData = profileResponse.data.userProfile;
       }
 
       
@@ -137,8 +137,8 @@ export function EditProfileForm({ user, onSuccess, onError }: EditProfileFormPro
         <div className="border-b border-gray-200 pb-8">
           <h2 className="text-lg font-bold text-gray-900 mb-6">Profile Picture</h2>
           <AvatarUpload
-            currentAvatar={user.avatarUrl}
-            username={user.username}
+            currentAvatar={userProfile.avatarUrl}
+            username={userProfile.username}
             onAvatarChange={handleAvatarChange}
             isLoading={isLoading}
           />
@@ -155,7 +155,7 @@ export function EditProfileForm({ user, onSuccess, onError }: EditProfileFormPro
               </label>
               <input
                 type="email"
-                value={user.email}
+                value={userProfile.email}
                 disabled
                 className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600 font-medium cursor-not-allowed"
               />

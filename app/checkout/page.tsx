@@ -15,7 +15,7 @@ const TAX_RATE = 0.1;
 
 export default function CheckoutPage() {
   const { items, totalPrice, clearCart, isLoading: cartLoading } = useCart();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { appliedVoucher, discountAmount } = useVoucher();
   const router = useRouter();
 
@@ -109,29 +109,6 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="text-3xl">🍽️</div>
-              <h1 className="text-2xl font-bold text-gray-900">Food Market</h1>
-            </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-gray-700 hover:text-orange-600 font-medium">
-                Home
-              </Link>
-              <Link href="/products" className="text-gray-700 hover:text-orange-600 font-medium">
-                Menu
-              </Link>
-              <Link href="/cart" className="text-orange-600 hover:text-orange-700 font-medium">
-                Cart
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">

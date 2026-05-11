@@ -2,18 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useAuthStore } from '@/lib/auth-store';
-import toast from 'react-hot-toast';
+import { ActionMenu } from './ActionMenu';
 
 export function Navbar() {
-  const { user, isAuthenticated, role, logout, hasHydrated } = useAuthStore();
+  const { role, hasHydrated } = useAuthStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    toast.success('Logged out successfully');
-  };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-100">
@@ -33,44 +27,13 @@ export function Navbar() {
               Menu
             </Link>
 
-            {hasHydrated ? (
-              isAuthenticated ? (
-                <>
-                  {role === 'seller' && (
-                    <Link href="/seller" className="text-gray-700 hover:text-orange-600 font-medium">
-                      Seller Dashboard
-                    </Link>
-                  )}
-                  <Link href="/cart" className="text-gray-700 hover:text-orange-600 font-medium">
-                    Cart
-                  </Link>
-                  <Link href="/orders" className="text-gray-700 hover:text-orange-600 font-medium">
-                    Orders
-                  </Link>
-                  <Link href="/favorites" className="text-gray-700 hover:text-orange-600 font-medium">
-                    Favorites
-                  </Link>
-                  <Link href="/profile" className="text-gray-700 hover:text-orange-600 font-medium">
-                    Profile
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="text-gray-700 hover:text-red-600 font-medium"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" className="text-orange-600 hover:text-orange-700 font-medium">
-                    Sign In
-                  </Link>
-                  <Link href="/register" className="text-gray-700 hover:text-orange-600 font-medium">
-                    Sign Up
-                  </Link>
-                </>
-              )
-            ) : null}
+            {hasHydrated && role === 'seller' && (
+              <Link href="/seller" className="text-gray-700 hover:text-orange-600 font-medium">
+                Seller Dashboard
+              </Link>
+            )}
+
+            {hasHydrated && <ActionMenu />}
           </nav>
 
           {/* Mobile menu button */}
@@ -103,75 +66,21 @@ export function Navbar() {
                 Menu
               </Link>
 
-              {hasHydrated ? (
-                isAuthenticated ? (
-                  <>
-                    {role === 'seller' && (
-                      <Link
-                        href="/seller"
-                        className="text-gray-700 hover:text-orange-600 font-medium"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        Seller Dashboard
-                      </Link>
-                    )}
-                    <Link
-                      href="/cart"
-                      className="text-gray-700 hover:text-orange-600 font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Cart
-                    </Link>
-                    <Link
-                      href="/orders"
-                      className="text-gray-700 hover:text-orange-600 font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Orders
-                    </Link>
-                    <Link
-                      href="/favorites"
-                      className="text-gray-700 hover:text-orange-600 font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Favorites
-                    </Link>
-                    <Link
-                      href="/profile"
-                      className="text-gray-700 hover:text-orange-600 font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Profile
-                    </Link>
-                    <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsMenuOpen(false);
-                      }}
-                      className="text-left text-gray-700 hover:text-red-600 font-medium"
-                    >
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="/login"
-                      className="text-orange-600 hover:text-orange-700 font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="text-gray-700 hover:text-orange-600 font-medium"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      Sign Up
-                    </Link>
-                  </>
-                )
-              ) : null}
+              {hasHydrated && role === 'seller' && (
+                <Link
+                  href="/seller"
+                  className="text-gray-700 hover:text-orange-600 font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Seller Dashboard
+                </Link>
+              )}
+
+              {hasHydrated && (
+                <div className="border-t border-gray-100 pt-4 mt-4">
+                  <ActionMenu />
+                </div>
+              )}
             </nav>
           </div>
         )}

@@ -4,9 +4,11 @@ import { AuthProvider } from "@/lib/auth-context";
 import { FavoritesProvider } from "@/lib/favorites-context";
 import { CartProvider } from "@/lib/cart-context";
 import { OrderProvider } from "@/lib/order-context";
-import { VoucherProvider } from "@/lib/voucher-context";
-import { AppToaster } from "@/components/ui/shadcn/toast";
-import "./globals.css";
+import { VoucherProvider } from '@/lib/voucher-context';
+import { ThemeProvider } from '@/lib/useTheme';
+import { Navbar } from '@/components/ui/Navbar';
+import { AppToaster } from '@/components/ui/shadcn/toast';
+import './globals.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,18 +36,21 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <AuthProvider>
-          <FavoritesProvider>
-            <CartProvider>
-              <OrderProvider>
-                <VoucherProvider>
-                  {children}
-                  <AppToaster />
-                </VoucherProvider>
-              </OrderProvider>
-            </CartProvider>
-          </FavoritesProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <FavoritesProvider>
+              <CartProvider>
+                <OrderProvider>
+                  <VoucherProvider>
+                    <Navbar />
+                    <main className="flex-1">{children}</main>
+                    <AppToaster />
+                  </VoucherProvider>
+                </OrderProvider>
+              </CartProvider>
+            </FavoritesProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

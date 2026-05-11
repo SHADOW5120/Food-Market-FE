@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { EditProfileForm } from '@/components/profile/EditProfileForm';
 import { getProfile } from '@/lib/api';
-import { User } from '@/lib/types';
+import { UserProfile } from '@/lib/types';
 
 export default function EditProfilePage() {
   const { updateUser, isLoading: authLoading, isAuthenticated } = useAuth();
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUser] = useState<UserProfile | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,14 +40,14 @@ export default function EditProfilePage() {
     }
   }, [authLoading, isAuthenticated, router]);
 
-  const handleSuccess = (updatedUser: User) => {
+  const handleSuccess = (updatedUserProfile: UserProfile) => {
     updateUser({
-      username: updatedUser.username,
-      phone: updatedUser.phone,
-      avatarUrl: updatedUser.avatarUrl,
-      email: updatedUser.email,
-      id: updatedUser.id,
-      role: updatedUser.role,
+      username: updatedUserProfile.username,
+      phone: updatedUserProfile.phone,
+      avatarUrl: updatedUserProfile.avatarUrl,
+      email: updatedUserProfile.email,
+      id: updatedUserProfile.id,
+      role: updatedUserProfile.role,
     });
 
     setTimeout(() => {
@@ -72,7 +72,7 @@ export default function EditProfilePage() {
     );
   }
 
-  if (!user) {
+  if (!userProfile) {
     return null;
   }
 
@@ -97,7 +97,7 @@ export default function EditProfilePage() {
 
       {/* Edit Profile Form */}
       <EditProfileForm
-        user={user}
+        userProfile={userProfile}
         onSuccess={handleSuccess}
         onError={handleError}
       />

@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { CartList } from '@/components/cart/CartList';
 import { CartSummary } from '@/components/cart/CartSummary';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { Navbar } from '@/components/ui/Navbar';
 import { useCart } from '@/lib/cart-context';
 
 export default function CartPage() {
@@ -32,8 +31,6 @@ export default function CartPage() {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-white">
-        <Navbar />
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">

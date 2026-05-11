@@ -15,6 +15,21 @@ export interface User {
   updatedAt?: string;
 }
 
+export interface UserProfile {
+  id: string;
+  userId: string;
+  email: string;
+  username: string;
+  phone?: string;
+  avatarUrl?: string;
+  role: UserRole;
+  isActive: boolean;
+  bio?: string;
+  gender?: string;
+  birthday?: string;
+  createdAt?: string;
+}
+
 export interface UpdateProfilePayload {
   username?: string;
   phone?: string;
@@ -29,7 +44,7 @@ export interface ChangePasswordPayload {
 
 export interface ProfileResponse {
   success: boolean;
-  data?: User;
+  data?:  UserProfile;
   message?: string;
   error?: string;
 }

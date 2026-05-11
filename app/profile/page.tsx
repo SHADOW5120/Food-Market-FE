@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { ProfileCard } from '@/components/profile/ProfileCard';
 import { getProfile } from '@/lib/api';
-import { User } from '@/lib/types';
+import { UserProfile } from '@/lib/types';
 
 export default function ProfilePage() {
   const {logout, isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +27,8 @@ export default function ProfilePage() {
         const response = await getProfile();
 
         if (response.success && response.data) {
-          setUser(response.data);
+          console.log('Profile data:', response.data);
+          setUserProfile(response.data);
         }
       } catch (error) {
         console.error('Failed to fetch profile:', error);
@@ -68,7 +69,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (!user) {
+  if (!userProfile) {
     return null;
   }
 
@@ -94,7 +95,7 @@ export default function ProfilePage() {
 
       {/* Profile Card */}
       <ProfileCard
-        user={user}
+        userProfile={userProfile}
         onLogout={handleLogout}
         isLoggingOut={isLoggingOut}
       />

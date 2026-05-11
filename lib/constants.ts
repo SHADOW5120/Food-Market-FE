@@ -36,7 +36,7 @@ export const API_ENDPOINTS = {
     RESET_PASSWORD: '/auth/reset-password',
   },
   USERS: {
-    PROFILE: '/users/profile',
+    PROFILE: '/users/me',
     UPDATE: '/users/profile',
   },
 } as const;

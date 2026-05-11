@@ -24,6 +24,7 @@ import {
   CreateReviewResponse,
   UpdateReviewPayload,
   ApiResponse,
+  UserProfile,
 } from './types';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api';
@@ -204,21 +205,10 @@ export const authApi = {
   },
 };
 
-// User API functions
-export const userApi = {
-  updateProfile: async (data: any) => {
-    return apiClient.put('/user/profile', data, undefined, { authRequired: true });
-  },
-
-  changePassword: async (data: any) => {
-    return apiClient.put('/user/change-password', data, undefined, { authRequired: true });
-  },
-};
-
 // Profile API functions
 export const profileApi = {
   getProfile: async () => apiClient.get<ProfileResponse>('/user/me', undefined, { authRequired: true }),
-  updateProfile: async (data: UpdateProfilePayload) => apiClient.put<ApiResponse<{ user: User }>>('/user/profile', data, undefined, { authRequired: true }),
+  updateProfile: async (data: UpdateProfilePayload) => apiClient.put<ApiResponse<{ userProfile: UserProfile }>>('/user/profile', data, undefined, { authRequired: true }),
   uploadAvatar: async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);

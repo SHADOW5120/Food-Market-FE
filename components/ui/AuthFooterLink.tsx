@@ -11,20 +11,16 @@ export function AuthFooterLink() {
   }
 
   return isAuthenticated ? (
-    <li>
-      <button
-        type="button"
-        onClick={logout}
-        className="text-orange-500 hover:text-orange-400 font-medium"
-      >
-        Logout
-      </button>
-    </li>
+    <button
+      type="button"
+      onClick={logout}
+      className="text-orange-500 hover:text-orange-400 font-medium"
+    >
+      Logout
+    </button>
   ) : (
-    <li>
-      <Link href="/login" className="hover:text-white">
-        Sign In
-      </Link>
-    </li>
+    <Link href="/login" className="hover:text-white">
+      Sign In
+    </Link>
   );
 }

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useAuth } from '@/lib/auth-context';
 import { QuantitySelector } from '@/components/ui/QuantitySelector';
 import { AddToCartButton } from '@/components/ui/AddToCartButton';
 import { FavoriteButton } from '@/components/favorite/FavoriteButton';
@@ -15,7 +14,6 @@ import { Product } from '@/lib/types';
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { isAuthenticated, hasHydrated, logout } = useAuth();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -83,7 +81,7 @@ export default function ProductDetailPage() {
         <div className="text-center">
           <div className="text-6xl mb-4">🍽️</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Product Not Found</h1>
-          <p className="text-gray-600 mb-6">The product you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mb-6">The product you&apos;re looking for doesn&apos;t exist.</p>
           <Link
             href="/products"
             className="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors"
@@ -97,42 +95,6 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="text-3xl">🍽️</div>
-              <h1 className="text-2xl font-bold text-gray-900">Food Market</h1>
-            </Link>
-            <nav className="hidden md:flex items-center gap-6">
-              <Link href="/" className="text-gray-700 hover:text-orange-600 font-medium">
-                Home
-              </Link>
-              <Link href="/products" className="text-orange-600 hover:text-orange-700 font-medium">
-                Menu
-              </Link>
-              {hasHydrated && isAuthenticated ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    logout();
-                    router.push('/');
-                  }}
-                  className="text-gray-700 hover:text-red-600 font-medium"
-                >
-                  Logout
-                </button>
-              ) : (
-                <Link href="/login" className="text-gray-700 hover:text-orange-600 font-medium">
-                  Sign In
-                </Link>
-              )}
-            </nav>
-          </div>
-        </div>
-      </header>
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">
