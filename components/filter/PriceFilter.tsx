@@ -56,11 +56,11 @@ export function PriceFilter({ minPrice = 0, maxPrice = 100 }: PriceFilterProps) 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-gray-900">Price Range</h3>
+        <h3 className="font-semibold text-foreground">Price Range</h3>
         {hasActiveFilters && (
           <button
             onClick={handleClear}
-            className="text-sm text-orange-600 hover:text-orange-700 font-medium"
+            className="text-sm text-primary hover:text-primary font-medium"
           >
             Clear
           </button>
@@ -69,33 +69,34 @@ export function PriceFilter({ minPrice = 0, maxPrice = 100 }: PriceFilterProps) 
 
       <div className="space-y-3">
         <div>
-          <label className="block text-sm text-gray-600 mb-1">Min Price: ${priceRange.min}</label>
+          <label className="block text-sm text-muted-foreground mb-1">Min Price: ${priceRange.min}</label>
           <input
             type="range"
             min={minPrice}
             max={maxPrice}
             value={priceRange.min}
             onChange={(e) => handlePriceChange('min', parseInt(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-orange-500"
           />
         </div>
 
         <div>
-          <label className="block text-sm text-gray-600 mb-1">Max Price: ${priceRange.max}</label>
+          <label className="block text-sm text-muted-foreground mb-1">Max Price: ${priceRange.max}</label>
           <input
             type="range"
             min={minPrice}
             max={maxPrice}
             value={priceRange.max}
             onChange={(e) => handlePriceChange('max', parseInt(e.target.value))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-orange-500"
           />
         </div>
       </div>
 
-      <div className="text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
+      <div className="text-sm text-muted-foreground bg-muted px-3 py-2 rounded-lg">
         ${priceRange.min} - ${priceRange.max}
       </div>
     </div>
   );
 }
+

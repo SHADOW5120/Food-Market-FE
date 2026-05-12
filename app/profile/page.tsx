@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useAuth } from '@/lib/auth-context';
 import { useRouter } from 'next/navigation';
@@ -58,12 +58,12 @@ export default function ProfilePage() {
 
   if (isLoading || authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-primary to-primary flex items-center justify-center p-4">
         <div className="text-center">
           <div className="inline-block animate-spin">
-            <div className="w-12 h-12 border-4 border-orange-300 border-t-orange-600 rounded-full" />
+            <div className="w-12 h-12 border-4 border-[color:hsl(var(--border))] border-t-orange-600 rounded-full" />
           </div>
-          <p className="mt-4 text-gray-600 font-medium">Loading profile...</p>
+          <p className="mt-4 text-muted-foreground font-medium">Loading profile...</p>
         </div>
       </div>
     );
@@ -74,22 +74,22 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 p-4 md:p-8 animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-primary to-primary p-4 md:p-8 animate-fade-in">
       {/* Header */}
       <div className="mb-8">
         <button
           onClick={() => router.push('/')}
-          className="text-orange-600 hover:text-orange-700 font-semibold transition-colors flex items-center gap-2 mb-4"
+          className="text-primary hover:text-primary font-semibold transition-colors flex items-center gap-2 mb-4"
         >
-          ← Back to Home
+          â† Back to Home
         </button>
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900">My Profile</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground">My Profile</h1>
       </div>
 
       {/* Error Message */}
       {errorMessage && (
-        <div className="max-w-2xl mx-auto mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium">
-          ⚠️ {errorMessage}
+        <div className="max-w-2xl mx-auto mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm font-medium">
+          âš ï¸ {errorMessage}
         </div>
       )}
 
@@ -101,10 +101,10 @@ export default function ProfilePage() {
       />
 
       {/* Footer */}
-      <div className="mt-8 text-center text-sm text-gray-600">
+      <div className="mt-8 text-center text-sm text-muted-foreground">
         <p>
           Need help?{' '}
-          <a href="/help" className="text-orange-600 hover:text-orange-700 font-semibold">
+          <a href="/help" className="text-primary hover:text-primary font-semibold">
             Contact Support
           </a>
         </p>
@@ -112,3 +112,6 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+
+

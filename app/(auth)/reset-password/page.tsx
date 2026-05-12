@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 export const dynamic = 'force-dynamic';
 
@@ -128,13 +128,13 @@ function ResetPasswordContent() {
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {apiError && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
             {apiError}
           </div>
         )}
 
         {successMessage && (
-          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+          <div className="bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] text-success px-4 py-3 rounded-lg">
             {successMessage}
             <p className="text-sm mt-2">Redirecting to login...</p>
           </div>
@@ -147,7 +147,7 @@ function ResetPasswordContent() {
               label="New Password"
               name="password"
               type="password"
-              placeholder="••••••••"
+              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
               value={formData.password}
               onChange={handleChange}
               onKeyPress={handleKeyPress}
@@ -161,7 +161,7 @@ function ResetPasswordContent() {
               label="Confirm Password"
               name="confirmPassword"
               type="password"
-              placeholder="••••••••"
+              placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
               value={formData.confirmPassword}
               onChange={handleChange}
               onKeyPress={handleKeyPress}
@@ -181,11 +181,11 @@ function ResetPasswordContent() {
           </>
         )}
 
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-muted-foreground">
           Remember your password?{' '}
           <Link
             href="/login"
-            className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
+            className="text-accent hover:text-accent font-medium transition-colors"
           >
             Back to login
           </Link>
@@ -198,10 +198,10 @@ function ResetPasswordContent() {
 export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-primary">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     }>
@@ -209,3 +209,6 @@ export default function ResetPasswordPage() {
     </Suspense>
   );
 }
+
+
+

@@ -51,17 +51,17 @@ export function ReviewList({
     return (
       <div className={`space-y-4 ${className}`}>
         {Array.from({ length: 3 }).map((_, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 animate-pulse">
+          <div key={index} className="bg-card rounded-lg shadow-sm border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-6 animate-pulse">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+              <div className="w-10 h-10 bg-muted rounded-full"></div>
               <div className="space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-24"></div>
-                <div className="h-3 bg-gray-200 rounded w-16"></div>
+                <div className="h-4 bg-muted rounded w-24"></div>
+                <div className="h-3 bg-muted rounded w-16"></div>
               </div>
             </div>
             <div className="space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-muted rounded w-full"></div>
+              <div className="h-4 bg-muted rounded w-3/4"></div>
             </div>
           </div>
         ))}
@@ -73,8 +73,8 @@ export function ReviewList({
     return (
       <div className={`text-center py-12 ${className}`}>
         <div className="text-6xl mb-4">📝</div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">No reviews yet</h3>
-        <p className="text-gray-600">Be the first to share your experience with this product!</p>
+        <h3 className="text-xl font-semibold text-foreground mb-2">No reviews yet</h3>
+        <p className="text-muted-foreground">Be the first to share your experience with this product!</p>
       </div>
     );
   }
@@ -83,15 +83,15 @@ export function ReviewList({
     <div className={`space-y-6 ${className}`}>
       {/* Sort Controls */}
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-foreground">
           Reviews ({reviews.length})
         </h3>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">Sort by:</span>
+          <span className="text-sm text-muted-foreground">Sort by:</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
+            className="px-3 py-1 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary bg-card"
           >
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
@@ -130,3 +130,4 @@ export function ReviewList({
     </div>
   );
 }
+

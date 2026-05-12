@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -80,10 +80,10 @@ export default function CheckoutPage() {
 
   if (!isAuthenticated || cartLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-card flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading checkout...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading checkout...</p>
         </div>
       </div>
     );
@@ -91,14 +91,14 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-card flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">🛒</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h1>
-          <p className="text-gray-600 mb-6">Add some items to your cart before checking out.</p>
+          <div className="text-6xl mb-4">ðŸ›’</div>
+          <h1 className="text-2xl font-bold text-foreground mb-2">Your cart is empty</h1>
+          <p className="text-muted-foreground mb-6">Add some items to your cart before checking out.</p>
           <Link
             href="/products"
-            className="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary transition-colors"
           >
             Browse Products
           </Link>
@@ -108,48 +108,48 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2">
             <li>
-              <Link href="/" className="text-gray-500 hover:text-gray-700">
+              <Link href="/" className="text-muted-foreground hover:text-foreground">
                 Home
               </Link>
             </li>
             <li>
-              <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
             </li>
             <li>
-              <Link href="/cart" className="text-gray-500 hover:text-gray-700">
+              <Link href="/cart" className="text-muted-foreground hover:text-foreground">
                 Cart
               </Link>
             </li>
             <li>
-              <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
               </svg>
             </li>
-            <li className="text-gray-900 font-medium">Checkout</li>
+            <li className="text-foreground font-medium">Checkout</li>
           </ol>
         </nav>
 
         {/* Page Title */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Checkout</h1>
-          <p className="text-gray-600">Complete your order</p>
+          <h1 className="text-4xl font-bold text-foreground mb-2">Checkout</h1>
+          <p className="text-muted-foreground">Complete your order</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Order Items */}
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900">Order Items</h2>
+            <div className="bg-card rounded-xl border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] overflow-hidden">
+              <div className="p-6 border-b border-[color:hsl(var(--border))]">
+                <h2 className="text-xl font-bold text-foreground">Order Items</h2>
               </div>
               <div className="p-6">
                 <CartList />
@@ -157,57 +157,57 @@ export default function CheckoutPage() {
             </div>
 
             {/* Delivery Information */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Delivery Information</h2>
+            <div className="bg-card rounded-xl border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-6">
+              <h2 className="text-xl font-bold text-foreground mb-6">Delivery Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     Street Address
                   </label>
                   <input
                     type="text"
                     value={deliveryAddress.street}
                     onChange={(e) => setDeliveryAddress(prev => ({ ...prev, street: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="w-full px-4 py-3 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="123 Main Street"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     City
                   </label>
                   <input
                     type="text"
                     value={deliveryAddress.city}
                     onChange={(e) => setDeliveryAddress(prev => ({ ...prev, city: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="w-full px-4 py-3 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="New York"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     State
                   </label>
                   <input
                     type="text"
                     value={deliveryAddress.state}
                     onChange={(e) => setDeliveryAddress(prev => ({ ...prev, state: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="w-full px-4 py-3 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="NY"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-foreground mb-2">
                     ZIP Code
                   </label>
                   <input
                     type="text"
                     value={deliveryAddress.zip}
                     onChange={(e) => setDeliveryAddress(prev => ({ ...prev, zip: e.target.value }))}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    className="w-full px-4 py-3 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                     placeholder="10001"
                     required
                   />
@@ -215,13 +215,13 @@ export default function CheckoutPage() {
               </div>
 
               <div className="mt-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Special Instructions (Optional)
                 </label>
                 <textarea
                   value={specialInstructions}
                   onChange={(e) => setSpecialInstructions(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                  className="w-full px-4 py-3 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
                   rows={3}
                   placeholder="Any special delivery instructions..."
                 />
@@ -231,36 +231,36 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-50 rounded-xl border border-gray-200 p-6 sticky top-20">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Order Summary</h2>
+            <div className="bg-muted rounded-xl border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-6 sticky top-20">
+              <h2 className="text-xl font-bold text-foreground mb-6">Order Summary</h2>
 
-              <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
+              <div className="space-y-3 mb-6 pb-6 border-b border-[color:hsl(var(--border))]">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Subtotal ({items.length} items)</span>
-                  <span className="font-semibold text-gray-900">${subtotal.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Subtotal ({items.length} items)</span>
+                  <span className="font-semibold text-foreground">${subtotal.toFixed(2)}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Delivery Fee</span>
-                  <span className="font-semibold text-gray-900">${deliveryFee.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Delivery Fee</span>
+                  <span className="font-semibold text-foreground">${deliveryFee.toFixed(2)}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Tax (10%)</span>
-                  <span className="font-semibold text-gray-900">${tax.toFixed(2)}</span>
+                  <span className="text-muted-foreground">Tax (10%)</span>
+                  <span className="font-semibold text-foreground">${tax.toFixed(2)}</span>
                 </div>
 
                 {discountAmount > 0 && (
-                  <div className="flex items-center justify-between text-green-600">
+                  <div className="flex items-center justify-between text-success">
                     <span>Discount ({appliedVoucher?.code})</span>
                     <span className="font-semibold">-${discountAmount.toFixed(2)}</span>
                   </div>
                 )}
               </div>
 
-              <div className="mb-6 p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <p className="text-gray-600 text-sm mb-1">Total Amount</p>
-                <p className="text-3xl font-bold text-orange-600">${total.toFixed(2)}</p>
+              <div className="mb-6 p-4 bg-primary-50 rounded-lg border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]">
+                <p className="text-muted-foreground text-sm mb-1">Total Amount</p>
+                <p className="text-3xl font-bold text-primary">${total.toFixed(2)}</p>
               </div>
 
               {/* Voucher Section */}
@@ -274,8 +274,8 @@ export default function CheckoutPage() {
                 disabled={isProcessing || !deliveryAddress.street || !deliveryAddress.city || !deliveryAddress.state || !deliveryAddress.zip}
                 className={`w-full py-3 font-bold rounded-lg transition-colors mb-3 ${
                   isProcessing || !deliveryAddress.street || !deliveryAddress.city || !deliveryAddress.state || !deliveryAddress.zip
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-orange-600 text-white hover:bg-orange-700'
+                    ? 'bg-muted text-muted-foreground cursor-not-allowed'
+                    : 'bg-primary text-primary-foreground hover:bg-primary'
                 }`}
               >
                 {isProcessing ? 'Placing Order...' : 'Place Order'}
@@ -283,7 +283,7 @@ export default function CheckoutPage() {
 
               <Link
                 href="/cart"
-                className="block w-full py-3 font-semibold text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors text-center"
+                className="block w-full py-3 font-semibold text-foreground border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg hover:bg-muted transition-colors text-center"
               >
                 Back to Cart
               </Link>
@@ -294,3 +294,5 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+

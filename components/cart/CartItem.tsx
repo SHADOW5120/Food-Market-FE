@@ -40,9 +40,9 @@ export function CartItem({ item }: CartItemProps) {
   };
 
   return (
-    <div className="flex gap-4 py-4 border-b border-gray-200 hover:bg-gray-50 px-4 rounded-lg transition-colors">
+    <div className="flex gap-4 py-4 border-b border-[color:hsl(var(--border))] hover:bg-muted px-4 rounded-lg transition-colors">
       {/* Product Image */}
-      <div className="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+      <div className="flex-shrink-0 w-20 h-20 bg-muted rounded-lg overflow-hidden">
         {item.product.image ? (
           <img
             src={item.product.image}
@@ -50,7 +50,7 @@ export function CartItem({ item }: CartItemProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
             <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -67,13 +67,13 @@ export function CartItem({ item }: CartItemProps) {
       <div className="flex-1">
         <div className="flex items-start justify-between mb-2">
           <div>
-            <h3 className="font-semibold text-gray-900">{item.product.name}</h3>
-            <p className="text-sm text-gray-500">${item.product.price.toFixed(2)} each</p>
+            <h3 className="font-semibold text-foreground">{item.product.name}</h3>
+            <p className="text-sm text-muted-foreground">${item.product.price.toFixed(2)} each</p>
           </div>
           <button
             onClick={handleRemove}
             disabled={isRemoving}
-            className="text-red-500 hover:text-red-700 transition-colors disabled:opacity-50"
+            className="text-destructive hover:text-destructive transition-colors disabled:opacity-50"
             aria-label="Remove item"
           >
             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -85,11 +85,11 @@ export function CartItem({ item }: CartItemProps) {
         {/* Quantity Selector and Subtotal */}
         <div className="flex items-center justify-between mt-3">
           {/* Quantity Controls */}
-          <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+          <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
             <button
               onClick={() => handleQuantityChange(item.quantity - 1)}
               disabled={isUpdating || item.quantity <= 1}
-              className="p-1 hover:bg-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-1 hover:bg-card rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Decrease quantity"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@ export function CartItem({ item }: CartItemProps) {
             <button
               onClick={() => handleQuantityChange(item.quantity + 1)}
               disabled={isUpdating}
-              className="p-1 hover:bg-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-1 hover:bg-card rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Increase quantity"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,8 +113,8 @@ export function CartItem({ item }: CartItemProps) {
 
           {/* Subtotal */}
           <div className="text-right">
-            <p className="text-sm text-gray-600 mb-1">Subtotal</p>
-            <p className="text-lg font-bold text-orange-600">
+            <p className="text-sm text-muted-foreground mb-1">Subtotal</p>
+            <p className="text-lg font-bold text-primary">
               ${item.subtotal.toFixed(2)}
             </p>
           </div>
@@ -123,3 +123,5 @@ export function CartItem({ item }: CartItemProps) {
     </div>
   );
 }
+
+

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import * as React from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
@@ -16,7 +16,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/40 backdrop-blur-sm data-[state=open]:animate-fade-in',
+      'fixed inset-0 z-50 bg-muted/70 backdrop-blur-sm data-[state=open]:animate-fade-in',
       className
     )}
     {...props}
@@ -33,7 +33,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-1/2 top-1/2 z-50 w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-[1.75rem] border border-gray-200 bg-white p-6 shadow-2xl focus:outline-none data-[state=open]:animate-slide-up',
+        'fixed left-1/2 top-1/2 z-50 w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-[1.75rem] border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] bg-card p-6 shadow-2xl focus:outline-none data-[state=open]:animate-slide-up',
         className
       )}
       {...props}
@@ -56,7 +56,7 @@ const DialogTitle = React.forwardRef<
   React.ElementRef<'h2'>,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
-  <h2 ref={ref} className={cn('text-2xl font-semibold text-gray-900', className)} {...props} />
+  <h2 ref={ref} className={cn('text-2xl font-semibold text-foreground', className)} {...props} />
 ));
 DialogTitle.displayName = 'DialogTitle';
 
@@ -64,7 +64,7 @@ const DialogDescription = React.forwardRef<
   React.ElementRef<'p'>,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn('text-sm leading-6 text-gray-600', className)} {...props} />
+  <p ref={ref} className={cn('text-sm leading-6 text-muted-foreground', className)} {...props} />
 ));
 DialogDescription.displayName = 'DialogDescription';
 
@@ -79,3 +79,4 @@ export {
   DialogDescription,
   DialogClose,
 };
+

@@ -9,7 +9,7 @@ export function HeroCTA() {
   // Prevent hydration mismatch - don't render until auth is hydrated
   if (!hasHydrated) {
     return (
-      <div className="h-12 w-48 bg-gray-200 rounded-lg animate-pulse mx-auto" />
+      <div className="h-12 w-48 bg-muted rounded-lg animate-pulse mx-auto" />
     );
   }
 
@@ -17,7 +17,7 @@ export function HeroCTA() {
     return (
       <Link
         href="/products"
-        className="inline-flex items-center px-8 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors"
+        className="inline-flex items-center px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary transition-colors"
       >
         Browse Menu
         <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -31,7 +31,7 @@ export function HeroCTA() {
     <div className="flex flex-col sm:flex-row gap-4 justify-center">
       <Link
         href="/register"
-        className="inline-flex items-center px-8 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors"
+        className="inline-flex items-center px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary transition-colors"
       >
         Create Account
         <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,7 +40,7 @@ export function HeroCTA() {
       </Link>
       <Link
         href="/products"
-        className="inline-flex items-center px-8 py-3 bg-white text-orange-600 font-semibold rounded-lg border-2 border-orange-600 hover:bg-orange-50 transition-colors"
+        className="inline-flex items-center px-8 py-3 bg-card text-primary font-semibold rounded-lg border-2 border-accent hover:bg-primary/10 transition-colors"
       >
         Browse Menu
         <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -50,3 +50,5 @@ export function HeroCTA() {
     </div>
   );
 }
+
+

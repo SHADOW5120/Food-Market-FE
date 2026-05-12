@@ -35,7 +35,7 @@ export function ActionMenu() {
   const handleClose = () => setIsOpen(false);
 
   if (!hasHydrated) {
-    return <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse" />;
+    return <div className="w-10 h-10 bg-muted rounded-full animate-pulse" />;
   }
 
   const avatarUrl = user?.avatarUrl;
@@ -45,7 +45,7 @@ export function ActionMenu() {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen((open) => !open)}
-        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 shadow-sm hover:border-orange-300 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-400"
+        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-card border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] shadow-sm hover:border-accent transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
         aria-label={triggerLabel}
       >
         {isAuthenticated ? (
@@ -56,19 +56,19 @@ export function ActionMenu() {
             className="w-10 h-10"
           />
         ) : (
-          <svg className="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="w-6 h-6 text-muted-foreground" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 8c1.1 0 2-0.9 2-2s-0.9-2-2-2-2 0.9-2 2 0.9 2 2 2zm0 2c-1.1 0-2 0.9-2 2s0.9 2 2 2 2-0.9 2-2-0.9-2-2-2zm0 6c-1.1 0-2 0.9-2 2s0.9 2 2 2 2-0.9 2-2-0.9-2-2-2z" />
           </svg>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-white rounded-3xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+        <div className="absolute right-0 mt-2 w-56 bg-card rounded-3xl shadow-2xl border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] z-50 overflow-hidden">
           <ul className="py-2">
             {!isAuthenticated ? (
               <>
                 <li>
-                  <div className="px-4 py-2 text-xs text-gray-500 uppercase tracking-wide font-semibold">
+                  <div className="px-4 py-2 text-xs text-muted-foreground uppercase tracking-wide font-semibold">
                     Account
                   </div>
                 </li>
@@ -76,7 +76,7 @@ export function ActionMenu() {
                   <Link
                     href="/login"
                     onClick={handleClose}
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
+                    className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
                   >
                     🔑 Login
                   </Link>
@@ -85,19 +85,19 @@ export function ActionMenu() {
                   <Link
                     href="/register"
                     onClick={handleClose}
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
+                    className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
                   >
                     ✍️ Register
                   </Link>
                 </li>
                 <li>
-                  <div className="border-t border-gray-100 my-1"></div>
+                  <div className="border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] my-1"></div>
                 </li>
               </>
             ) : (
               <>
                 <li>
-                  <div className="px-4 py-2 text-xs text-gray-500 uppercase tracking-wide font-semibold">
+                  <div className="px-4 py-2 text-xs text-muted-foreground uppercase tracking-wide font-semibold">
                     Account
                   </div>
                 </li>
@@ -105,7 +105,7 @@ export function ActionMenu() {
                   <Link
                     href="/profile"
                     onClick={handleClose}
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
+                    className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
                   >
                     👤 Profile
                   </Link>
@@ -114,7 +114,7 @@ export function ActionMenu() {
                   <Link
                     href="/profile/edit"
                     onClick={handleClose}
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
+                    className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
                   >
                     ⚙️ Account Settings
                   </Link>
@@ -122,19 +122,19 @@ export function ActionMenu() {
                 <li>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600 transition-colors"
+                    className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-destructive transition-colors"
                   >
                     🚪 Logout
                   </button>
                 </li>
                 <li>
-                  <div className="border-t border-gray-100 my-1"></div>
+                  <div className="border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] my-1"></div>
                 </li>
               </>
             )}
 
             <li>
-              <div className="px-4 py-2 text-xs text-gray-500 uppercase tracking-wide font-semibold">
+              <div className="px-4 py-2 text-xs text-muted-foreground uppercase tracking-wide font-semibold">
                 Shopping
               </div>
             </li>
@@ -142,7 +142,7 @@ export function ActionMenu() {
               <Link
                 href="/cart"
                 onClick={handleClose}
-                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
+                className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
               >
                 🛒 Cart
               </Link>
@@ -151,7 +151,7 @@ export function ActionMenu() {
               <Link
                 href="/favorites"
                 onClick={handleClose}
-                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
+                className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
               >
                 ❤️ Favorites
               </Link>
@@ -160,17 +160,17 @@ export function ActionMenu() {
               <Link
                 href="/orders"
                 onClick={handleClose}
-                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
+                className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
               >
                 📦 Orders
               </Link>
             </li>
             <li>
-              <div className="border-t border-gray-100 my-1"></div>
+              <div className="border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] my-1"></div>
             </li>
 
             <li>
-              <div className="px-4 py-2 text-xs text-gray-500 uppercase tracking-wide font-semibold">
+              <div className="px-4 py-2 text-xs text-muted-foreground uppercase tracking-wide font-semibold">
                 Settings
               </div>
             </li>
@@ -179,7 +179,7 @@ export function ActionMenu() {
                 onClick={() => {
                   toggleTheme();
                 }}
-                className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
+                className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
               >
                 {theme === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode'}
               </button>
@@ -187,7 +187,7 @@ export function ActionMenu() {
             <li>
               <button
                 onClick={handleClose}
-                className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors"
+                className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
               >
                 ❓ Help & Support
               </button>

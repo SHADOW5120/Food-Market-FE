@@ -24,18 +24,18 @@ export function OrderCard({ order, className = '' }: OrderCardProps) {
 
   return (
     <Link href={`/orders/${order.id}`}>
-      <div className={`bg-white rounded-lg border border-gray-200 hover:border-orange-400 hover:shadow-md transition-all p-4 cursor-pointer ${className}`}>
+      <div className={`bg-card rounded-lg border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] hover:border-accent hover:shadow-md transition-all p-4 cursor-pointer ${className}`}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           {/* Order ID and Date */}
           <div className="flex-1">
-            <p className="text-sm text-gray-500">Order #{order.orderNumber}</p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-sm text-muted-foreground">Order #{order.orderNumber}</p>
+            <p className="text-xs text-muted-foreground mt-1">
               {formattedDate} at {formattedTime}
             </p>
           </div>
 
           {/* Items Count */}
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-muted-foreground">
             {order.items.length} item{order.items.length !== 1 ? 's' : ''}
           </div>
 
@@ -46,12 +46,12 @@ export function OrderCard({ order, className = '' }: OrderCardProps) {
 
           {/* Total Price */}
           <div className="text-right">
-            <p className="text-lg font-bold text-orange-600">${order.total.toFixed(2)}</p>
+            <p className="text-lg font-bold text-primary">${order.total.toFixed(2)}</p>
           </div>
         </div>
 
         {/* Mobile Summary */}
-        <div className="sm:hidden mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+        <div className="sm:hidden mt-3 pt-3 border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] text-xs text-muted-foreground">
           <p>
             {order.deliveryAddress.city}, {order.customer.phone}
           </p>
@@ -60,3 +60,5 @@ export function OrderCard({ order, className = '' }: OrderCardProps) {
     </Link>
   );
 }
+
+

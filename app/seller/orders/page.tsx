@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
@@ -112,7 +112,7 @@ export default function OrdersPage() {
     return (
       <SellerLayout>
         <div className="text-center py-12">
-          <p className="text-gray-600">Please log in as a seller</p>
+          <p className="text-muted-foreground">Please log in as a seller</p>
         </div>
       </SellerLayout>
     );
@@ -124,25 +124,25 @@ export default function OrdersPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Orders</h1>
-            <p className="text-gray-600 mt-1">{filteredOrders.length} order(s) found</p>
+            <h1 className="text-3xl font-bold text-foreground">Orders</h1>
+            <p className="text-muted-foreground mt-1">{filteredOrders.length} order(s) found</p>
           </div>
         </div>
 
         {/* Search and Filter */}
-        <div className="bg-white rounded-lg shadow border border-gray-200 p-4 flex gap-4 flex-wrap">
+        <div className="bg-card rounded-lg shadow border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-4 flex gap-4 flex-wrap">
           <input
             type="text"
             placeholder="Search by customer, email, or order #..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 min-w-xs px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none"
+            className="flex-1 min-w-xs px-4 py-2 border-2 border-[color:hsl(var(--border))] rounded-lg focus:border-success focus:outline-none"
           />
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none"
+            className="px-4 py-2 border-2 border-[color:hsl(var(--border))] rounded-lg focus:border-success focus:outline-none"
           >
             {statusOptions.map((status) => (
               <option key={status} value={status}>
@@ -154,76 +154,76 @@ export default function OrdersPage() {
 
         {/* Orders Table */}
         {filteredOrders.length === 0 ? (
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-12 text-center">
-            <p className="text-2xl mb-2">📭</p>
-            <p className="text-gray-600">No orders found</p>
+          <div className="bg-card rounded-lg shadow border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-12 text-center">
+            <p className="text-2xl mb-2">ðŸ“­</p>
+            <p className="text-muted-foreground">No orders found</p>
             {searchQuery || statusFilter !== 'All' ? (
               <button
                 onClick={() => {
                   setSearchQuery('');
                   setStatusFilter('All');
                 }}
-                className="text-green-600 hover:text-green-700 font-semibold mt-4"
+                className="text-success hover:text-success font-semibold mt-4"
               >
                 Clear filters
               </button>
             ) : null}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+          <div className="bg-card rounded-lg shadow border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-muted border-b border-[color:hsl(var(--border))]">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                       Order #
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                       Customer
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                       Items
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                       Total
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                       Status
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                       Date
                     </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
                       Actions
                     </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {filteredOrders.map((order) => (
-                    <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                    <tr key={order.id} className="hover:bg-muted transition-colors">
+                      <td className="px-6 py-4 text-sm font-semibold text-foreground">
                         {order.orderNumber}
                       </td>
                       <td className="px-6 py-4">
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{order.customer}</p>
-                          <p className="text-xs text-gray-500">{order.email}</p>
+                          <p className="text-sm font-medium text-foreground">{order.customer}</p>
+                          <p className="text-xs text-muted-foreground">{order.email}</p>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">{order.items} items</td>
-                      <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                      <td className="px-6 py-4 text-sm text-muted-foreground">{order.items} items</td>
+                      <td className="px-6 py-4 text-sm font-semibold text-foreground">
                         ${order.total.toFixed(2)}
                       </td>
                       <td className="px-6 py-4">
                         <StatusBadge status={order.status} />
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-600">
+                      <td className="px-6 py-4 text-sm text-muted-foreground">
                         {new Date(order.date).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 text-sm space-y-2">
                         <div className="flex gap-2">
                           <Link href={`/seller/orders/${order.id}`}>
-                            <button className="px-3 py-1 text-xs bg-green-600 hover:bg-green-700 text-white rounded font-semibold transition-colors">
+                            <button className="px-3 py-1 text-xs bg-success hover:bg-success text-success-foreground rounded font-semibold transition-colors">
                               View Details
                             </button>
                           </Link>
@@ -232,7 +232,7 @@ export default function OrdersPage() {
                               setSelectedOrder(order.id);
                               setNewStatus(order.status);
                             }}
-                            className="px-3 py-1 text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 rounded font-semibold transition-colors"
+                            className="px-3 py-1 text-xs bg-secondary hover:bg-secondary text-secondary rounded font-semibold transition-colors"
                           >
                             Update Status
                           </button>
@@ -240,16 +240,16 @@ export default function OrdersPage() {
 
                         {/* Status Update Modal */}
                         {selectedOrder === order.id && (
-                          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                            <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
-                              <h2 className="text-lg font-bold text-gray-900 mb-4">
+                          <div className="fixed inset-0 bg-muted/60 flex items-center justify-center z-50 p-4">
+                            <div className="bg-card rounded-lg shadow-lg p-6 max-w-sm w-full">
+                              <h2 className="text-lg font-bold text-foreground mb-4">
                                 Update Order Status
                               </h2>
 
                               <select
                                 value={newStatus}
                                 onChange={(e) => setNewStatus(e.target.value)}
-                                className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-green-500 focus:outline-none mb-4"
+                                className="w-full px-4 py-2 border-2 border-[color:hsl(var(--border))] rounded-lg focus:border-success focus:outline-none mb-4"
                               >
                                 <option value="pending">Pending</option>
                                 <option value="confirmed">Confirmed</option>
@@ -260,7 +260,7 @@ export default function OrdersPage() {
                               <div className="flex gap-3">
                                 <button
                                   onClick={() => handleStatusUpdate(order.id)}
-                                  className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors"
+                                  className="flex-1 px-4 py-2 bg-success hover:bg-success text-success-foreground rounded-lg font-semibold transition-colors"
                                 >
                                   Update
                                 </button>
@@ -269,7 +269,7 @@ export default function OrdersPage() {
                                     setSelectedOrder(null);
                                     setNewStatus('');
                                   }}
-                                  className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-semibold transition-colors"
+                                  className="flex-1 px-4 py-2 bg-muted hover:bg-muted text-foreground rounded-lg font-semibold transition-colors"
                                 >
                                   Cancel
                                 </button>
@@ -289,3 +289,7 @@ export default function OrdersPage() {
     </SellerLayout>
   );
 }
+
+
+
+

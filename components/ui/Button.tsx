@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { ButtonHTMLAttributes } from 'react';
 
@@ -20,9 +20,9 @@ export function Button({
   const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variantClasses = {
-    primary: 'bg-orange-500 hover:bg-orange-600 text-white focus:ring-orange-500',
-    secondary: 'bg-gray-500 hover:bg-gray-600 text-white focus:ring-gray-500',
-    outline: 'border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 focus:ring-orange-500',
+    primary: 'bg-primary hover:bg-accent text-primary-foreground focus:ring-primary',
+    secondary: 'bg-muted hover:bg-accent text-foreground focus:ring-primary',
+    outline: 'border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] bg-card hover:bg-muted text-foreground focus:ring-primary',
   };
 
   const sizeClasses = {
@@ -47,3 +47,5 @@ export function Button({
     </button>
   );
 }
+
+

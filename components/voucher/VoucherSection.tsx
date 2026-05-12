@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { VoucherInput } from './VoucherInput';
@@ -26,11 +26,11 @@ export function VoucherSection({
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Have a Voucher?</h3>
+        <h3 className="text-lg font-semibold text-foreground">Have a Voucher?</h3>
         {hasVouchers && !appliedVoucher && (
           <button
             onClick={() => setShowAllVouchers(!showAllVouchers)}
-            className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+            className="text-primary hover:text-primary text-sm font-medium"
           >
             {showAllVouchers ? 'Hide vouchers' : 'View available vouchers'}
           </button>
@@ -55,7 +55,7 @@ export function VoucherSection({
       {/* Available Vouchers */}
       {showAllVouchers && hasVouchers && !appliedVoucher && (
         <div>
-          <h4 className="text-md font-medium text-gray-900 mb-3">Available Vouchers</h4>
+          <h4 className="text-md font-medium text-foreground mb-3">Available Vouchers</h4>
           <VoucherList
             compact={compact}
             showEmptyState={false}
@@ -65,13 +65,13 @@ export function VoucherSection({
 
       {/* Quick Voucher Suggestions */}
       {!showAllVouchers && hasVouchers && !appliedVoucher && (
-        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+        <div className="bg-primary-50 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-orange-800">
-                💡 {activeVouchers.length} voucher{activeVouchers.length !== 1 ? 's' : ''} available
+              <p className="text-sm font-medium text-accent-800">
+                ðŸ’¡ {activeVouchers.length} voucher{activeVouchers.length !== 1 ? 's' : ''} available
               </p>
-              <p className="text-xs text-orange-700 mt-1">
+              <p className="text-xs text-primary mt-1">
                 Save up to {Math.max(...activeVouchers.map(v =>
                   v.discountType === 'fixed' ? v.discountValue : 50 // Assume max 50% for percentage
                 ))}{activeVouchers.some(v => v.discountType === 'percentage') ? '%' : '$'} off your order
@@ -79,9 +79,9 @@ export function VoucherSection({
             </div>
             <button
               onClick={() => setShowAllVouchers(true)}
-              className="text-orange-600 hover:text-orange-700 text-sm font-medium underline"
+              className="text-primary hover:text-primary text-sm font-medium underline"
             >
-              View all →
+              View all â†’
             </button>
           </div>
         </div>
@@ -89,3 +89,5 @@ export function VoucherSection({
     </div>
   );
 }
+
+

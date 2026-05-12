@@ -69,17 +69,17 @@ export default function ProductsPageClient() {
   const { isAuthenticated, hasHydrated } = useAuth();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Our Menu</h1>
-          <p className="text-gray-600">Discover delicious dishes from our curated collection</p>
+          <h1 className="text-3xl font-bold text-foreground mb-4">Our Menu</h1>
+          <p className="text-muted-foreground">Discover delicious dishes from our curated collection</p>
         </div>
 
         {/* Search Bar */}
         <div className="mb-8">
-          <Suspense fallback={<div className="h-12 bg-gray-200 rounded-lg animate-pulse max-w-md"></div>}>
+          <Suspense fallback={<div className="h-12 bg-muted rounded-lg animate-pulse max-w-md"></div>}>
             <SearchBar className="max-w-md" />
           </Suspense>
         </div>
@@ -87,8 +87,8 @@ export default function ProductsPageClient() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
           <aside className="lg:w-64 flex-shrink-0">
-            <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">Filters</h2>
+            <div className="bg-card rounded-lg shadow-sm p-6 sticky top-4">
+              <h2 className="text-lg font-semibold text-foreground mb-6">Filters</h2>
 
               <div className="space-y-6">
                 <CategoryFilter categories={categories} loading={loading} />
@@ -101,7 +101,7 @@ export default function ProductsPageClient() {
           <main className="flex-1">
             {/* Sort and Results Info */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-muted-foreground">
                 {loading ? (
                   'Loading...'
                 ) : (
@@ -121,7 +121,7 @@ export default function ProductsPageClient() {
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3 py-2 text-sm font-medium text-muted-foreground bg-card border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-md hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Previous
                   </button>
@@ -136,8 +136,8 @@ export default function ProductsPageClient() {
                         onClick={() => handlePageChange(pageNum)}
                         className={`px-3 py-2 text-sm font-medium rounded-md ${
                           pageNum === currentPage
-                            ? 'bg-orange-600 text-white'
-                            : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
+                            ? 'bg-primary text-primary-foreground'
+                            : 'text-muted-foreground bg-card border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] hover:bg-muted'
                         }`}
                       >
                         {pageNum}
@@ -148,7 +148,7 @@ export default function ProductsPageClient() {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3 py-2 text-sm font-medium text-muted-foreground bg-card border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-md hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Next
                   </button>
@@ -161,3 +161,4 @@ export default function ProductsPageClient() {
     </div>
   );
 }
+

@@ -34,9 +34,9 @@ export function CategoryFilter({ categories, loading = false }: CategoryFilterPr
   if (loading) {
     return (
       <div className="space-y-2">
-        <h3 className="font-semibold text-gray-900 mb-3">Categories</h3>
+        <h3 className="font-semibold text-foreground mb-3">Categories</h3>
         {Array.from({ length: 5 }).map((_, index) => (
-          <div key={index} className="h-8 bg-gray-200 rounded animate-pulse"></div>
+          <div key={index} className="h-8 bg-muted rounded animate-pulse"></div>
         ))}
       </div>
     );
@@ -44,14 +44,14 @@ export function CategoryFilter({ categories, loading = false }: CategoryFilterPr
 
   return (
     <div className="space-y-2">
-      <h3 className="font-semibold text-gray-900 mb-3">Categories</h3>
+      <h3 className="font-semibold text-foreground mb-3">Categories</h3>
       <div className="space-y-1">
         <button
           onClick={() => handleCategoryChange('')}
           className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
             selectedCategory === ''
-              ? 'bg-orange-100 text-orange-700 font-medium'
-              : 'text-gray-700 hover:bg-gray-100'
+              ? 'bg-muted text-primary font-medium'
+              : 'text-foreground hover:bg-muted'
           }`}
         >
           All Categories
@@ -62,8 +62,8 @@ export function CategoryFilter({ categories, loading = false }: CategoryFilterPr
             onClick={() => handleCategoryChange(category.id)}
             className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
               selectedCategory === category.id
-                ? 'bg-orange-100 text-orange-700 font-medium'
-                : 'text-gray-700 hover:bg-gray-100'
+                ? 'bg-muted text-primary font-medium'
+                : 'text-foreground hover:bg-muted'
             }`}
           >
             {category.name}
@@ -73,3 +73,4 @@ export function CategoryFilter({ categories, loading = false }: CategoryFilterPr
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -98,7 +98,7 @@ export default function RegisterPage() {
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {apiError && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
             {apiError}
           </div>
         )}
@@ -134,7 +134,7 @@ export default function RegisterPage() {
           label="Password"
           name="password"
           type="password"
-          placeholder="••••••••"
+          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
           value={formData.password}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
@@ -148,7 +148,7 @@ export default function RegisterPage() {
           label="Confirm Password"
           name="confirmNewPassword"
           type="password"
-          placeholder="••••••••"
+          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
           value={formData.confirmNewPassword}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
@@ -166,11 +166,11 @@ export default function RegisterPage() {
           {isLoading ? 'Creating account...' : 'Sign Up'}
         </Button>
 
-        <div className="text-center text-sm text-gray-600">
+        <div className="text-center text-sm text-muted-foreground">
           Already have an account?{' '}
           <Link
             href="/login"
-            className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
+            className="text-accent hover:text-accent font-medium transition-colors"
           >
             Sign in
           </Link>
@@ -179,3 +179,4 @@ export default function RegisterPage() {
     </AuthCard>
   );
 }
+

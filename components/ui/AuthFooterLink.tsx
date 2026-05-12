@@ -14,12 +14,12 @@ export function AuthFooterLink() {
     <button
       type="button"
       onClick={logout}
-      className="text-orange-500 hover:text-orange-400 font-medium"
+      className="text-accent hover:text-accent-foreground font-medium"
     >
       Logout
     </button>
   ) : (
-    <Link href="/login" className="hover:text-white">
+    <Link href="/login" className="hover:text-accent">
       Sign In
     </Link>
   );

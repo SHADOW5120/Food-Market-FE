@@ -101,7 +101,7 @@ export default function ProductFormPage() {
     return (
       <SellerLayout>
         <div className="text-center py-12">
-          <p className="text-gray-600">Please log in as a seller</p>
+          <p className="text-muted-foreground">Please log in as a seller</p>
         </div>
       </SellerLayout>
     );
@@ -114,38 +114,38 @@ export default function ProductFormPage() {
         <div>
           <button
             onClick={() => router.back()}
-            className="text-green-600 hover:text-green-700 font-semibold mb-4"
+            className="text-success hover:text-success font-semibold mb-4"
           >
             ← Back to Products
           </button>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-muted-foreground">
             {isEditing ? 'Edit Product' : 'Add New Product'}
           </h1>
         </div>
 
         {/* Error Messages */}
         {errors.submit && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">
+          <div className="bg-destructive border border-destructive/40 rounded-lg p-4 text-destructive text-sm">
             {errors.submit}
           </div>
         )}
 
         {successMessage && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-green-700 text-sm">
+          <div className="bg-success border border-success rounded-lg p-4 text-success text-sm">
             ✓ {successMessage}
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 border border-gray-200 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-card rounded-lg shadow p-6 border border-muted space-y-6">
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-muted-foreground mb-2">
               Product Image
             </label>
             <div className="flex gap-6">
               {/* Image Preview */}
-              <div className="w-32 h-32 rounded-lg bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+              <div className="w-32 h-32 rounded-lg bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
                 {imagePreview ? (
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
@@ -155,12 +155,12 @@ export default function ProductFormPage() {
 
               {/* Upload Area */}
               <div className="flex-1">
-                <label className="flex flex-col items-center justify-center px-6 py-10 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-green-500 hover:bg-green-50 transition-colors">
+                <label className="flex flex-col items-center justify-center px-6 py-10 border-2 border-dashed border-muted rounded-lg cursor-pointer hover:border-success hover:bg-success transition-colors">
                   <span className="text-3xl mb-2">📤</span>
-                  <span className="text-sm font-semibold text-gray-900">
+                  <span className="text-sm font-semibold text-muted-foreground">
                     Click to upload image
                   </span>
-                  <span className="text-xs text-gray-500">PNG, JPG up to 5MB</span>
+                  <span className="text-xs text-muted-foreground">PNG, JPG up to 5MB</span>
                   <input
                     type="file"
                     accept="image/*"
@@ -168,7 +168,7 @@ export default function ProductFormPage() {
                     className="hidden"
                   />
                 </label>
-                {errors.image && <p className="text-sm text-red-500 mt-2">{errors.image}</p>}
+                {errors.image && <p className="text-sm text-destructive mt-2">{errors.image}</p>}
               </div>
             </div>
           </div>
@@ -186,7 +186,7 @@ export default function ProductFormPage() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-muted-foreground mb-2">
               Description
             </label>
             <textarea
@@ -197,13 +197,13 @@ export default function ProductFormPage() {
               rows={4}
               className={`w-full px-4 py-3 rounded-lg border-2 transition-colors focus:outline-none ${
                 errors.description
-                  ? 'border-red-500 focus:border-red-500'
-                  : 'border-gray-200 focus:border-green-500'
+                  ? 'border-destructive focus:border-destructive'
+                  : 'border-muted focus:border-success'
               }`}
               disabled={isLoading}
             />
             {errors.description && (
-              <p className="text-sm text-red-500 mt-2">{errors.description}</p>
+              <p className="text-sm text-destructive mt-2">{errors.description}</p>
             )}
           </div>
 
@@ -223,14 +223,14 @@ export default function ProductFormPage() {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Category
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-green-500 focus:outline-none"
+                className="w-full px-4 py-3 rounded-lg border-2 border-muted focus:border-success focus:outline-none"
                 disabled={isLoading}
               >
                 {categories.map((cat) => (
@@ -244,7 +244,7 @@ export default function ProductFormPage() {
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <label className="block text-sm font-medium text-muted-foreground mb-2">Status</label>
             <div className="flex gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -255,7 +255,7 @@ export default function ProductFormPage() {
                   onChange={handleInputChange}
                   disabled={isLoading}
                 />
-                <span className="text-sm text-gray-700">Available</span>
+                <span className="text-sm text-muted-foreground">Available</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -266,7 +266,7 @@ export default function ProductFormPage() {
                   onChange={handleInputChange}
                   disabled={isLoading}
                 />
-                <span className="text-sm text-gray-700">Unavailable</span>
+                <span className="text-sm text-muted-foreground">Unavailable</span>
               </label>
             </div>
           </div>
@@ -280,7 +280,7 @@ export default function ProductFormPage() {
               type="button"
               onClick={() => router.back()}
               disabled={isLoading}
-              className="w-full px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-lg font-semibold transition-colors disabled:opacity-50"
+              className="w-full px-4 py-3 bg-muted hover:bg-accent text-muted-foreground rounded-lg font-semibold transition-colors disabled:opacity-50"
             >
               Cancel
             </button>

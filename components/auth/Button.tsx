@@ -20,9 +20,9 @@ export function Button({
   const baseStyles = 'py-3 px-4 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2';
 
   const variantStyles = {
-    primary: 'bg-orange-500 hover:bg-orange-600 text-white disabled:bg-orange-300',
-    secondary: 'bg-green-500 hover:bg-green-600 text-white disabled:bg-green-300',
-    outline: 'border-2 border-orange-500 text-orange-500 hover:bg-orange-50 disabled:opacity-50',
+    primary: 'bg-primary hover:bg-primary text-primary-foreground disabled:opacity-50',
+    secondary: 'bg-secondary hover:bg-secondary text-secondary-foreground disabled:opacity-50',
+    outline: 'border-2 border-primary text-primary hover:bg-muted disabled:opacity-50',
   };
 
   const widthStyle = fullWidth ? 'w-full' : '';

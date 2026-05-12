@@ -28,18 +28,18 @@ function FavoritesPageContent() {
   }, [loadFavorites]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Breadcrumb */}
         <nav className="flex mb-8" aria-label="Breadcrumb">
           <ol className="flex items-center space-x-2">
             <li>
-              <Link href="/" className="text-gray-500 hover:text-gray-700">
+              <Link href="/" className="text-muted-foreground hover:text-foreground">
                 Home
               </Link>
             </li>
             <li>
-              <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
                   d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
@@ -47,14 +47,14 @@ function FavoritesPageContent() {
                 />
               </svg>
             </li>
-            <li className="text-gray-900 font-medium">Favorites</li>
+            <li className="text-foreground font-medium">Favorites</li>
           </ol>
         </nav>
 
         {/* Page Title */}
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">My Favorites</h1>
-          <p className="text-gray-600 text-lg">
+          <h1 className="text-4xl font-bold text-foreground mb-3">My Favorites</h1>
+          <p className="text-muted-foreground text-lg">
             {favorites.length > 0
               ? `You have ${favorites.length} favorite item${favorites.length !== 1 ? 's' : ''}`
               : 'Your favorite products will appear here'}
@@ -69,13 +69,13 @@ function FavoritesPageContent() {
           <div className="mt-12 flex gap-4 justify-center">
             <Link
               href="/products"
-              className="px-8 py-3 bg-gray-100 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-8 py-3 bg-muted text-foreground font-semibold rounded-lg hover:bg-muted transition-colors"
             >
               Continue Shopping
             </Link>
             <button
               onClick={() => router.push('/products')}
-              className="px-8 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors"
+              className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary transition-colors"
             >
               View All Products
             </button>
@@ -93,3 +93,5 @@ export default function FavoritesPage() {
     </ProtectedRoute>
   );
 }
+
+

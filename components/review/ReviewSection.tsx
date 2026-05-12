@@ -158,16 +158,16 @@ export function ReviewSection({ productId, className = '' }: ReviewSectionProps)
     return (
       <div className={`space-y-8 ${className}`}>
         <div className="text-center">
-          <div className="h-8 bg-gray-200 rounded w-48 mx-auto mb-4 animate-pulse"></div>
-          <div className="h-4 bg-gray-200 rounded w-32 mx-auto animate-pulse"></div>
+          <div className="h-8 bg-muted rounded w-48 mx-auto mb-4 animate-pulse"></div>
+          <div className="h-4 bg-muted rounded w-32 mx-auto animate-pulse"></div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 animate-pulse">
-              <div className="h-6 bg-gray-200 rounded w-32 mb-4"></div>
+            <div className="bg-card rounded-lg shadow-sm border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-6 animate-pulse">
+              <div className="h-6 bg-muted rounded w-32 mb-4"></div>
               <div className="space-y-3">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="h-4 bg-gray-200 rounded"></div>
+                  <div key={i} className="h-4 bg-muted rounded"></div>
                 ))}
               </div>
             </div>
@@ -175,12 +175,12 @@ export function ReviewSection({ productId, className = '' }: ReviewSectionProps)
           <div className="lg:col-span-2">
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 animate-pulse">
-                  <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
-                  <div className="h-3 bg-gray-200 rounded w-24 mb-4"></div>
+                <div key={i} className="bg-card rounded-lg shadow-sm border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-6 animate-pulse">
+                  <div className="h-4 bg-muted rounded w-32 mb-2"></div>
+                  <div className="h-3 bg-muted rounded w-24 mb-4"></div>
                   <div className="space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-full"></div>
-                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-full"></div>
+                    <div className="h-4 bg-muted rounded w-3/4"></div>
                   </div>
                 </div>
               ))}
@@ -195,8 +195,8 @@ export function ReviewSection({ productId, className = '' }: ReviewSectionProps)
     return (
       <div className={`text-center py-12 ${className}`}>
         <div className="text-6xl mb-4">❌</div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Failed to load reviews</h3>
-        <p className="text-gray-600">Please try again later.</p>
+        <h3 className="text-xl font-semibold text-foreground mb-2">Failed to load reviews</h3>
+        <p className="text-muted-foreground">Please try again later.</p>
       </div>
     );
   }
@@ -205,10 +205,10 @@ export function ReviewSection({ productId, className = '' }: ReviewSectionProps)
     <div className={`space-y-8 ${className}`}>
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Customer Reviews</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-2">Customer Reviews</h2>
         <div className="flex items-center justify-center gap-4">
           <RatingStars rating={reviewsData.averageRating} size="lg" />
-          <span className="text-lg text-gray-600">
+          <span className="text-lg text-muted-foreground">
             Based on {reviewsData.totalReviews} review{reviewsData.totalReviews !== 1 ? 's' : ''}
           </span>
         </div>
@@ -217,8 +217,8 @@ export function ReviewSection({ productId, className = '' }: ReviewSectionProps)
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Rating Summary & Breakdown */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Rating Breakdown</h3>
+          <div className="bg-card rounded-lg shadow-sm border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">Rating Breakdown</h3>
             <RatingBreakdown
               breakdown={reviewsData.ratingBreakdown}
               totalReviews={reviewsData.totalReviews}
@@ -281,3 +281,4 @@ export function ReviewSection({ productId, className = '' }: ReviewSectionProps)
     </div>
   );
 }
+

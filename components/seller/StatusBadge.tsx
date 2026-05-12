@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 interface StatusBadgeProps {
   status: 'pending' | 'confirmed' | 'delivering' | 'completed' | 'cancelled' | 'available' | 'unavailable';
@@ -6,13 +6,13 @@ interface StatusBadgeProps {
 }
 
 const statusConfig = {
-  pending: { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pending' },
-  confirmed: { bg: 'bg-blue-100', text: 'text-blue-800', label: 'Confirmed' },
-  delivering: { bg: 'bg-purple-100', text: 'text-purple-800', label: 'Delivering' },
-  completed: { bg: 'bg-green-100', text: 'text-green-800', label: 'Completed' },
-  cancelled: { bg: 'bg-red-100', text: 'text-red-800', label: 'Cancelled' },
-  available: { bg: 'bg-green-100', text: 'text-green-800', label: 'Available' },
-  unavailable: { bg: 'bg-gray-100', text: 'text-gray-800', label: 'Unavailable' },
+  pending: { bg: 'bg-warning/20', text: 'text-warning', label: 'Pending' },
+  confirmed: { bg: 'bg-secondary/20', text: 'text-secondary-foreground', label: 'Confirmed' },
+  delivering: { bg: 'bg-accent/20', text: 'text-accent', label: 'Delivering' },
+  completed: { bg: 'bg-success', text: 'text-success', label: 'Completed' },
+  cancelled: { bg: 'bg-destructive', text: 'text-destructive', label: 'Cancelled' },
+  available: { bg: 'bg-success', text: 'text-success', label: 'Available' },
+  unavailable: { bg: 'bg-muted', text: 'text-foreground', label: 'Unavailable' },
 };
 
 export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
@@ -24,3 +24,6 @@ export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
     </span>
   );
 }
+
+
+

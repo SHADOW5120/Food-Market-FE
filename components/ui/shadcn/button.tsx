@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
@@ -6,13 +6,13 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-full font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center rounded-full font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
-        default: 'bg-orange-600 text-white hover:bg-orange-700',
-        secondary: 'bg-white border border-gray-200 text-gray-800 hover:bg-gray-50',
-        ghost: 'bg-transparent text-gray-700 hover:bg-gray-100',
+        default: 'bg-primary text-primary-foreground hover:bg-accent',
+        secondary: 'bg-card border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] text-foreground hover:bg-muted',
+        ghost: 'bg-transparent text-foreground hover:bg-muted',
       },
       size: {
         sm: 'h-9 px-3 text-sm',
@@ -48,3 +48,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = 'Button';
 
 export { Button, buttonVariants };
+
+
+

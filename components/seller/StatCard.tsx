@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 interface StatCardProps {
   title: string;
@@ -12,26 +12,26 @@ export function StatCard({ title, value, icon, trend, onClick }: StatCardProps) 
   return (
     <div
       onClick={onClick}
-      className={`bg-white rounded-lg shadow p-6 border border-gray-200 ${
-        onClick ? 'cursor-pointer hover:shadow-lg hover:border-green-300 transition-all' : ''
+      className={`bg-card rounded-lg shadow p-6 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] ${
+        onClick ? 'cursor-pointer hover:shadow-lg hover:border-success transition-all' : ''
       }`}
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-gray-600 mb-1">{title}</p>
-          <p className="text-2xl md:text-3xl font-bold text-gray-900">{value}</p>
+          <p className="text-sm text-muted-foreground mb-1">{title}</p>
+          <p className="text-2xl md:text-3xl font-bold text-foreground">{value}</p>
           {trend && (
             <div className="mt-2 text-xs font-semibold">
               <span
                 className={
                   trend.direction === 'up'
-                    ? 'text-green-600'
-                    : 'text-red-600'
+                    ? 'text-success'
+                    : 'text-destructive'
                 }
               >
-                {trend.direction === 'up' ? '↑' : '↓'} {Math.abs(trend.value)}%
+                {trend.direction === 'up' ? 'â†‘' : 'â†“'} {Math.abs(trend.value)}%
               </span>
-              <span className="text-gray-500 ml-1">this month</span>
+              <span className="text-muted-foreground ml-1">this month</span>
             </div>
           )}
         </div>
@@ -40,3 +40,7 @@ export function StatCard({ title, value, icon, trend, onClick }: StatCardProps) 
     </div>
   );
 }
+
+
+
+

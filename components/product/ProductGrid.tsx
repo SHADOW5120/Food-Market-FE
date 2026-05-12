@@ -10,18 +10,18 @@ interface ProductGridProps {
 
 function ProductCardSkeleton() {
   return (
-    <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 animate-pulse">
-      <div className="aspect-square bg-gray-200"></div>
+    <div className="bg-card rounded-xl shadow-sm overflow-hidden border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] animate-pulse">
+      <div className="aspect-square bg-muted"></div>
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
-          <div className="h-5 bg-gray-200 rounded w-3/4"></div>
-          <div className="h-6 bg-gray-200 rounded w-16"></div>
+          <div className="h-5 bg-muted rounded w-3/4"></div>
+          <div className="h-6 bg-muted rounded w-16"></div>
         </div>
-        <div className="h-4 bg-gray-200 rounded w-full mb-1"></div>
-        <div className="h-4 bg-gray-200 rounded w-2/3 mb-3"></div>
+        <div className="h-4 bg-muted rounded w-full mb-1"></div>
+        <div className="h-4 bg-muted rounded w-2/3 mb-3"></div>
         <div className="flex items-center justify-between">
-          <div className="h-5 bg-gray-200 rounded w-20"></div>
-          <div className="h-5 bg-gray-200 rounded w-5"></div>
+          <div className="h-5 bg-muted rounded w-20"></div>
+          <div className="h-5 bg-muted rounded w-5"></div>
         </div>
       </div>
     </div>
@@ -43,8 +43,8 @@ export function ProductGrid({ products, loading = false }: ProductGridProps) {
     return (
       <div className="text-center py-12">
         <div className="text-6xl mb-4">🍽️</div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
-        <p className="text-gray-600">Try adjusting your filters or search terms.</p>
+        <h3 className="text-xl font-semibold text-foreground mb-2">No products found</h3>
+        <p className="text-muted-foreground">Try adjusting your filters or search terms.</p>
       </div>
     );
   }
@@ -57,3 +57,4 @@ export function ProductGrid({ products, loading = false }: ProductGridProps) {
     </div>
   );
 }
+

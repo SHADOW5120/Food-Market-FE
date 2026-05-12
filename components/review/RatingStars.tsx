@@ -68,10 +68,10 @@ export function RatingStars({
             <svg
               className={`${sizeClasses[size]} ${
                 isFilled
-                  ? 'text-yellow-400 fill-current'
+                  ? 'text-warning fill-current'
                   : isPartial
-                  ? 'text-yellow-400 fill-current'
-                  : 'text-gray-300 fill-current'
+                  ? 'text-warning fill-current'
+                  : 'text-muted-foreground fill-current'
               } transition-colors`}
               viewBox="0 0 24 24"
             >
@@ -79,7 +79,7 @@ export function RatingStars({
             </svg>
             {isPartial && (
               <svg
-                className={`absolute top-0 left-0 ${sizeClasses[size]} text-gray-300 fill-current`}
+                className={`absolute top-0 left-0 ${sizeClasses[size]} text-muted-foreground fill-current`}
                 viewBox="0 0 24 24"
                 style={{ clipPath: 'inset(0 50% 0 0)' }}
               >
@@ -89,9 +89,10 @@ export function RatingStars({
           </button>
         );
       })}
-      <span className="ml-2 text-sm text-gray-600 font-medium">
+      <span className="ml-2 text-sm text-muted-foreground font-medium">
         {rating.toFixed(1)}
       </span>
     </div>
   );
 }
+

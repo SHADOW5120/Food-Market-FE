@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
@@ -106,15 +106,15 @@ export function ReviewForm({
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-100 p-6 ${className}`}>
-      <h3 className="text-lg font-semibold text-gray-900 mb-6">
+    <div className={`bg-card rounded-lg shadow-sm border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-6 ${className}`}>
+      <h3 className="text-lg font-semibold text-foreground mb-6">
         {isEditing ? 'Edit Your Review' : 'Write a Review'}
       </h3>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Rating */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             Rating *
           </label>
           <RatingStars
@@ -124,13 +124,13 @@ export function ReviewForm({
             size="lg"
           />
           {errors.rating && (
-            <p className="mt-1 text-sm text-red-600">{errors.rating}</p>
+            <p className="mt-1 text-sm text-destructive">{errors.rating}</p>
           )}
         </div>
 
         {/* Title */}
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="title" className="block text-sm font-medium text-foreground mb-2">
             Review Title (Optional)
           </label>
           <input
@@ -139,14 +139,14 @@ export function ReviewForm({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Summarize your experience..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            className="w-full px-3 py-2 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
             maxLength={100}
           />
         </div>
 
         {/* Content */}
         <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="content" className="block text-sm font-medium text-foreground mb-2">
             Your Review *
           </label>
           <textarea
@@ -155,14 +155,14 @@ export function ReviewForm({
             onChange={(e) => setContent(e.target.value)}
             placeholder="Share your experience with this product..."
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-none"
+            className="w-full px-3 py-2 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-primary focus:border-primary resize-none"
             maxLength={2000}
           />
           <div className="flex justify-between mt-1">
             {errors.content && (
-              <p className="text-sm text-red-600">{errors.content}</p>
+              <p className="text-sm text-destructive">{errors.content}</p>
             )}
-            <p className="text-sm text-gray-500 ml-auto">
+            <p className="text-sm text-muted-foreground ml-auto">
               {content.length}/2000 characters
             </p>
           </div>
@@ -170,13 +170,13 @@ export function ReviewForm({
 
         {/* Image Upload */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-foreground mb-2">
             Photos (Optional)
           </label>
           <div className="flex flex-wrap gap-2 mb-3">
             {images.map((image, index) => (
               <div key={index} className="relative">
-                <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                <div className="w-20 h-20 bg-muted rounded-lg overflow-hidden">
                   <Image
                     src={URL.createObjectURL(image)}
                     alt={`Upload preview ${index + 1}`}
@@ -188,7 +188,7 @@ export function ReviewForm({
                 <button
                   type="button"
                   onClick={() => removeImage(index)}
-                  className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                  className="absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center hover:bg-destructive transition-colors"
                 >
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -200,9 +200,9 @@ export function ReviewForm({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center hover:border-orange-400 transition-colors"
+                className="w-20 h-20 border-2 border-dashed border-[color:hsl(var(--border))] rounded-lg flex items-center justify-center hover:border-accent transition-colors"
               >
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
               </button>
@@ -216,7 +216,7 @@ export function ReviewForm({
             onChange={handleImageUpload}
             className="hidden"
           />
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Upload up to 5 images (max 5MB each)
           </p>
         </div>
@@ -246,3 +246,5 @@ export function ReviewForm({
     </div>
   );
 }
+
+

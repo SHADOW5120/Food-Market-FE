@@ -55,7 +55,7 @@ export default function CategoryTabs({
   }, [categories, activeCategory, onCategoryChange]);
 
   return (
-    <div className="sticky top-0 bg-white border-b z-10">
+    <div className="sticky top-0 bg-card border-b z-10">
       <div
         ref={tabsRef}
         className="flex space-x-1 p-4 overflow-x-auto scrollbar-hide"
@@ -67,8 +67,8 @@ export default function CategoryTabs({
             onClick={() => scrollToCategory(category.id)}
             className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
               activeCategory === category.id
-                ? 'bg-orange-500 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-foreground hover:bg-muted'
             }`}
           >
             {category.name}
@@ -78,3 +78,4 @@ export default function CategoryTabs({
     </div>
   );
 }
+

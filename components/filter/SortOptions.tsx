@@ -43,11 +43,11 @@ export function SortOptions({ className = "" }: SortOptionsProps) {
 
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <span className="text-sm text-gray-600 font-medium">Sort by:</span>
+      <span className="text-sm text-muted-foreground font-medium">Sort by:</span>
       <select
         value={selectedSort}
         onChange={(e) => handleSortChange(e.target.value as SortOption)}
-        className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white text-sm"
+        className="px-3 py-2 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg focus:ring-2 focus:ring-primary focus:border-primary bg-card text-sm"
       >
         {sortOptions.map((option) => (
           <option key={option.value} value={option.value}>
@@ -58,3 +58,4 @@ export function SortOptions({ className = "" }: SortOptionsProps) {
     </div>
   );
 }
+

@@ -13,13 +13,13 @@ export function CartList() {
         {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className="flex gap-4 py-4 border-b border-gray-200 animate-pulse"
+            className="flex gap-4 py-4 border-b border-[color:hsl(var(--border))] animate-pulse"
           >
-            <div className="w-20 h-20 bg-gray-200 rounded-lg"></div>
+            <div className="w-20 h-20 bg-muted rounded-lg"></div>
             <div className="flex-1 space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              <div className="h-3 bg-gray-200 rounded w-1/4"></div>
+              <div className="h-4 bg-muted rounded w-3/4"></div>
+              <div className="h-4 bg-muted rounded w-1/2"></div>
+              <div className="h-3 bg-muted rounded w-1/4"></div>
             </div>
           </div>
         ))}
@@ -31,11 +31,11 @@ export function CartList() {
     return (
       <div className="text-center py-12">
         <div className="text-6xl mb-4">🛒</div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">Your Cart is Empty</h3>
-        <p className="text-gray-600 mb-6">Looks like you haven't added any items yet</p>
+        <h3 className="text-xl font-semibold text-foreground mb-2">Your Cart is Empty</h3>
+        <p className="text-muted-foreground mb-6">Looks like you haven't added any items yet</p>
         <Link
           href="/products"
-          className="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors"
+          className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary transition-colors"
         >
           Continue Shopping
         </Link>
@@ -51,3 +51,5 @@ export function CartList() {
     </div>
   );
 }
+
+

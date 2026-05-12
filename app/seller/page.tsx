@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -54,7 +54,7 @@ export default function SellerDashboard() {
     return (
       <SellerLayout>
         <div className="text-center py-12">
-          <p className="text-gray-600">Please log in as a seller</p>
+          <p className="text-muted-foreground">Please log in as a seller</p>
         </div>
       </SellerLayout>
     );
@@ -65,8 +65,8 @@ export default function SellerDashboard() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {user.username}!</p>
+          <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground">Welcome back, {user.username}!</p>
         </div>
 
         {/* Stats Grid */}
@@ -74,101 +74,101 @@ export default function SellerDashboard() {
           <StatCard
             title="Total Orders"
             value={stats.totalOrders}
-            icon="🛒"
+            icon="ðŸ›’"
             trend={{ value: 12, direction: 'up' }}
             onClick={() => router.push('/seller/orders')}
           />
           <StatCard
             title="Revenue"
             value={stats.revenue}
-            icon="💰"
+            icon="ðŸ’°"
             trend={{ value: 8, direction: 'up' }}
           />
           <StatCard
             title="Products"
             value={stats.totalProducts}
-            icon="📦"
+            icon="ðŸ“¦"
             onClick={() => router.push('/seller/products')}
           />
           <StatCard
             title="Avg Rating"
             value={stats.avgRating}
-            icon="⭐"
+            icon="â­"
             trend={{ value: 2, direction: 'up' }}
           />
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
+        <div className="bg-card rounded-lg shadow p-6 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]">
+          <h2 className="text-lg font-bold text-foreground mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Button
               variant="primary"
               onClick={handleAddProduct}
               className="text-sm"
             >
-              ➕ Add Product
+              âž• Add Product
             </Button>
             <Link href="/seller/products" className="block">
-              <button className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-semibold transition-colors">
-                📦 Manage Products
+              <button className="w-full px-4 py-3 bg-secondary hover:bg-secondary text-secondary-foreground rounded-lg font-semibold transition-colors">
+                ðŸ“¦ Manage Products
               </button>
             </Link>
             <Link href="/seller/orders" className="block">
-              <button className="w-full px-4 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-semibold transition-colors">
-                🛒 View Orders
+              <button className="w-full px-4 py-3 bg-secondary hover:bg-secondary text-secondary-foreground rounded-lg font-semibold transition-colors">
+                ðŸ›’ View Orders
               </button>
             </Link>
           </div>
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-bold text-gray-900">Recent Orders</h2>
+        <div className="bg-card rounded-lg shadow border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] overflow-hidden">
+          <div className="p-6 border-b border-[color:hsl(var(--border))]">
+            <h2 className="text-lg font-bold text-foreground">Recent Orders</h2>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-muted border-b border-[color:hsl(var(--border))]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                     Order ID
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                     Customer
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                     Total
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                     Action
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {recentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                  <tr key={order.id} className="hover:bg-muted transition-colors">
+                    <td className="px-6 py-4 text-sm font-semibold text-foreground">
                       #{order.id}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{order.customer}</td>
-                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                    <td className="px-6 py-4 text-sm text-muted-foreground">{order.customer}</td>
+                    <td className="px-6 py-4 text-sm font-semibold text-foreground">
                       {order.total}
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <StatusBadge status={order.status} />
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{order.date}</td>
+                    <td className="px-6 py-4 text-sm text-muted-foreground">{order.date}</td>
                     <td className="px-6 py-4 text-sm">
                       <Link href={`/seller/orders/${order.id}`}>
-                        <button className="text-green-600 hover:text-green-700 font-semibold transition-colors">
+                        <button className="text-success hover:text-success font-semibold transition-colors">
                           View
                         </button>
                       </Link>
@@ -179,10 +179,10 @@ export default function SellerDashboard() {
             </table>
           </div>
 
-          <div className="px-6 py-4 border-t border-gray-200">
+          <div className="px-6 py-4 border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]">
             <Link href="/seller/orders">
-              <button className="text-green-600 hover:text-green-700 font-semibold">
-                View all orders →
+              <button className="text-success hover:text-success font-semibold">
+                View all orders â†’
               </button>
             </Link>
           </div>
@@ -191,3 +191,7 @@ export default function SellerDashboard() {
     </SellerLayout>
   );
 }
+
+
+
+

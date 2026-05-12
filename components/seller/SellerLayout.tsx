@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { User } from '@/lib/types';
 import { Sidebar } from './Sidebar';
@@ -12,7 +12,7 @@ interface SellerLayoutProps {
 
 export function SellerLayout({ children, user, storeName }: SellerLayoutProps) {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       <Sidebar />
       <Topbar user={user} storeName={storeName} />
       
@@ -23,3 +23,4 @@ export function SellerLayout({ children, user, storeName }: SellerLayoutProps) {
     </div>
   );
 }
+

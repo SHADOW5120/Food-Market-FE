@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { Product } from '@/lib/types';
@@ -69,7 +69,7 @@ export function FavoriteButton({
         >
           {isFav ? (
             <svg
-              className={`${sizeClasses[size]} text-red-500 fill-current`}
+              className={`${sizeClasses[size]} text-destructive fill-current`}
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -77,7 +77,7 @@ export function FavoriteButton({
             </svg>
           ) : (
             <svg
-              className={`${sizeClasses[size]} text-gray-400 hover:text-red-500`}
+              className={`${sizeClasses[size]} text-muted-foreground hover:text-destructive`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -98,8 +98,8 @@ export function FavoriteButton({
           disabled={isLoading}
           className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
             isFav
-              ? 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100'
-              : 'bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100'
+              ? 'bg-destructive/10 text-destructive border border-destructive/20 hover:bg-destructive'
+              : 'bg-muted text-muted-foreground border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] hover:bg-muted'
           } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
           aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
         >
@@ -135,3 +135,6 @@ export function FavoriteButton({
     </>
   );
 }
+
+
+

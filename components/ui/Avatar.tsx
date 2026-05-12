@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 
@@ -26,7 +26,7 @@ export function Avatar({ src, username, size = 40, className = '' }: AvatarProps
     />
   ) : (
     <div
-      className={`inline-flex items-center justify-center rounded-full bg-orange-100 text-orange-600 font-semibold ${className}`}
+      className={`inline-flex items-center justify-center rounded-full bg-muted text-primary font-semibold ${className}`}
       style={{ width: size, height: size }}
       aria-hidden="true"
     >
@@ -34,3 +34,4 @@ export function Avatar({ src, username, size = 40, className = '' }: AvatarProps
     </div>
   );
 }
+

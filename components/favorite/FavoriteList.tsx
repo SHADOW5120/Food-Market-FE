@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useFavorites } from '@/lib/favorites-context';
 import { ProductCard } from '@/components/product/ProductCard';
@@ -40,13 +40,13 @@ export function FavoriteList({
         {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden animate-pulse"
+            className="bg-card rounded-xl shadow-sm border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] overflow-hidden animate-pulse"
           >
-            <div className="aspect-square bg-gray-200"></div>
+            <div className="aspect-square bg-muted"></div>
             <div className="p-4 space-y-3">
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-muted rounded w-3/4"></div>
+              <div className="h-4 bg-muted rounded w-1/2"></div>
+              <div className="h-8 bg-muted rounded"></div>
             </div>
           </div>
         ))}
@@ -57,12 +57,12 @@ export function FavoriteList({
   if (localFavorites.length === 0) {
     return (
       <div className="text-center py-16">
-        <div className="text-6xl mb-4">💔</div>
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">No Favorites Yet</h3>
-        <p className="text-gray-600 mb-6">{emptyMessage}</p>
+        <div className="text-6xl mb-4">ðŸ’”</div>
+        <h3 className="text-xl font-semibold text-foreground mb-2">No Favorites Yet</h3>
+        <p className="text-muted-foreground mb-6">{emptyMessage}</p>
         <a
           href="/products"
-          className="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors"
+          className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary transition-colors"
         >
           Browse Products
         </a>
@@ -75,15 +75,15 @@ export function FavoriteList({
       {localFavorites.map((favorite) => (
         <div
           key={favorite.id}
-          className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100"
+          className="group bg-card rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]"
         >
-          <div className="aspect-square relative overflow-hidden bg-gray-100">
+          <div className="aspect-square relative overflow-hidden bg-muted">
             {/* Remove button on hover */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-200 flex items-center justify-center">
+            <div className="absolute inset-0 bg-muted/0 group-hover:bg-muted/30 transition-colors duration-200 flex items-center justify-center">
               <button
                 onClick={() => handleRemoveFavorite(favorite.productId)}
                 disabled={isRemoving === favorite.productId}
-                className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors ${
+                className={`opacity-0 group-hover:opacity-100 transition-opacity duration-200 px-4 py-2 bg-destructive text-destructive-foreground font-semibold rounded-lg hover:bg-destructive transition-colors ${
                   isRemoving === favorite.productId
                     ? 'opacity-50 cursor-not-allowed'
                     : ''
@@ -100,7 +100,7 @@ export function FavoriteList({
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400">
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                 <svg
                   className="w-12 h-12"
                   fill="none"
@@ -118,8 +118,8 @@ export function FavoriteList({
             )}
 
             {favorite.product.status === 'unavailable' && (
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+              <div className="absolute inset-0 bg-muted/60 flex items-center justify-center">
+                <span className="bg-destructive text-destructive-foreground px-3 py-1 rounded-full text-sm font-medium">
                   Unavailable
                 </span>
               </div>
@@ -131,23 +131,23 @@ export function FavoriteList({
               href={`/products/${favorite.productId}`}
               className="block group/link"
             >
-              <h3 className="font-semibold text-gray-900 text-lg leading-tight line-clamp-2 group-hover/link:text-orange-600 transition-colors mb-2">
+              <h3 className="font-semibold text-foreground text-lg leading-tight line-clamp-2 group-hover/link:text-primary transition-colors mb-2">
                 {favorite.product.name}
               </h3>
             </a>
 
             <div className="flex items-center justify-between mb-3">
-              <span className="text-2xl font-bold text-orange-600">
+              <span className="text-2xl font-bold text-primary">
                 ${favorite.product.price.toFixed(2)}
               </span>
-              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
                 {favorite.product.categoryId}
               </span>
             </div>
 
             <a
               href={`/products/${favorite.productId}`}
-              className="block w-full px-4 py-2 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors text-center"
+              className="block w-full px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary transition-colors text-center"
             >
               View Details
             </a>
@@ -157,3 +157,6 @@ export function FavoriteList({
     </div>
   );
 }
+
+
+

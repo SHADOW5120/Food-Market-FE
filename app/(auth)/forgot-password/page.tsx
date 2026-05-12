@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
@@ -75,13 +75,13 @@ export default function ForgotPasswordPage() {
     >
       <div className="space-y-6">
         {apiError && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
             {apiError}
           </div>
         )}
 
         {successMessage && (
-          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg flex gap-3">
+          <div className="bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] text-success px-4 py-3 rounded-lg flex gap-3">
             <CheckIcon />
             <div>{successMessage}</div>
           </div>
@@ -114,11 +114,11 @@ export default function ForgotPasswordPage() {
             </>
           )}
 
-          <div className="text-center text-sm text-gray-600">
+          <div className="text-center text-sm text-muted-foreground">
             Remember your password?{' '}
             <Link
               href="/login"
-              className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
+              className="text-accent hover:text-accent font-medium transition-colors"
             >
               Back to login
             </Link>
@@ -128,3 +128,6 @@ export default function ForgotPasswordPage() {
     </AuthCard>
   );
 }
+
+
+

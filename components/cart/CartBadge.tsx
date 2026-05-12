@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useCartStore } from '@/store/cart';
@@ -9,7 +9,7 @@ export default function CartBadge() {
 
   return (
     <Link href="/cart" className="relative">
-      <div className="bg-orange-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-orange-600 transition-colors">
+      <div className="bg-primary text-primary-foreground px-4 py-2 rounded-lg shadow-lg hover:bg-primary transition-colors">
         <div className="flex items-center space-x-2">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -25,10 +25,12 @@ export default function CartBadge() {
 
       {/* Badge */}
       {totalItems > 0 && (
-        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+        <span className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
           {totalItems > 99 ? '99+' : totalItems}
         </span>
       )}
     </Link>
   );
 }
+
+

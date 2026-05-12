@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 
@@ -43,11 +43,11 @@ export function QuantitySelector({
   };
 
   return (
-    <div className={`flex items-center border border-gray-300 rounded-lg ${className}`}>
+    <div className={`flex items-center border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg ${className}`}>
       <button
         onClick={handleDecrement}
         disabled={quantity <= minQuantity}
-        className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Decrease quantity"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,7 +68,7 @@ export function QuantitySelector({
       <button
         onClick={handleIncrement}
         disabled={quantity >= maxQuantity}
-        className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="px-3 py-2 text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Increase quantity"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,3 +78,4 @@ export function QuantitySelector({
     </div>
   );
 }
+

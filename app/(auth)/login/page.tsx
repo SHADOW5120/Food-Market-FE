@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 export const dynamic = 'force-dynamic';
 
@@ -116,7 +116,7 @@ export default function LoginPage() {
     >
       <form onSubmit={handleSubmit} className="space-y-6">
         {apiError && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
             {apiError}
           </div>
         )}
@@ -139,7 +139,7 @@ export default function LoginPage() {
           label="Password"
           name="password"
           type="password"
-          placeholder="••••••••"
+          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
           value={formData.password}
           onChange={handleChange}
           onKeyPress={handleKeyPress}
@@ -161,16 +161,16 @@ export default function LoginPage() {
           <div>
             <Link
               href="/forgot-password"
-              className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
+              className="text-accent hover:text-accent font-medium transition-colors"
             >
               Forgot your password?
             </Link>
           </div>
-          <div className="text-gray-600">
+          <div className="text-muted-foreground">
             Don't have an account?{' '}
             <Link
               href="/register"
-              className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
+              className="text-accent hover:text-accent font-medium transition-colors"
             >
               Sign up
             </Link>
@@ -180,3 +180,4 @@ export default function LoginPage() {
     </AuthCard>
   );
 }
+

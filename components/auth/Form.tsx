@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 /**
  * Reusable form component with validation
@@ -58,8 +58,9 @@ interface FormFooterProps {
 
 export function FormFooter({ children, className = '' }: FormFooterProps) {
   return (
-    <div className={`pt-4 border-t border-gray-200 ${className}`}>
+    <div className={`pt-4 border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] ${className}`}>
       {children}
     </div>
   );
 }
+

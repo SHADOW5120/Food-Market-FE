@@ -10,8 +10,8 @@ export function CTASection() {
   if (!hasHydrated) {
     return (
       <div className="flex gap-4 justify-center">
-        <div className="h-12 w-40 bg-gray-300 rounded-lg animate-pulse" />
-        <div className="h-12 w-40 bg-gray-300 rounded-lg animate-pulse" />
+        <div className="h-12 w-40 bg-muted rounded-lg animate-pulse" />
+        <div className="h-12 w-40 bg-muted rounded-lg animate-pulse" />
       </div>
     );
   }
@@ -20,7 +20,7 @@ export function CTASection() {
     return (
       <Link
         href="/products"
-        className="inline-flex items-center px-8 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-orange-600 transition-colors"
+        className="inline-flex items-center px-8 py-3 border-2 border-[color:hsl(var(--border))] text-foreground font-semibold rounded-lg hover:bg-card hover:text-accent transition-colors"
       >
         Browse Menu
       </Link>
@@ -31,16 +31,18 @@ export function CTASection() {
     <div className="flex flex-col sm:flex-row gap-4 justify-center">
       <Link
         href="/register"
-        className="inline-flex items-center px-8 py-3 bg-white text-orange-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+        className="inline-flex items-center px-8 py-3 bg-card text-primary font-semibold rounded-lg hover:bg-muted transition-colors"
       >
         Create Account
       </Link>
       <Link
         href="/products"
-        className="inline-flex items-center px-8 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-orange-600 transition-colors"
+        className="inline-flex items-center px-8 py-3 border-2 border-[color:hsl(var(--border))] text-foreground font-semibold rounded-lg hover:bg-card hover:text-accent transition-colors"
       >
         Browse Menu
       </Link>
     </div>
   );
 }
+
+

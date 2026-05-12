@@ -46,8 +46,8 @@ export function ProtectedRoute({
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -61,8 +61,8 @@ export function ProtectedRoute({
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">403 - Unauthorized</h1>
-          <p className="text-gray-600">You do not have permission to access this page.</p>
+          <h1 className="text-2xl font-bold text-destructive mb-4">403 - Unauthorized</h1>
+          <p className="text-muted-foreground">You do not have permission to access this page.</p>
         </div>
       </div>
     );
@@ -70,3 +70,5 @@ export function ProtectedRoute({
 
   return <>{children}</>;
 }
+
+

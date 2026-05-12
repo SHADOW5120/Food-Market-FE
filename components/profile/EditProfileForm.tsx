@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef } from 'react';
 import { User, UserProfile } from '@/lib/types';
@@ -118,24 +118,24 @@ export function EditProfileForm({ userProfile, onSuccess, onError }: EditProfile
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 max-w-2xl w-full mx-auto">
+    <div className="bg-card rounded-2xl shadow-xl p-8 md:p-12 max-w-2xl w-full mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
           Edit Profile
         </h1>
-        <p className="text-gray-600">Update your profile information</p>
+        <p className="text-muted-foreground">Update your profile information</p>
       </div>
 
       {successMessage && (
-        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm font-medium">
-          ✓ {successMessage}
+        <div className="mb-6 p-4 bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg text-success text-sm font-medium">
+          âœ“ {successMessage}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Avatar Section */}
-        <div className="border-b border-gray-200 pb-8">
-          <h2 className="text-lg font-bold text-gray-900 mb-6">Profile Picture</h2>
+        <div className="border-b border-[color:hsl(var(--border))] pb-8">
+          <h2 className="text-lg font-bold text-foreground mb-6">Profile Picture</h2>
           <AvatarUpload
             currentAvatar={userProfile.avatarUrl}
             username={userProfile.username}
@@ -145,21 +145,21 @@ export function EditProfileForm({ userProfile, onSuccess, onError }: EditProfile
         </div>
 
         {/* Personal Info Section */}
-        <div className="border-b border-gray-200 pb-8">
-          <h2 className="text-lg font-bold text-gray-900 mb-6">Personal Information</h2>
+        <div className="border-b border-[color:hsl(var(--border))] pb-8">
+          <h2 className="text-lg font-bold text-foreground mb-6">Personal Information</h2>
 
           <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Email
               </label>
               <input
                 type="email"
                 value={userProfile.email}
                 disabled
-                className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-600 font-medium cursor-not-allowed"
+                className="w-full px-4 py-3 rounded-lg border-2 border-[color:hsl(var(--border))] bg-muted text-muted-foreground font-medium cursor-not-allowed"
               />
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 Email cannot be changed. Contact support if needed.
               </p>
             </div>
@@ -204,7 +204,7 @@ export function EditProfileForm({ userProfile, onSuccess, onError }: EditProfile
           <Link href="/profile" className="w-full">
             <button
               type="button"
-              className="w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 border-2 border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 border-2 border-[color:hsl(var(--border))] text-foreground hover:bg-muted disabled:opacity-50"
               disabled={isLoading}
             >
               Cancel
@@ -215,3 +215,6 @@ export function EditProfileForm({ userProfile, onSuccess, onError }: EditProfile
     </div>
   );
 }
+
+
+

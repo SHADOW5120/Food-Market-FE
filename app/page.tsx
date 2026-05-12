@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
@@ -42,28 +42,28 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-card">
 
       {/* Hero Banner */}
-      <section className="bg-gradient-to-r from-orange-50 to-red-50 py-16">
+      <section className="bg-gradient-to-r from-primary via-accent/20 to-muted py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
               Delicious Food,<br />
-              <span className="text-orange-600">Delivered Fast</span>
+              <span className="text-primary">Delivered Fast</span>
             </h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Discover amazing dishes from your favorite restaurants. Order now and enjoy fresh, tasty food delivered to your door.
             </p>
 
             {/* Search Bar */}
             <div className="max-w-md mx-auto mb-8">
-              <Suspense fallback={<div className="h-12 bg-gray-200 rounded-lg animate-pulse"></div>}>
+              <Suspense fallback={<div className="h-12 bg-muted rounded-lg animate-pulse"></div>}>
                 <SearchBar />
               </Suspense>
             </div>
 
-            <Suspense fallback={<div className="h-12 w-48 bg-gray-200 rounded-lg animate-pulse mx-auto" />}>
+            <Suspense fallback={<div className="h-12 w-48 bg-muted rounded-lg animate-pulse mx-auto" />}>
               <HeroCTA />
             </Suspense>
           </div>
@@ -71,11 +71,11 @@ export default function HomePage() {
       </section>
 
       {/* Voucher Banner */}
-      <section className="py-12 bg-gradient-to-r from-green-50 to-orange-50 border-y border-gray-100">
+      <section className="py-12 bg-gradient-to-r from-warning/10 to-primary border-y border-[color:hsl(var(--border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">🎫 Special Offers & Vouchers</h2>
-            <p className="text-gray-600">Save on your favorite dishes with our exclusive vouchers</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">ðŸŽ« Special Offers & Vouchers</h2>
+            <p className="text-muted-foreground">Save on your favorite dishes with our exclusive vouchers</p>
           </div>
 
           <div className="max-w-4xl mx-auto">
@@ -89,19 +89,19 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-muted">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">Explore Categories</h3>
-            <p className="text-gray-600">Find exactly what you&apos;re craving</p>
+            <h3 className="text-3xl font-bold text-foreground mb-4">Explore Categories</h3>
+            <p className="text-muted-foreground">Find exactly what you&apos;re craving</p>
           </div>
 
           {loading ? (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {Array.from({ length: 6 }).map((_, index) => (
                 <div key={index} className="text-center">
-                  <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-3 animate-pulse"></div>
-                  <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="w-20 h-20 bg-muted rounded-full mx-auto mb-3 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded animate-pulse"></div>
                 </div>
               ))}
             </div>
@@ -111,9 +111,9 @@ export default function HomePage() {
                 <Link
                   key={category.id}
                   href={`/products?category=${category.id}`}
-                  className="group text-center p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
+                  className="group text-center p-4 bg-card rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105"
                 >
-                  <div className="w-20 h-20 bg-orange-100 rounded-full mx-auto mb-3 flex items-center justify-center group-hover:bg-orange-200 transition-colors">
+                  <div className="w-20 h-20 bg-muted rounded-full mx-auto mb-3 flex items-center justify-center group-hover:bg-primary-200 transition-colors">
                     {category.image ? (
                       <Image
                         src={category.image}
@@ -123,10 +123,10 @@ export default function HomePage() {
                         className="rounded-full"
                       />
                     ) : (
-                      <span className="text-2xl">🍽️</span>
+                      <span className="text-2xl">ðŸ½ï¸</span>
                     )}
                   </div>
-                  <h4 className="font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">
+                  <h4 className="font-semibold text-foreground group-hover:text-accent transition-colors">
                     {category.name}
                   </h4>
                 </Link>
@@ -141,12 +141,12 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-12">
             <div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-2">Featured Dishes</h3>
-              <p className="text-gray-600">Most popular and highly rated</p>
+              <h3 className="text-3xl font-bold text-foreground mb-2">Featured Dishes</h3>
+              <p className="text-muted-foreground">Most popular and highly rated</p>
             </div>
             <Link
               href="/products"
-              className="text-orange-600 hover:text-orange-700 font-semibold flex items-center"
+              className="text-primary hover:text-primary font-semibold flex items-center"
             >
               View All
               <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,12 +158,12 @@ export default function HomePage() {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {Array.from({ length: 8 }).map((_, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-sm overflow-hidden animate-pulse">
-                  <div className="aspect-square bg-gray-200"></div>
+                <div key={index} className="bg-card rounded-xl shadow-sm overflow-hidden animate-pulse">
+                  <div className="aspect-square bg-muted"></div>
                   <div className="p-4">
-                    <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded w-full mb-1"></div>
-                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                    <div className="h-5 bg-muted rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-muted rounded w-full mb-1"></div>
+                    <div className="h-4 bg-muted rounded w-2/3"></div>
                   </div>
                 </div>
               ))}
@@ -179,47 +179,47 @@ export default function HomePage() {
       </section>
 
       {/* Call to Action */}
-      <section className="bg-orange-600 py-16">
+      <section className="bg-primary py-16">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h3 className="text-3xl font-bold text-white mb-4">
+          <h3 className="text-3xl font-bold text-primary-foreground mb-4">
             Ready to Order?
           </h3>
-          <p className="text-orange-100 mb-8 text-lg">
+          <p className="text-accent/80 mb-8 text-lg">
             Join thousands of satisfied customers enjoying delicious food
           </p>
-          <Suspense fallback={<div className="flex gap-4 justify-center"><div className="h-12 w-40 bg-gray-300 rounded-lg animate-pulse" /><div className="h-12 w-40 bg-gray-300 rounded-lg animate-pulse" /></div>}>
+          <Suspense fallback={<div className="flex gap-4 justify-center"><div className="h-12 w-40 bg-muted rounded-lg animate-pulse" /><div className="h-12 w-40 bg-muted rounded-lg animate-pulse" /></div>}>
             <CTASection />
           </Suspense>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-muted text-muted-foreground py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="text-2xl">🍽️</div>
+                <div className="text-2xl">ðŸ½ï¸</div>
                 <h4 className="text-xl font-bold">Food Market</h4>
               </div>
-              <p className="text-gray-400">
+              <p className="text-muted-foreground">
                 Delicious food, delivered fast to your door.
               </p>
             </div>
             <div>
               <h5 className="font-semibold mb-4">Quick Links</h5>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/" className="hover:text-white">Home</Link></li>
-                <li><Link href="/products" className="hover:text-white">Menu</Link></li>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><Link href="/" className="hover:text-accent">Home</Link></li>
+                <li><Link href="/products" className="hover:text-accent">Menu</Link></li>
                 <li><AuthFooterLink /></li>
               </ul>
             </div>
             <div>
               <h5 className="font-semibold mb-4">Categories</h5>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-muted-foreground">
                 {categories.slice(0, 4).map((category) => (
                   <li key={category.id}>
-                    <Link href={`/products?category=${category.id}`} className="hover:text-white">
+                    <Link href={`/products?category=${category.id}`} className="hover:text-accent">
                       {category.name}
                     </Link>
                   </li>
@@ -228,13 +228,13 @@ export default function HomePage() {
             </div>
             <div>
               <h5 className="font-semibold mb-4">Contact</h5>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-muted-foreground">
                 <li>support@foodmarket.com</li>
                 <li>1-800-FOOD-NOW</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-muted mt-8 pt-8 text-center text-muted-foreground">
             <p>&copy; 2026 Food Market. All rights reserved.</p>
           </div>
         </div>
@@ -242,3 +242,6 @@ export default function HomePage() {
     </div>
   );
 }
+
+
+

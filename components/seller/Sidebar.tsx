@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -9,17 +9,17 @@ const menuItems = [
   {
     label: 'Dashboard',
     href: '/seller',
-    icon: '📊',
+    icon: 'ðŸ“Š',
   },
   {
     label: 'Products',
     href: '/seller/products',
-    icon: '📦',
+    icon: 'ðŸ“¦',
   },
   {
     label: 'Orders',
     href: '/seller/orders',
-    icon: '🛒',
+    icon: 'ðŸ›’',
   },
 ];
 
@@ -39,7 +39,7 @@ export function Sidebar() {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-40 md:hidden w-12 h-12 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all"
+        className="fixed bottom-6 right-6 z-40 md:hidden w-12 h-12 bg-success hover:bg-success text-success-foreground rounded-full flex items-center justify-center shadow-lg transition-all"
       >
         {isOpen ? (
           <X className="w-6 h-6" />
@@ -51,26 +51,26 @@ export function Sidebar() {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className="fixed inset-0 bg-muted/60 z-30 md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-full w-64 bg-gray-900 text-white z-40 transition-transform duration-300 ${
+        className={`fixed left-0 top-0 h-full w-64 bg-muted text-foreground z-40 transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-800">
+        <div className="p-6 border-b border-muted">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-green-500 flex items-center justify-center text-lg font-bold">
-              🍽️
+            <div className="w-10 h-10 rounded-lg bg-success flex items-center justify-center text-lg font-bold">
+              ðŸ½ï¸
             </div>
             <div>
               <h1 className="font-bold text-lg">Food Market</h1>
-              <p className="text-xs text-gray-400">Seller Dashboard</p>
+              <p className="text-xs text-muted-foreground">Seller Dashboard</p>
             </div>
           </div>
         </div>
@@ -84,8 +84,8 @@ export function Sidebar() {
               onClick={() => setIsOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                 isActive(item.href)
-                  ? 'bg-green-500 text-white font-semibold'
-                  : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                  ? 'bg-success text-success-foreground font-semibold'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               }`}
             >
               <span className="text-xl">{item.icon}</span>
@@ -95,8 +95,8 @@ export function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
-          <button className="w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-muted">
+          <button className="w-full px-4 py-2 bg-destructive hover:bg-destructive text-destructive-foreground rounded-lg transition-colors font-medium">
             Logout
           </button>
         </div>
@@ -104,3 +104,5 @@ export function Sidebar() {
     </>
   );
 }
+
+

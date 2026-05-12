@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRef, useState } from 'react';
 import { UploadIcon } from '../auth/Icons';
@@ -79,7 +79,7 @@ export function AvatarUpload({
     <div className="space-y-6">
       {/* Avatar Preview */}
       <div className="flex flex-col items-center">
-        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-6xl overflow-hidden mb-4 flex-shrink-0 shadow-lg">
+        <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-6xl overflow-hidden mb-4 flex-shrink-0 shadow-lg">
           {preview ? (
             <img
               src={preview}
@@ -87,7 +87,7 @@ export function AvatarUpload({
               className="w-full h-full object-cover"
             />
           ) : (
-            <span>👤</span>
+            <span>ðŸ‘¤</span>
           )}
         </div>
         {preview && (
@@ -95,7 +95,7 @@ export function AvatarUpload({
             type="button"
             onClick={clearPreview}
             disabled={isLoading}
-            className="text-sm text-red-500 hover:text-red-600 font-semibold transition-colors disabled:opacity-50"
+            className="text-sm text-destructive hover:text-destructive font-semibold transition-colors disabled:opacity-50"
           >
             Remove Preview
           </button>
@@ -110,8 +110,8 @@ export function AvatarUpload({
         onDrop={handleDrop}
         className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 cursor-pointer ${
           dragActive
-            ? 'border-orange-500 bg-orange-50'
-            : 'border-gray-300 hover:border-orange-400 bg-gray-50'
+            ? 'border-primary bg-primary/10'
+            : 'border-[color:hsl(var(--border))] hover:border-accent bg-muted'
         } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         <input
@@ -128,25 +128,28 @@ export function AvatarUpload({
           onClick={() => fileInputRef.current?.click()}
           className="cursor-pointer"
         >
-          <UploadIcon className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-          <p className="text-sm font-semibold text-gray-900 mb-1">
+          <UploadIcon className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+          <p className="text-sm font-semibold text-foreground mb-1">
             Drag and drop your image here
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-muted-foreground">
             or click to select a file (max 5MB)
           </p>
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             Supported formats: JPG, PNG, GIF, WebP
           </p>
         </div>
       </div>
 
       {/* Info */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <p className="text-sm text-blue-900">
-          💡 <strong>Tip:</strong> Make sure to save your profile changes for the avatar to be uploaded.
+      <div className="bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg p-4">
+        <p className="text-sm text-foreground">
+          ðŸ’¡ <strong>Tip:</strong> Make sure to save your profile changes for the avatar to be uploaded.
         </p>
       </div>
     </div>
   );
 }
+
+
+

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -80,7 +80,7 @@ export default function ProductsPage() {
     return (
       <SellerLayout>
         <div className="text-center py-12">
-          <p className="text-gray-600">Please log in as a seller</p>
+          <p className="text-muted-foreground">Please log in as a seller</p>
         </div>
       </SellerLayout>
     );
@@ -92,16 +92,16 @@ export default function ProductsPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Products</h1>
-            <p className="text-gray-600">Manage your menu items</p>
+            <h1 className="text-3xl font-bold text-foreground">Products</h1>
+            <p className="text-muted-foreground">Manage your menu items</p>
           </div>
           <Button onClick={handleAddProduct} variant="primary">
-            ➕ Add Product
+            âž• Add Product
           </Button>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow p-4 border border-gray-200 space-y-4">
+        <div className="bg-card rounded-lg shadow p-4 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] space-y-4">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <input
@@ -109,14 +109,14 @@ export default function ProductsPage() {
               placeholder="Search products..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1 px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-green-500"
+              className="flex-1 px-4 py-2 border-2 border-[color:hsl(var(--border))] rounded-lg focus:outline-none focus:border-success"
             />
 
             {/* Filter */}
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value as any)}
-              className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-green-500"
+              className="px-4 py-2 border-2 border-[color:hsl(var(--border))] rounded-lg focus:outline-none focus:border-success"
             >
               <option value="all">All Status</option>
               <option value="available">Available</option>
@@ -124,28 +124,28 @@ export default function ProductsPage() {
             </select>
           </div>
 
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Showing {filteredProducts.length} of {products.length} products
           </p>
         </div>
 
         {/* Products Table */}
         {filteredProducts.length > 0 ? (
-          <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+          <div className="bg-card rounded-lg shadow border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-muted border-b border-[color:hsl(var(--border))]">
                   <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                       Product
                     </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                       Price
                     </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                       Actions
                     </th>
                   </tr>
@@ -165,8 +165,8 @@ export default function ProductsPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow p-12 text-center border border-gray-200">
-            <p className="text-gray-600 text-lg mb-4">No products found</p>
+          <div className="bg-card rounded-lg shadow p-12 text-center border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]">
+            <p className="text-muted-foreground text-lg mb-4">No products found</p>
             <Button onClick={handleAddProduct} variant="primary">
               Add your first product
             </Button>
@@ -176,3 +176,5 @@ export default function ProductsPage() {
     </SellerLayout>
   );
 }
+
+

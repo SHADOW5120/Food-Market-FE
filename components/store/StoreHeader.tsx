@@ -17,14 +17,14 @@ export default function StoreHeader({ store }: StoreHeaderProps) {
           className="object-cover"
         />
         {/* Overlay gradient for readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-muted/80 via-muted/40 to-transparent" />
       </div>
 
       {/* Store Info Overlay */}
       <div className="absolute bottom-0 left-0 right-0 p-6">
         <div className="flex items-end">
           {/* Store Logo */}
-          <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-lg mr-4">
+          <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-[color:hsl(var(--border))] shadow-lg mr-4">
             <Image
               src={store.logo || '/placeholder-logo.jpg'}
               alt={`${store.name} logo`}
@@ -35,10 +35,10 @@ export default function StoreHeader({ store }: StoreHeaderProps) {
           </div>
 
           {/* Store Details */}
-          <div className="flex-1 text-white">
+          <div className="flex-1 text-card-foreground">
             <h1 className="text-2xl font-bold mb-1">{store.name}</h1>
             <div className="flex items-center mb-2">
-              <span className="text-yellow-400 mr-1">⭐</span>
+              <span className="text-warning mr-1">⭐</span>
               <span className="font-medium">{store.rating.toFixed(1)}</span>
               {store.deliveryTime && (
                 <>
@@ -47,7 +47,7 @@ export default function StoreHeader({ store }: StoreHeaderProps) {
                 </>
               )}
             </div>
-            <p className="text-white/90 text-sm line-clamp-2">
+            <p className="text-muted-foreground/90 text-sm line-clamp-2">
               {store.description}
             </p>
           </div>

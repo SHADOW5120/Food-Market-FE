@@ -41,15 +41,15 @@ export default function OrdersPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-muted">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200">
+        <div className="bg-card border-b border-[color:hsl(var(--border))]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <h1 className="text-3xl font-bold text-gray-900">Order History</h1>
+              <h1 className="text-3xl font-bold text-foreground">Order History</h1>
               <Link
                 href="/"
-                className="bg-orange-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-orange-700 transition-colors text-center w-full sm:w-auto"
+                className="bg-primary text-primary-foreground font-semibold py-2 px-6 rounded-lg hover:bg-primary transition-colors text-center w-full sm:w-auto"
               >
                 Continue Shopping
               </Link>
@@ -61,13 +61,13 @@ export default function OrdersPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Error Message */}
           {error && !isLoading && (
-            <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+            <div className="mb-6 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
               <p>{error}</p>
             </div>
           )}
 
           {/* Filter Tabs */}
-          <div className="mb-8 bg-white rounded-lg border border-gray-200 overflow-x-auto">
+          <div className="mb-8 bg-card rounded-lg border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] overflow-x-auto">
             <div className="flex">
               {statuses.map((status) => (
                 <button
@@ -75,13 +75,13 @@ export default function OrdersPage() {
                   onClick={() => setFilterStatus(status.value)}
                   className={`flex-1 min-w-max px-4 py-3 font-medium text-sm border-b-2 transition-colors whitespace-nowrap ${
                     filterStatus === status.value
-                      ? 'border-orange-600 text-orange-600'
-                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                      ? 'border-accent text-primary'
+                      : 'border-transparent text-muted-foreground hover:text-foreground'
                   }`}
                 >
                   <span className="hidden sm:inline">{status.label}</span>
                   <span className="sm:hidden">{status.label.split(' ')[0]}</span>
-                  <span className="ml-2 text-gray-500">({status.count})</span>
+                  <span className="ml-2 text-muted-foreground">({status.count})</span>
                 </button>
               ))}
             </div>
@@ -102,11 +102,11 @@ export default function OrdersPage() {
         {/* Bottom Call to Action */}
         {orders.length === 0 && !isLoading && !error && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">No Orders Yet</h2>
-            <p className="text-gray-600 mb-6">Start browsing our menu and place your first order today!</p>
+            <h2 className="text-2xl font-bold text-foreground mb-4">No Orders Yet</h2>
+            <p className="text-muted-foreground mb-6">Start browsing our menu and place your first order today!</p>
             <Link
               href="/"
-              className="inline-block bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-orange-700 transition-colors"
+              className="inline-block bg-primary text-primary-foreground font-semibold py-3 px-8 rounded-lg hover:bg-primary transition-colors"
             >
               Browse Menu
             </Link>
@@ -116,3 +116,5 @@ export default function OrdersPage() {
     </ProtectedRoute>
   );
 }
+
+

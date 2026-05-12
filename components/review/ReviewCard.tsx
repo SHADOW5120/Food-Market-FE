@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Image from 'next/image';
 import { useState } from 'react';
@@ -50,11 +50,11 @@ export function ReviewCard({
   const shouldShowReadMore = review.content.length > 200;
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-100 p-6 ${className}`}>
+    <div className={`bg-card rounded-lg shadow-sm border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-6 ${className}`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
+          <div className="w-10 h-10 bg-muted rounded-full overflow-hidden flex-shrink-0">
             {review.user.avatar ? (
               <Image
                 src={review.user.avatar}
@@ -64,8 +64,8 @@ export function ReviewCard({
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-orange-100 flex items-center justify-center">
-                <span className="text-orange-600 font-semibold text-sm">
+              <div className="w-full h-full bg-muted flex items-center justify-center">
+                <span className="text-primary font-semibold text-sm">
                   {review.user.username.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -73,9 +73,9 @@ export function ReviewCard({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="font-semibold text-gray-900">{review.user.username}</h4>
+              <h4 className="font-semibold text-foreground">{review.user.username}</h4>
               {review.isVerifiedPurchase && (
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-success text-success">
                   <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
@@ -85,7 +85,7 @@ export function ReviewCard({
             </div>
             <div className="flex items-center gap-2 mt-1">
               <RatingStars rating={review.rating} size="sm" />
-              <span className="text-sm text-gray-500">{formatDate(review.createdAt)}</span>
+              <span className="text-sm text-muted-foreground">{formatDate(review.createdAt)}</span>
             </div>
           </div>
         </div>
@@ -107,7 +107,7 @@ export function ReviewCard({
                 variant="outline"
                 size="sm"
                 onClick={() => onDelete(review.id)}
-                className="text-xs text-red-600 hover:text-red-700"
+                className="text-xs text-destructive hover:text-destructive"
               >
                 Delete
               </Button>
@@ -119,15 +119,15 @@ export function ReviewCard({
       {/* Review Content */}
       <div className="mb-4">
         {review.title && (
-          <h5 className="font-semibold text-gray-900 mb-2">{review.title}</h5>
+          <h5 className="font-semibold text-foreground mb-2">{review.title}</h5>
         )}
-        <p className="text-gray-700 leading-relaxed">
+        <p className="text-foreground leading-relaxed">
           {showFullContent ? review.content : contentPreview}
         </p>
         {shouldShowReadMore && (
           <button
             onClick={() => setShowFullContent(!showFullContent)}
-            className="text-orange-600 hover:text-orange-700 text-sm font-medium mt-2"
+            className="text-primary hover:text-primary text-sm font-medium mt-2"
           >
             {showFullContent ? 'Show less' : 'Read more'}
           </button>
@@ -139,7 +139,7 @@ export function ReviewCard({
         <div className="mb-4">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {review.images.map((image, index) => (
-              <div key={index} className="aspect-square relative rounded-lg overflow-hidden bg-gray-100">
+              <div key={index} className="aspect-square relative rounded-lg overflow-hidden bg-muted">
                 <Image
                   src={image}
                   alt={`Review image ${index + 1}`}
@@ -154,13 +154,13 @@ export function ReviewCard({
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+      <div className="flex items-center justify-between pt-4 border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]">
         <div className="flex items-center gap-4">
           {onMarkHelpful && (
             <button
               onClick={handleMarkHelpful}
               disabled={isHelpfulLoading}
-              className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-800 disabled:opacity-50"
+              className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground disabled:opacity-50"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
@@ -171,7 +171,7 @@ export function ReviewCard({
         </div>
 
         {review.updatedAt && review.updatedAt !== review.createdAt && (
-          <span className="text-xs text-gray-500">
+          <span className="text-xs text-muted-foreground">
             Edited {formatDate(review.updatedAt)}
           </span>
         )}
@@ -179,3 +179,5 @@ export function ReviewCard({
     </div>
   );
 }
+
+

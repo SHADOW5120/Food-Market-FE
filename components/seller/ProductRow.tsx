@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { StatusBadge } from './StatusBadge';
@@ -21,7 +21,7 @@ interface ProductRowProps {
 
 export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowProps) {
   return (
-    <tr className="hover:bg-gray-50 transition-colors border-b border-gray-200">
+    <tr className="hover:bg-muted transition-colors border-b border-[color:hsl(var(--border))]">
       <td className="px-6 py-4">
         <div className="flex items-center gap-4">
           {product.image ? (
@@ -31,17 +31,17 @@ export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowPr
               className="w-12 h-12 rounded object-cover"
             />
           ) : (
-            <div className="w-12 h-12 rounded bg-gray-200 flex items-center justify-center text-2xl">
-              📦
+            <div className="w-12 h-12 rounded bg-muted flex items-center justify-center text-2xl">
+              ðŸ“¦
             </div>
           )}
           <div>
-            <p className="font-semibold text-gray-900">{product.name}</p>
-            <p className="text-sm text-gray-500">{product.category}</p>
+            <p className="font-semibold text-foreground">{product.name}</p>
+            <p className="text-sm text-muted-foreground">{product.category}</p>
           </div>
         </div>
       </td>
-      <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+      <td className="px-6 py-4 text-sm font-semibold text-foreground">
         ${product.price.toFixed(2)}
       </td>
       <td className="px-6 py-4">
@@ -50,13 +50,13 @@ export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowPr
       <td className="px-6 py-4 text-sm space-x-2">
         <button
           onClick={() => onEdit(product.id)}
-          className="text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+          className="text-secondary hover:text-secondary font-semibold transition-colors"
         >
           Edit
         </button>
         <button
           onClick={() => onToggle(product.id)}
-          className="text-green-600 hover:text-green-700 font-semibold transition-colors"
+          className="text-success hover:text-success font-semibold transition-colors"
         >
           {product.status === 'available' ? 'Disable' : 'Enable'}
         </button>
@@ -66,7 +66,7 @@ export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowPr
               onDelete(product.id);
             }
           }}
-          className="text-red-600 hover:text-red-700 font-semibold transition-colors"
+          className="text-destructive hover:text-destructive font-semibold transition-colors"
         >
           Delete
         </button>
@@ -74,3 +74,7 @@ export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowPr
     </tr>
   );
 }
+
+
+
+
