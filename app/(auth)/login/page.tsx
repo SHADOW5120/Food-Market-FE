@@ -139,7 +139,7 @@ export default function LoginPage() {
           label="Password"
           name="password"
           type="password"
-          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+          placeholder="••••••••"
           value={formData.password}
           onChange={handleChange}
           onKeyPress={handleKeyPress}

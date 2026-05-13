@@ -1,5 +1,6 @@
 'use client';
 
+import { MessageSquare } from 'lucide-react';
 import { useState } from 'react';
 import { Review } from '@/lib/types';
 import { ReviewCard } from './ReviewCard';
@@ -72,7 +73,9 @@ export function ReviewList({
   if (reviews.length === 0) {
     return (
       <div className={`text-center py-12 ${className}`}>
-        <div className="text-6xl mb-4">📝</div>
+        <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <MessageSquare className="h-8 w-8" />
+        </div>
         <h3 className="text-xl font-semibold text-foreground mb-2">No reviews yet</h3>
         <p className="text-muted-foreground">Be the first to share your experience with this product!</p>
       </div>

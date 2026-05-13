@@ -1,3 +1,4 @@
+import { Star } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Store } from '@/lib/types';
@@ -44,7 +45,7 @@ export default function StoreCard({ store }: StoreCardProps) {
 
         <div className="flex items-center mb-2">
           <div className="flex items-center">
-            <span className="text-warning mr-1">⭐</span>
+            <Star className="w-4 h-4 text-warning mr-1" />
             <span className="text-sm font-medium">{store.rating.toFixed(1)}</span>
           </div>
           {store.deliveryTime && (

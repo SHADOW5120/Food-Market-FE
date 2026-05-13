@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { HeartOff } from 'lucide-react';
 import { useFavorites } from '@/lib/favorites-context';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Favorite } from '@/lib/types';
@@ -57,7 +58,9 @@ export function FavoriteList({
   if (localFavorites.length === 0) {
     return (
       <div className="text-center py-16">
-        <div className="text-6xl mb-4">ðŸ’”</div>
+        <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <HeartOff className="h-8 w-8" />
+        </div>
         <h3 className="text-xl font-semibold text-foreground mb-2">No Favorites Yet</h3>
         <p className="text-muted-foreground mb-6">{emptyMessage}</p>
         <a

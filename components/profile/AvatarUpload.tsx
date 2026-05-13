@@ -1,7 +1,7 @@
 ﻿'use client';
 
+import { Lightbulb, UploadCloud, User } from 'lucide-react';
 import { useRef, useState } from 'react';
-import { UploadIcon } from '../auth/Icons';
 
 interface AvatarUploadProps {
   currentAvatar?: string;
@@ -87,7 +87,7 @@ export function AvatarUpload({
               className="w-full h-full object-cover"
             />
           ) : (
-            <span>ðŸ‘¤</span>
+            <User className="w-16 h-16" />
           )}
         </div>
         {preview && (
@@ -128,7 +128,7 @@ export function AvatarUpload({
           onClick={() => fileInputRef.current?.click()}
           className="cursor-pointer"
         >
-          <UploadIcon className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
+          <UploadCloud className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
           <p className="text-sm font-semibold text-foreground mb-1">
             Drag and drop your image here
           </p>
@@ -143,9 +143,12 @@ export function AvatarUpload({
 
       {/* Info */}
       <div className="bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg p-4">
-        <p className="text-sm text-foreground">
-          ðŸ’¡ <strong>Tip:</strong> Make sure to save your profile changes for the avatar to be uploaded.
-        </p>
+        <div className="flex items-start gap-2 text-sm text-foreground">
+          <Lightbulb className="w-5 h-5 mt-1 text-primary" />
+          <p>
+            <strong>Tip:</strong> Make sure to save your profile changes for the avatar to be uploaded.
+          </p>
+        </div>
       </div>
     </div>
   );

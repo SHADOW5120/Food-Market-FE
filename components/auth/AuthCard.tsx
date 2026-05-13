@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 
+import { ShoppingBag } from 'lucide-react';
+
 interface AuthCardProps {
   children: React.ReactNode;
   title: string;
@@ -48,7 +50,9 @@ export function AuthCard({ children, title, subtitle, imageSrc }: AuthCardProps)
         ) : (
           <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-primary to-primary rounded-2xl items-center justify-center p-12">
             <div className="text-center text-primary-foreground">
-              <div className="text-6xl font-bold mb-4">🍽️</div>
+              <div className="text-6xl font-bold mb-4">
+              <ShoppingBag className="w-16 h-16 mx-auto" />
+            </div>
               <h2 className="text-3xl font-bold mb-4">Food Market</h2>
               <p className="text-xl opacity-90">
                 Order delicious food from your favorite restaurants

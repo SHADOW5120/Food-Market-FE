@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
@@ -96,7 +97,8 @@ export default function ProductsPage() {
             <p className="text-muted-foreground">Manage your menu items</p>
           </div>
           <Button onClick={handleAddProduct} variant="primary">
-            âž• Add Product
+            <Plus className="mr-2 h-4 w-4" />
+            Add Product
           </Button>
         </div>
 

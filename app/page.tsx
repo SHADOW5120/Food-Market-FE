@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { ArrowRight, ForkKnife, Ticket } from 'lucide-react';
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -74,7 +75,12 @@ export default function HomePage() {
       <section className="py-12 bg-gradient-to-r from-warning/10 to-primary border-y border-[color:hsl(var(--border))]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-2">ðŸŽ« Special Offers & Vouchers</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
+              <span className="inline-flex items-center justify-center rounded-full bg-warning/20 p-2">
+                <Ticket className="w-5 h-5 text-warning" />
+              </span>
+              Special Offers & Vouchers
+            </h2>
             <p className="text-muted-foreground">Save on your favorite dishes with our exclusive vouchers</p>
           </div>
 
@@ -123,7 +129,7 @@ export default function HomePage() {
                         className="rounded-full"
                       />
                     ) : (
-                      <span className="text-2xl">ðŸ½ï¸</span>
+                      <ForkKnife className="w-8 h-8 text-muted-foreground" />
                     )}
                   </div>
                   <h4 className="font-semibold text-foreground group-hover:text-accent transition-colors">
@@ -146,12 +152,10 @@ export default function HomePage() {
             </div>
             <Link
               href="/products"
-              className="text-primary hover:text-primary font-semibold flex items-center"
+              className="text-primary hover:text-primary font-semibold flex items-center gap-1"
             >
               View All
-              <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
@@ -199,7 +203,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="text-2xl">ðŸ½ï¸</div>
+                <ForkKnife className="w-8 h-8 text-muted-foreground" />
                 <h4 className="text-xl font-bold">Food Market</h4>
               </div>
               <p className="text-muted-foreground">

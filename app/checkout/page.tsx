@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { ChevronRight, ShoppingCart } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -93,7 +94,9 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen bg-card flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">ðŸ›’</div>
+          <div className="text-muted-foreground mb-4 flex items-center justify-center">
+            <ShoppingCart className="w-16 h-16" />
+          </div>
           <h1 className="text-2xl font-bold text-foreground mb-2">Your cart is empty</h1>
           <p className="text-muted-foreground mb-6">Add some items to your cart before checking out.</p>
           <Link
@@ -119,9 +122,7 @@ export default function CheckoutPage() {
               </Link>
             </li>
             <li>
-              <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </li>
             <li>
               <Link href="/cart" className="text-muted-foreground hover:text-foreground">
@@ -129,9 +130,7 @@ export default function CheckoutPage() {
               </Link>
             </li>
             <li>
-              <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </li>
             <li className="text-foreground font-medium">Checkout</li>
           </ol>

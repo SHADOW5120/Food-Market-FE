@@ -1,5 +1,6 @@
 'use client';
 
+import { ChevronRight, ShoppingBag, Utensils } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -79,7 +80,9 @@ export default function ProductDetailPage() {
     return (
       <div className="min-h-screen bg-card flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">🍽️</div>
+          <div className="text-muted-foreground mb-4 flex items-center justify-center">
+            <Utensils className="w-16 h-16" />
+          </div>
           <h1 className="text-2xl font-bold text-muted-foreground mb-2">Product Not Found</h1>
           <p className="text-muted-foreground mb-6">The product you&apos;re looking for doesn&apos;t exist.</p>
           <Link
@@ -105,9 +108,7 @@ export default function ProductDetailPage() {
               </Link>
             </li>
             <li>
-              <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </li>
             <li>
               <Link href="/products" className="text-muted-foreground hover:text-muted-foreground">
@@ -115,9 +116,7 @@ export default function ProductDetailPage() {
               </Link>
             </li>
             <li>
-              <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-              </svg>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </li>
             <li className="text-muted-foreground font-medium">{product.name}</li>
           </ol>

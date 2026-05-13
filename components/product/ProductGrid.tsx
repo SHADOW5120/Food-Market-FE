@@ -1,5 +1,6 @@
 'use client';
 
+import { ShoppingBag } from 'lucide-react';
 import { ProductCard } from './ProductCard';
 import { Product } from '@/lib/types';
 
@@ -42,7 +43,9 @@ export function ProductGrid({ products, loading = false }: ProductGridProps) {
   if (products.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="text-6xl mb-4">🍽️</div>
+        <div className="text-muted-foreground mb-4 flex items-center justify-center">
+          <ShoppingBag className="w-16 h-16" />
+        </div>
         <h3 className="text-xl font-semibold text-foreground mb-2">No products found</h3>
         <p className="text-muted-foreground">Try adjusting your filters or search terms.</p>
       </div>

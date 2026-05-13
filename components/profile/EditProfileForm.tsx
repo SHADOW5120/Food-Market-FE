@@ -128,7 +128,7 @@ export function EditProfileForm({ userProfile, onSuccess, onError }: EditProfile
 
       {successMessage && (
         <div className="mb-6 p-4 bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg text-success text-sm font-medium">
-          âœ“ {successMessage}
+          ✓ {successMessage}
         </div>
       )}
 

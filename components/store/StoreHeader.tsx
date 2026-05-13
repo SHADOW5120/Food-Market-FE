@@ -1,3 +1,4 @@
+import { Star } from 'lucide-react';
 import Image from 'next/image';
 import type { Store } from '@/lib/types';
 
@@ -38,7 +39,7 @@ export default function StoreHeader({ store }: StoreHeaderProps) {
           <div className="flex-1 text-card-foreground">
             <h1 className="text-2xl font-bold mb-1">{store.name}</h1>
             <div className="flex items-center mb-2">
-              <span className="text-warning mr-1">⭐</span>
+              <Star className="w-4 h-4 text-warning mr-1" />
               <span className="font-medium">{store.rating.toFixed(1)}</span>
               {store.deliveryTime && (
                 <>

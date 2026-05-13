@@ -1,5 +1,6 @@
 'use client';
 
+import { ChevronRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -41,13 +42,7 @@ export default function CartPage() {
               </Link>
             </li>
             <li>
-              <svg className="w-4 h-4 text-muted-foreground" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </li>
             <li className="text-foreground font-medium">Shopping Cart</li>
           </ol>
@@ -86,9 +81,10 @@ export default function CartPage() {
               </div>
               <Link
                 href="/products"
-                className="text-primary hover:text-primary font-semibold"
+                className="text-primary hover:text-primary font-semibold inline-flex items-center gap-1"
               >
-                View all →
+                View all
+                <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
 

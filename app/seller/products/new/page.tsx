@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { Camera, ChevronLeft, CheckCircle2, Package } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
@@ -121,9 +122,10 @@ export default function AddProductPage() {
         <div>
           <button
             onClick={() => router.back()}
-            className="text-success hover:text-success font-semibold mb-4"
+            className="text-success hover:text-success font-semibold mb-4 flex items-center gap-2"
           >
-            â† Back to Products
+            <ChevronLeft className="w-4 h-4" />
+            Back to Products
           </button>
           <h1 className="text-3xl font-bold text-foreground">Add New Product</h1>
         </div>
@@ -136,8 +138,9 @@ export default function AddProductPage() {
         )}
 
         {successMessage && (
-          <div className="bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg p-4 text-success text-sm">
-            âœ“ {successMessage}
+          <div className="bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg p-4 text-success text-sm inline-flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4" />
+            {successMessage}
           </div>
         )}
 
@@ -154,14 +157,14 @@ export default function AddProductPage() {
                 {imagePreview ? (
                   <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-4xl">ðŸ“¦</span>
+                  <Package className="w-10 h-10 text-muted-foreground" />
                 )}
               </div>
 
               {/* Upload Area */}
               <div className="flex-1">
                 <label className="flex flex-col items-center justify-center px-6 py-10 border-2 border-dashed border-[color:hsl(var(--border))] rounded-lg cursor-pointer hover:border-success hover:bg-muted transition-colors">
-                  <span className="text-3xl mb-2">ðŸ“¤</span>
+                  <Camera className="w-10 h-10 mb-2 text-muted-foreground" />
                   <span className="text-sm font-semibold text-foreground">
                     Click to upload image
                   </span>

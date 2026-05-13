@@ -1,5 +1,6 @@
 'use client';
 
+import { XCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { ProductReviewsData, Review, CreateReviewPayload, UpdateReviewPayload } from '@/lib/types';
@@ -194,7 +195,9 @@ export function ReviewSection({ productId, className = '' }: ReviewSectionProps)
   if (!reviewsData) {
     return (
       <div className={`text-center py-12 ${className}`}>
-        <div className="text-6xl mb-4">❌</div>
+        <div className="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <XCircle className="h-8 w-8" />
+        </div>
         <h3 className="text-xl font-semibold text-foreground mb-2">Failed to load reviews</h3>
         <p className="text-muted-foreground">Please try again later.</p>
       </div>

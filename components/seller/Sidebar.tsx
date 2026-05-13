@@ -3,23 +3,25 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MenuIcon, X } from '../auth/Icons';
+import { BarChart3, Menu, Package, ShoppingBag, ShoppingCart, X } from 'lucide-react';
 
-const menuItems = [
+import type { LucideIcon } from 'lucide-react';
+
+const menuItems: { label: string; href: string; icon: LucideIcon }[] = [
   {
     label: 'Dashboard',
     href: '/seller',
-    icon: 'ðŸ“Š',
+    icon: BarChart3,
   },
   {
     label: 'Products',
     href: '/seller/products',
-    icon: 'ðŸ“¦',
+    icon: Package,
   },
   {
     label: 'Orders',
     href: '/seller/orders',
-    icon: 'ðŸ›’',
+    icon: ShoppingCart,
   },
 ];
 
@@ -44,7 +46,7 @@ export function Sidebar() {
         {isOpen ? (
           <X className="w-6 h-6" />
         ) : (
-          <MenuIcon className="w-6 h-6" />
+          <Menu className="w-6 h-6" />
         )}
       </button>
 
@@ -65,8 +67,8 @@ export function Sidebar() {
         {/* Header */}
         <div className="p-6 border-b border-muted">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-success flex items-center justify-center text-lg font-bold">
-              ðŸ½ï¸
+            <div className="w-10 h-10 rounded-lg bg-success flex items-center justify-center text-success-foreground">
+              <ShoppingBag className="w-5 h-5" />
             </div>
             <div>
               <h1 className="font-bold text-lg">Food Market</h1>
@@ -88,7 +90,7 @@ export function Sidebar() {
                   : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
               }`}
             >
-              <span className="text-xl">{item.icon}</span>
+              <item.icon className="w-5 h-5 shrink-0" />
               <span>{item.label}</span>
             </Link>
           ))}

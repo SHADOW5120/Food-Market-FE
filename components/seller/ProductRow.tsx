@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { Package } from 'lucide-react';
 import Link from 'next/link';
 import { StatusBadge } from './StatusBadge';
 
@@ -31,8 +32,8 @@ export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowPr
               className="w-12 h-12 rounded object-cover"
             />
           ) : (
-            <div className="w-12 h-12 rounded bg-muted flex items-center justify-center text-2xl">
-              ðŸ“¦
+            <div className="w-12 h-12 rounded bg-muted flex items-center justify-center text-muted-foreground">
+              <Package className="w-6 h-6" />
             </div>
           )}
           <div>

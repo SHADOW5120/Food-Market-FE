@@ -1,5 +1,6 @@
 'use client';
 
+import { ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
@@ -136,9 +137,10 @@ export default function OrderDetailPage() {
         <div>
           <button
             onClick={() => router.back()}
-            className="text-success hover:text-success font-semibold mb-4"
+            className="text-success hover:text-success font-semibold mb-4 flex items-center gap-2"
           >
-            ← Back to Orders
+            <ChevronLeft className="w-4 h-4" />
+            Back to Orders
           </button>
           <div className="flex justify-between items-start">
             <div>

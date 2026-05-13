@@ -3,7 +3,6 @@
  */
 
 export const APP_NAME = 'Food Market';
-export const APP_EMOJI = '🍽️';
 
 /**
  * Validation constraints

@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { Bell } from 'lucide-react';
 import { User } from '@/lib/types';
 import Link from 'next/link';
 
@@ -24,7 +25,7 @@ export function Topbar({ user, storeName = 'My Store' }: TopbarProps) {
         <div className="flex items-center gap-4 ml-auto">
           {/* Notifications */}
           <button className="relative w-10 h-10 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-all">
-            <span className="text-xl">ðŸ””</span>
+            <Bell className="w-6 h-6" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full" />
           </button>
 

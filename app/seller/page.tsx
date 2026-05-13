@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { ArrowRight, DollarSign, Package, Plus, ShoppingCart, Star } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { SellerLayout } from '@/components/seller/SellerLayout';
 import { StatCard } from '@/components/seller/StatCard';
@@ -74,26 +75,26 @@ export default function SellerDashboard() {
           <StatCard
             title="Total Orders"
             value={stats.totalOrders}
-            icon="ðŸ›’"
+            icon={<ShoppingCart className="w-10 h-10 text-success" />}
             trend={{ value: 12, direction: 'up' }}
             onClick={() => router.push('/seller/orders')}
           />
           <StatCard
             title="Revenue"
             value={stats.revenue}
-            icon="ðŸ’°"
+            icon={<DollarSign className="w-10 h-10 text-success" />}
             trend={{ value: 8, direction: 'up' }}
           />
           <StatCard
             title="Products"
             value={stats.totalProducts}
-            icon="ðŸ“¦"
+            icon={<Package className="w-10 h-10 text-success" />}
             onClick={() => router.push('/seller/products')}
           />
           <StatCard
             title="Avg Rating"
             value={stats.avgRating}
-            icon="â­"
+            icon={<Star className="w-10 h-10 text-success" />}
             trend={{ value: 2, direction: 'up' }}
           />
         </div>
@@ -105,18 +106,21 @@ export default function SellerDashboard() {
             <Button
               variant="primary"
               onClick={handleAddProduct}
-              className="text-sm"
+              className="text-sm flex items-center justify-center gap-2"
             >
-              âž• Add Product
+              <Plus className="w-4 h-4" />
+              Add Product
             </Button>
             <Link href="/seller/products" className="block">
-              <button className="w-full px-4 py-3 bg-secondary hover:bg-secondary text-secondary-foreground rounded-lg font-semibold transition-colors">
-                ðŸ“¦ Manage Products
+              <button className="w-full px-4 py-3 bg-secondary hover:bg-secondary text-secondary-foreground rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                <Package className="w-4 h-4" />
+                Manage Products
               </button>
             </Link>
             <Link href="/seller/orders" className="block">
-              <button className="w-full px-4 py-3 bg-secondary hover:bg-secondary text-secondary-foreground rounded-lg font-semibold transition-colors">
-                ðŸ›’ View Orders
+              <button className="w-full px-4 py-3 bg-secondary hover:bg-secondary text-secondary-foreground rounded-lg font-semibold transition-colors flex items-center justify-center gap-2">
+                <ShoppingCart className="w-4 h-4" />
+                View Orders
               </button>
             </Link>
           </div>
@@ -181,8 +185,9 @@ export default function SellerDashboard() {
 
           <div className="px-6 py-4 border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]">
             <Link href="/seller/orders">
-              <button className="text-success hover:text-success font-semibold">
-                View all orders â†’
+              <button className="text-success hover:text-success font-semibold flex items-center gap-2">
+                <span>View all orders</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             </Link>
           </div>

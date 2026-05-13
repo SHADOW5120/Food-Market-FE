@@ -142,7 +142,7 @@ export function VoucherCard({ voucher, onApply, compact = false }: VoucherCardPr
             : 'bg-primary text-primary-foreground hover:bg-primary'
         }`}
       >
-        {isLoading ? 'Applying...' : isApplied ? 'âœ“ Applied' : isExpired ? 'Expired' : 'Apply Voucher'}
+        {isLoading ? 'Applying...' : isApplied ? '✓ Applied' : isExpired ? 'Expired' : 'Apply Voucher'}
       </button>
     </div>
   );

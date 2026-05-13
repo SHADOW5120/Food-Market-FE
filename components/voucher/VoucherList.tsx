@@ -1,5 +1,6 @@
 'use client';
 
+import { Ticket } from 'lucide-react';
 import { VoucherCard } from './VoucherCard';
 import { useVoucher } from '@/lib/voucher-context';
 import { Voucher } from '@/lib/types';
@@ -55,7 +56,9 @@ export function VoucherList({
   if (activeVouchers.length === 0 && showEmptyState) {
     return (
       <div className={`text-center py-8 ${className}`}>
-        <div className="text-4xl mb-4">🎫</div>
+        <div className="text-muted-foreground mb-4 flex items-center justify-center">
+          <Ticket className="w-12 h-12" />
+        </div>
         <h3 className="text-lg font-semibold text-foreground mb-2">No Active Vouchers</h3>
         <p className="text-muted-foreground">{emptyStateMessage}</p>
       </div>

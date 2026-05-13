@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { Inbox } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
@@ -155,7 +156,9 @@ export default function OrdersPage() {
         {/* Orders Table */}
         {filteredOrders.length === 0 ? (
           <div className="bg-card rounded-lg shadow border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-12 text-center">
-            <p className="text-2xl mb-2">ðŸ“­</p>
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
+              <Inbox className="h-6 w-6" />
+            </div>
             <p className="text-muted-foreground">No orders found</p>
             {searchQuery || statusFilter !== 'All' ? (
               <button

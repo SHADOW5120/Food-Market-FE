@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { CheckCircle2 } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
@@ -119,8 +120,9 @@ export function CartSummary() {
       {/* Info */}
       {!isEmpty && (
         <div className="mt-4 pt-4 border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]">
-          <p className="text-xs text-muted-foreground text-center">
-            âœ“ Free delivery on orders above $50
+          <p className="text-xs text-muted-foreground text-center inline-flex items-center justify-center gap-2">
+            <CheckCircle2 className="w-3 h-3 text-success" />
+            Free delivery on orders above $50
           </p>
         </div>
       )}

@@ -1,5 +1,6 @@
 'use client';
 
+import { X } from 'lucide-react';
 import Link from 'next/link';
 
 interface RequireAuthModalProps {
@@ -19,7 +20,7 @@ export function RequireAuthModal({ isOpen, onClose }: RequireAuthModalProps) {
           className="absolute right-4 top-4 rounded-full bg-muted p-2 text-muted-foreground hover:bg-muted"
           aria-label="Close"
         >
-          ×
+          <X className="h-4 w-4" />
         </button>
 
         <div className="space-y-4 pt-2">

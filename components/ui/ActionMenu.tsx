@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { HelpCircle, LogIn, LogOut, Moon, Package, Settings, ShoppingCart, Sun, User, UserPlus, Heart } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/useTheme';
 import { Avatar } from './Avatar';
@@ -76,18 +77,20 @@ export function ActionMenu() {
                   <Link
                     href="/login"
                     onClick={handleClose}
-                    className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
                   >
-                    🔑 Login
+                    <LogIn className="w-4 h-4" />
+                    Login
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/register"
                     onClick={handleClose}
-                    className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
                   >
-                    ✍️ Register
+                    <UserPlus className="w-4 h-4" />
+                    Register
                   </Link>
                 </li>
                 <li>
@@ -105,26 +108,29 @@ export function ActionMenu() {
                   <Link
                     href="/profile"
                     onClick={handleClose}
-                    className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
                   >
-                    👤 Profile
+                    <User className="w-4 h-4" />
+                    Profile
                   </Link>
                 </li>
                 <li>
                   <Link
                     href="/profile/edit"
                     onClick={handleClose}
-                    className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
                   >
-                    ⚙️ Account Settings
+                    <Settings className="w-4 h-4" />
+                    Account Settings
                   </Link>
                 </li>
                 <li>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-destructive transition-colors"
+                    className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-destructive transition-colors flex items-center gap-2"
                   >
-                    🚪 Logout
+                    <LogOut className="w-4 h-4" />
+                    Logout
                   </button>
                 </li>
                 <li>
@@ -142,27 +148,30 @@ export function ActionMenu() {
               <Link
                 href="/cart"
                 onClick={handleClose}
-                className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
               >
-                🛒 Cart
+                <ShoppingCart className="w-4 h-4" />
+                Cart
               </Link>
             </li>
             <li>
               <Link
                 href="/favorites"
                 onClick={handleClose}
-                className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
               >
-                ❤️ Favorites
+                <Heart className="w-4 h-4" />
+                Favorites
               </Link>
             </li>
             <li>
               <Link
                 href="/orders"
                 onClick={handleClose}
-                className="block px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
               >
-                📦 Orders
+                <Package className="w-4 h-4" />
+                Orders
               </Link>
             </li>
             <li>
@@ -179,17 +188,23 @@ export function ActionMenu() {
                 onClick={() => {
                   toggleTheme();
                 }}
-                className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors flex items-center gap-2"
               >
-                {theme === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode'}
+                {theme === 'dark' ? (
+                  <Moon className="w-4 h-4" />
+                ) : (
+                  <Sun className="w-4 h-4" />
+                )}
+                {theme === 'dark' ? 'Dark Mode' : 'Light Mode'}
               </button>
             </li>
             <li>
               <button
                 onClick={handleClose}
-                className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                className="w-full text-left px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors flex items-center gap-2"
               >
-                ❓ Help & Support
+                <HelpCircle className="w-4 h-4" />
+                Help & Support
               </button>
             </li>
           </ul>

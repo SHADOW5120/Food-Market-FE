@@ -2,6 +2,7 @@
 
 export const dynamic = 'force-dynamic';
 
+import { CheckCircle2, AlertTriangle, Mail } from 'lucide-react';
 import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -66,19 +67,7 @@ function OrderSuccessContent() {
           {error ? (
             <>
               <div className="w-16 h-16 rounded-full bg-destructive flex items-center justify-center mx-auto mb-4">
-                <svg
-                  className="w-8 h-8 text-destructive"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <AlertTriangle className="w-8 h-8 text-destructive" />
               </div>
               <h1 className="text-3xl font-bold text-foreground mb-2">Something Went Wrong</h1>
               <p className="text-destructive mb-4">{error}</p>
@@ -86,21 +75,9 @@ function OrderSuccessContent() {
           ) : (
             <>
               <div className="w-16 h-16 rounded-full bg-success flex items-center justify-center mx-auto mb-4 animate-bounce">
-                <svg
-                  className="w-8 h-8 text-success"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <CheckCircle2 className="w-8 h-8 text-success" />
               </div>
-              <h1 className="text-3xl font-bold text-foreground mb-2">Order Placed Successfully! ðŸŽ‰</h1>
+              <h1 className="text-3xl font-bold text-foreground mb-2">Order Placed Successfully!</h1>
               <p className="text-muted-foreground text-lg">Thank you for your order. We're preparing it now.</p>
             </>
           )}
@@ -180,9 +157,12 @@ function OrderSuccessContent() {
         {/* Additional Info */}
         {!error && (
           <div className="mt-8 bg-muted rounded-lg p-4 border border-muted/50">
-            <p className="text-sm text-foreground">
-              ðŸ“§ A confirmation email has been sent to <strong>{order?.customer.email}</strong>. You'll receive updates about your order status via email.
-            </p>
+            <div className="flex items-start gap-2 text-sm text-foreground">
+              <Mail className="h-4 w-4 shrink-0 text-success" />
+              <span>
+                A confirmation email has been sent to <strong>{order?.customer.email}</strong>. You'll receive updates about your order status via email.
+              </span>
+            </div>
           </div>
         )}
       </div>

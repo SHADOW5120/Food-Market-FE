@@ -1,9 +1,11 @@
 ﻿'use client';
 
+import type { ReactNode } from 'react';
+
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: string;
+  icon: ReactNode;
   trend?: { value: number; direction: 'up' | 'down' };
   onClick?: () => void;
 }
@@ -29,7 +31,7 @@ export function StatCard({ title, value, icon, trend, onClick }: StatCardProps) 
                     : 'text-destructive'
                 }
               >
-                {trend.direction === 'up' ? 'â†‘' : 'â†“'} {Math.abs(trend.value)}%
+                {trend.direction === 'up' ? '↑' : '↓'} {Math.abs(trend.value)}%
               </span>
               <span className="text-muted-foreground ml-1">this month</span>
             </div>

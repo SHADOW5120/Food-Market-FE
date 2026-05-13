@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { ArrowRight, Lightbulb } from 'lucide-react';
 import { useState } from 'react';
 import { VoucherInput } from './VoucherInput';
 import { VoucherList } from './VoucherList';
@@ -68,8 +69,9 @@ export function VoucherSection({
         <div className="bg-primary-50 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-accent-800">
-                ðŸ’¡ {activeVouchers.length} voucher{activeVouchers.length !== 1 ? 's' : ''} available
+              <p className="text-sm font-medium text-accent-800 flex items-center gap-2">
+                <Lightbulb className="w-4 h-4" />
+                {activeVouchers.length} voucher{activeVouchers.length !== 1 ? 's' : ''} available
               </p>
               <p className="text-xs text-primary mt-1">
                 Save up to {Math.max(...activeVouchers.map(v =>
@@ -79,9 +81,10 @@ export function VoucherSection({
             </div>
             <button
               onClick={() => setShowAllVouchers(true)}
-              className="text-primary hover:text-primary text-sm font-medium underline"
+              className="text-primary hover:text-primary text-sm font-medium underline inline-flex items-center gap-2"
             >
-              View all â†’
+              View all
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>

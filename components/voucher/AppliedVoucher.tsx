@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { CheckCircle2 } from 'lucide-react';
 import { useVoucher } from '@/lib/voucher-context';
 
 interface AppliedVoucherProps {
@@ -30,9 +31,7 @@ export function AppliedVoucher({ className = '', showRemoveButton = true }: Appl
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-success rounded-full flex items-center justify-center">
-            <svg className="w-5 h-5 text-success-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
+            <CheckCircle2 className="w-5 h-5 text-success-foreground" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -42,7 +41,7 @@ export function AppliedVoucher({ className = '', showRemoveButton = true }: Appl
               </code>
             </div>
             <p className="text-sm text-success">
-              {appliedVoucher.name} â€¢ {formatDiscount()} â€¢ You saved ${discountAmount.toFixed(2)}
+              {appliedVoucher.name} • {formatDiscount()} • You saved ${discountAmount.toFixed(2)}
             </p>
           </div>
         </div>

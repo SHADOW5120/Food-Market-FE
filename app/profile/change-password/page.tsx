@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { AlertTriangle, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -56,14 +57,16 @@ export default function ChangePasswordPage() {
           onClick={() => router.push('/profile')}
           className="text-primary hover:text-primary font-semibold transition-colors flex items-center gap-2 mb-4"
         >
-          â† Back to Profile
+          <ChevronLeft className="w-4 h-4" />
+          Back to Profile
         </button>
       </div>
 
       {/* Error Message */}
       {errorMessage && (
-        <div className="max-w-2xl mx-auto mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm font-medium">
-          âš ï¸ {errorMessage}
+        <div className="max-w-2xl mx-auto mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm font-medium flex items-center gap-2">
+          <AlertTriangle className="w-5 h-5" />
+          {errorMessage}
         </div>
       )}
 

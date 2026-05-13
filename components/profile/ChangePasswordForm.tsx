@@ -101,7 +101,7 @@ export function ChangePasswordForm({ onSuccess, onError }: ChangePasswordFormPro
 
       {successMessage && (
         <div className="mb-6 p-4 bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg text-success text-sm font-medium">
-          âœ“ {successMessage}
+          ✓ {successMessage}
         </div>
       )}
 
@@ -162,7 +162,7 @@ export function ChangePasswordForm({ onSuccess, onError }: ChangePasswordFormPro
                   <ul className="space-y-1">
                     {passwordStrength.feedback.map((item, index) => (
                       <li key={index} className="flex items-center gap-2">
-                        <span className="text-muted-foreground">â€¢</span>
+                        <span className="text-muted-foreground">•</span>
                         {item}
                       </li>
                     ))}
@@ -193,11 +193,11 @@ export function ChangePasswordForm({ onSuccess, onError }: ChangePasswordFormPro
             <strong>Password Requirements:</strong>
           </p>
           <ul className="text-sm text-secondary space-y-1">
-            <li>âœ“ At least 8 characters long</li>
-            <li>âœ“ Contains uppercase letter</li>
-            <li>âœ“ Contains lowercase letter</li>
-            <li>âœ“ Contains number</li>
-            <li>âœ“ Contains special character</li>
+            <li>✓ At least 8 characters long</li>
+            <li>✓ Contains uppercase letter</li>
+            <li>✓ Contains lowercase letter</li>
+            <li>✓ Contains number</li>
+            <li>✓ Contains special character</li>
           </ul>
         </div>
 
