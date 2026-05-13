@@ -186,10 +186,8 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage',
       partialize: (state) => ({
-        user: state.user,
         accessToken: state.accessToken,
-        role: state.role,
-        isAuthenticated: state.isAuthenticated,
+        intendedRoute: state.intendedRoute,
       }),
       onRehydrateStorage: () => (state, error) => {
         if (error) {
@@ -197,8 +195,13 @@ export const useAuthStore = create<AuthState>()(
         }
 
         if (state) {
+          // The persisted access token may still be invalid.
+          // Do not trust persisted auth state until it is revalidated.
           state.hasHydrated = true;
           state.isLoading = false;
+          state.isAuthenticated = false;
+          state.user = null;
+          state.role = null;
         }
       },
     }

@@ -44,10 +44,12 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    // Wait until auth store is rehydrated and user auth is verified.
+    // This prevents stale or invalid persisted auth state from triggering unauthorized API calls.
     if (!hasHydrated || !isAuthenticated) return;
 
     loadFavorites();
-  }, [hasHydrated, isAuthenticated]);
+  }, [hasHydrated, isAuthenticated, loadFavorites]);
 
   const isFavorited = (productId: string): boolean => {
     return favoriteIds.has(productId);

@@ -7,6 +7,7 @@ import { OrderProvider } from "@/lib/order-context";
 import { VoucherProvider } from '@/lib/voucher-context';
 import { ThemeProvider } from '@/lib/useTheme';
 import { Navbar } from '@/components/ui/Navbar';
+import { PageTransition } from '@/components/ui/PageTransition';
 import { AppToaster } from '@/components/ui/shadcn/toast';
 import './globals.css';
 
@@ -34,6 +35,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
@@ -44,7 +46,9 @@ export default function RootLayout({
                 <OrderProvider>
                   <VoucherProvider>
                     <Navbar />
-                    <main className="flex-1">{children}</main>
+                    <main className="flex-1 pt-16 md:pt-20">
+                      <PageTransition>{children}</PageTransition>
+                    </main>
                     <AppToaster />
                   </VoucherProvider>
                 </OrderProvider>

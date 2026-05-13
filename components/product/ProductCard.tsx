@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/lib/types';
@@ -11,11 +12,15 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <Link
-      href={`/products/${product.id}`}
-      className="group bg-card rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] hover:scale-[1.02] hover:-translate-y-1"
+    <motion.article
+      layout
+      initial={false} // Prevent initial animation on mount
+      whileHover={{ y: -6, scale: 1.01, boxShadow: '0 28px 90px rgba(15, 23, 42, 0.16)' }}
+      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+      className="group overflow-hidden rounded-[1.75rem] border border-[color:hsl(var(--border))] bg-card/95 shadow-[0_10px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl"
     >
-      <div className="aspect-square relative overflow-hidden bg-muted">
+      <Link href={`/products/${product.id}`} className="block">
+        <div className="aspect-square relative overflow-hidden bg-muted">
         {/* Favorite Button */}
         <div className="absolute top-2 right-2 z-10">
           <FavoriteButton product={product} size="md" variant="icon" />
@@ -26,7 +31,7 @@ export function ProductCard({ product }: ProductCardProps) {
             src={product.image}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
@@ -45,7 +50,7 @@ export function ProductCard({ product }: ProductCardProps) {
         )}
       </div>
 
-      <div className="p-4">
+          <div className="p-4">
         <div className="flex items-start justify-between mb-2">
           <h3 className="font-semibold text-foreground text-lg leading-tight line-clamp-2 group-hover:text-accent transition-colors">
             {product.name}
@@ -71,6 +76,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
       </div>
     </Link>
+    </motion.article>
   );
 }
 
