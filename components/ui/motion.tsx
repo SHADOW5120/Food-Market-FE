@@ -14,12 +14,12 @@ export const sectionStagger: Variants = {
 };
 
 export const fadeInUp: Variants = {
-  hidden: { opacity: 0, y: 28 },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.7,
+      duration: 0.6,
       ease: [0.22, 1, 0.36, 1],
     },
   },
@@ -30,8 +30,20 @@ export const subtleFade: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      duration: 0.55,
+      duration: 0.4,
       ease: 'easeOut',
+    },
+  },
+};
+
+export const gentleSlideUp: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.22, 1, 0.36, 1],
     },
   },
 };

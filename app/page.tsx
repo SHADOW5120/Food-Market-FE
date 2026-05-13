@@ -13,7 +13,7 @@ import { HeroCTA } from '@/components/home/HeroCTA';
 import { CTASection } from '@/components/home/CTASection';
 import { productApi, categoryApi } from '@/lib/api';
 import { Product, Category, ProductsResponse, CategoriesResponse } from '@/lib/types';
-import { fadeInUp, sectionStagger } from '@/components/ui/motion';
+import { fadeInUp, sectionStagger, gentleSlideUp } from '@/components/ui/motion';
 
 const heroGlow = {
   background: 'radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.16), transparent 32%), radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.12), transparent 28%)',
@@ -66,26 +66,25 @@ export default function HomePage() {
           <motion.div
             variants={sectionStagger}
             initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2, margin: "-50px" }}
+            animate="visible"
             className="text-center"
           >
-            <motion.h2 variants={fadeInUp} className="text-4xl md:text-6xl font-bold text-foreground mb-6 tracking-tight">
+            <motion.h2 variants={gentleSlideUp} className="text-4xl md:text-6xl font-bold text-foreground mb-6 tracking-tight">
               Delicious food,<br />
               <span className="text-primary">delivered beautifully.</span>
             </motion.h2>
-            <motion.p variants={fadeInUp} className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-8">
+            <motion.p variants={gentleSlideUp} className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-8">
               Discover amazing dishes from your favorite restaurants with premium delivery, elegant design, and effortless ordering.
             </motion.p>
 
             {/* Search Bar */}
-            <motion.div variants={fadeInUp} className="mx-auto mb-10 max-w-md">
+            <motion.div variants={gentleSlideUp} className="mx-auto mb-10 max-w-md">
               <Suspense fallback={<div className="h-12 bg-muted rounded-lg animate-pulse"></div>}>
                 <SearchBar />
               </Suspense>
             </motion.div>
 
-            <motion.div variants={fadeInUp} className="mx-auto max-w-fit">
+            <motion.div variants={gentleSlideUp} className="mx-auto max-w-fit">
               <Suspense fallback={<div className="h-12 w-48 bg-muted rounded-lg animate-pulse mx-auto" />}>
                 <HeroCTA />
               </Suspense>
@@ -103,7 +102,7 @@ export default function HomePage() {
         className="py-12 bg-gradient-to-r from-warning/10 to-primary border-y border-[color:hsl(var(--border))]"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div variants={fadeInUp} className="text-center mb-8">
+          <motion.div variants={gentleSlideUp} className="text-center mb-8">
             <h2 className="text-2xl font-bold text-foreground mb-2 flex items-center justify-center gap-2">
               <span className="inline-flex items-center justify-center rounded-full bg-warning/20 p-2">
                 <Ticket className="w-5 h-5 text-warning" />
@@ -113,7 +112,7 @@ export default function HomePage() {
             <p className="text-muted-foreground">Save on your favorite dishes with our exclusive vouchers</p>
           </motion.div>
 
-          <motion.div variants={fadeInUp} className="max-w-4xl mx-auto">
+          <motion.div variants={gentleSlideUp} className="max-w-4xl mx-auto">
             <VoucherList
               compact={true}
               showEmptyState={false}
@@ -132,7 +131,7 @@ export default function HomePage() {
         className="py-16 bg-muted"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div variants={fadeInUp} className="text-center mb-12">
+          <motion.div variants={gentleSlideUp} className="text-center mb-12">
             <h3 className="text-3xl font-bold text-foreground mb-4">Explore Categories</h3>
             <p className="text-muted-foreground">Find exactly what you&apos;re craving</p>
           </motion.div>
@@ -187,7 +186,7 @@ export default function HomePage() {
         className="py-16"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div variants={fadeInUp} className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-12">
+          <motion.div variants={gentleSlideUp} className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-12">
             <div>
               <h3 className="text-3xl font-bold text-foreground mb-2">Featured Dishes</h3>
               <p className="text-muted-foreground">Most popular and highly rated</p>
@@ -233,13 +232,13 @@ export default function HomePage() {
         className="bg-primary py-16"
       >
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <motion.h3 variants={fadeInUp} className="text-3xl font-bold text-primary-foreground mb-4">
+          <motion.h3 variants={gentleSlideUp} className="text-3xl font-bold text-primary-foreground mb-4">
             Ready to Order?
           </motion.h3>
-          <motion.p variants={fadeInUp} className="text-accent/80 mb-8 text-lg">
+          <motion.p variants={gentleSlideUp} className="text-accent/80 mb-8 text-lg">
             Join thousands of satisfied customers enjoying delicious food.
           </motion.p>
-          <motion.div variants={fadeInUp}>
+          <motion.div variants={gentleSlideUp}>
             <Suspense fallback={<div className="flex gap-4 justify-center"><div className="h-12 w-40 bg-muted rounded-lg animate-pulse" /><div className="h-12 w-40 bg-muted rounded-lg animate-pulse" /></div>}>
               <CTASection />
             </Suspense>
