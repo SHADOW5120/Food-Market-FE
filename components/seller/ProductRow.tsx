@@ -4,14 +4,7 @@ import { Package } from 'lucide-react';
 import Link from 'next/link';
 import { StatusBadge } from './StatusBadge';
 
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image?: string;
-  status: 'available' | 'unavailable';
-  category: string;
-}
+import { Product } from '@/lib/types';
 
 interface ProductRowProps {
   product: Product;
@@ -38,7 +31,7 @@ export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowPr
           )}
           <div>
             <p className="font-semibold text-foreground">{product.name}</p>
-            <p className="text-sm text-muted-foreground">{product.category}</p>
+            <p className="text-sm text-muted-foreground">{product.categoryId}</p>
           </div>
         </div>
       </td>

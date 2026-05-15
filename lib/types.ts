@@ -198,8 +198,64 @@ export interface Order {
   total: number;
   status: 'pending' | 'confirmed' | 'delivering' | 'completed' | 'cancelled';
   notes?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+/**
+ * Seller-specific types (seller extends user with role: 'seller')
+ * A seller can have many stores, each store has many products
+ */
+
+export interface SellerDashboardStats {
+  totalOrders: number;
+  totalRevenue: number;
+  totalProducts: number;
+  activeProducts: number;
+  averageRating: number;
+  totalCustomers: number;
+  pendingOrders: number;
+  completedOrders: number;
+}
+
+export interface SellerAnalytics {
+  date: string;
+  revenue: number;
+  orders: number;
+  customers: number;
+  products: number;
+}
+
+export interface SellerRegisterPayload {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface UpdateOrderStatusPayload {
+  status: 'pending' | 'confirmed' | 'delivering' | 'completed' | 'cancelled';
+  notes?: string;
+}
+
+export interface SellerNotification {
+  id: string;
+  type: 'order' | 'review' | 'message' | 'system';
+  title: string;
+  message: string;
+  read: boolean;
   createdAt: string;
-  estimatedDelivery?: string;
+}
+
+export interface UpdateSellerProfilePayload {
+  storeName?: string;
+  description?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  logo?: File;
+  coverImage?: File;
 }
 
 export interface UpdateOrderStatusPayload {

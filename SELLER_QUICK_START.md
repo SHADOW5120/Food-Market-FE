@@ -1,53 +1,275 @@
-# Seller Dashboard - Quick Start Guide
+# Seller Portal - Quick Start Guide
 
-## 🚀 Five-Minute Setup
+## 🚀 Getting Started
 
-### 1. Access the Dashboard
-```
-Navigate to: http://localhost:3000/seller
-(After logging in)
-```
+### 1. Seller Registration
+**URL**: `/seller-auth/register`
 
-### 2. What You See
+Fill in all required information:
+- **Personal Info**: Username, Email, Password
+- **Store Info**: Store Name
+- **Contact**: Phone Number
+- **Address**: Street, City, State, ZIP
 
-#### Dashboard Page (`/seller`)
-- 4 metric cards showing store performance
-- Recent orders overview
-- Quick action buttons
+### 2. Seller Login
+**URL**: `/seller-auth/login`
 
-#### Products Page (`/seller/products`)
-- List of all your products
-- Search and filter functionality
-- Add/Edit/Delete buttons
-
-#### Orders Page (`/seller/orders`)
-- List of all customer orders
-- Search and status filter
-- View details button
+After registration, login with:
+- Email
+- Password
+- Optional: "Remember me"
 
 ---
 
-## 📍 Navigation
+## 📊 Main Seller Portal Features
 
-### Menu Items
-- **📊 Dashboard** - Overview & stats
-- **📦 Products** - Manage your products
-- **📋 Orders** - Track customer orders
+### Dashboard (`/seller/dashboard`)
+Your home page showing:
+- **Total Orders**: Quick access to all orders
+- **Revenue**: Total sales amount
+- **Products**: Total product count
+- **Rating**: Your store average rating
 
-### Quick Links
-- Click stat cards to navigate to details pages
-- "View Details" buttons take you to order pages
-- "Add Product" button creates new products
+### Charts & Metrics
+- **Revenue Trend**: 30-day sales visualization
+- **Order Status**: Distribution of pending, confirmed, delivering, completed orders
+- **Recent Orders**: Last 5 orders with quick access
+- **Quick Actions**: Add products, view orders, check analytics
 
 ---
 
-## 🎯 Common Tasks
+## 📦 Product Management
 
-### Add a New Product
-1. Go to `/seller/products`
-2. Click "Add Product" button
-3. Fill in product details:
-   - Name
+### View All Products (`/seller/products`)
+- Search products by name
+- Filter by status: Draft, Active, Inactive, Out of Stock
+- View product details: image, price, stock, sold count, status
+- Actions: View, Edit, Delete products
+- Pagination support
+
+### Add New Product (`/seller/products/new`)
+Required fields:
+- **Name**: Product name
+- **Description**: Product details
+- **Price**: Product price in dollars
+- **Stock**: Quantity available
+- **Category**: Pizza, Burgers, Desserts, Drinks, Other
+- **Status**: Draft (hidden) or Active (published)
+- **Image**: Optional product image
+
+### Edit Product
+- Update any product field
+- Change status
+- Modify pricing and stock
+- Replace product image
+
+### Delete Product
+- Removes product from your store
+- Orders with deleted products are preserved
+
+---
+
+## 📋 Order Management
+
+### View Orders (`/seller/orders`)
+- See all customer orders
+- Search by Order ID or Customer Name
+- Filter by status: Pending, Confirmed, Delivering, Completed, Cancelled
+- View customer name, email, order date, and total
+- Pagination support
+
+### Order Details (`/seller/orders/[id]`)
+View complete order information:
+- **Order Items**: Each item with image, quantity, and subtotal
+- **Customer Info**: Name, email, phone, delivery address
+- **Order Summary**: Subtotal, tax, delivery fee, total
+- **Order Status**: Current status display
+- **Update Status**: Change order status and add notes
+
+Status progression:
+1. **Pending** - New order received
+2. **Confirmed** - Order confirmed and being prepared
+3. **Delivering** - Order is being delivered
+4. **Completed** - Order received by customer
+5. **Cancelled** - Order cancelled
+
+---
+
+## 📈 Analytics (`/seller/analytics`)
+
+### Time Period Selection
+- **Week**: Last 7 days
+- **Month**: Last 30 days
+- **Year**: Last 12 months
+
+### Key Metrics
+- **Total Revenue**: Sum of all sales
+- **Total Orders**: Number of orders received
+- **Average Order Value**: Revenue divided by orders
+- **Conversion Rate**: Percentage of completed sales
+
+### Charts
+- **Revenue Trend**: Line chart showing daily sales
+- **Top Products**: Bar chart of best-selling items
+
+### Detailed Insights
+- **Customer Insights**: Total, repeat, and new customers
+- **Order Status**: Breakdown of pending, completed, cancelled orders
+
+---
+
+## ⚙️ Store Settings (`/seller/settings`)
+
+### Store Profile
+- **Logo**: Your store logo/branding
+- **Store Name**: Name visible to customers
+- **Description**: Store description and details
+
+### Contact Information
+- **Phone**: Store phone number
+
+### Address Information
+- **Address**: Street address
+- **City, State, ZIP**: Location details
+
+### Save Changes
+- All changes are saved to your store profile
+- Updates visible to customers immediately
+
+---
+
+## 🔐 Navigation & Security
+
+### Sidebar Navigation
+Quick access to all sections:
+1. **Dashboard** - Home page
+2. **Products** - Manage your products
+3. **Orders** - Manage customer orders
+4. **Analytics** - View sales insights
+5. **Settings** - Update store profile
+6. **Logout** - Exit seller portal
+
+### Mobile Menu
+- Tap floating menu button (bottom right)
+- Access all navigation items
+- Click to expand/collapse
+
+### Protected Routes
+All seller pages are protected. You must:
+- Be logged in as a seller
+- Have a valid JWT token
+- Attempting to access customer pages will redirect you
+
+---
+
+## 💡 Tips & Best Practices
+
+### Product Management
+✅ **DO:**
+- Add high-quality product images
+- Write detailed descriptions
+- Keep stock accurate
+- Use appropriate categories
+- Archive instead of delete (saves order history)
+
+❌ **DON'T:**
+- Leave products as "Draft" if you want sales
+- Use misleading descriptions
+- Set unrealistic prices
+- Ignore low stock warnings
+
+### Order Management
+✅ **DO:**
+- Update order status promptly
+- Communicate with customers
+- Process refunds fairly
+- Keep accurate records
+
+❌ **DON'T:**
+- Ignore pending orders
+- Cancel confirmed orders without reason
+- Delay status updates
+- Ignore customer messages
+
+### Analytics Review
+✅ **DO:**
+- Check analytics weekly
+- Analyze top-performing products
+- Track revenue trends
+- Monitor customer feedback
+
+❌ **DON'T:**
+- Ignore declining sales
+- Skip monthly review
+- Ignore low ratings
+- Forget to update inventory
+
+---
+
+## ❓ Common Questions
+
+### Q: How do I add a product?
+A: Go to Products → Add Product → Fill form → Upload image → Create
+
+### Q: How do I update an order status?
+A: Orders → Select order → Change status in dropdown → Update Status
+
+### Q: How do I delete a product?
+A: Products → Select product → Click delete → Confirm deletion
+
+### Q: Where can I see my earnings?
+A: Analytics → View total revenue and trends
+
+### Q: How do I update my store info?
+A: Settings → Modify store details → Save Changes
+
+### Q: Can I recover a deleted product?
+A: Currently, deletion is permanent. Always review before deleting.
+
+### Q: How often is analytics data updated?
+A: Analytics are updated in real-time as orders are received.
+
+### Q: What file formats are supported for images?
+A: PNG, JPG, GIF (Max 5MB)
+
+---
+
+## 🔗 Quick Links
+
+| Page | URL |
+|------|-----|
+| Seller Login | `/seller-auth/login` |
+| Seller Register | `/seller-auth/register` |
+| Dashboard | `/seller/dashboard` |
+| Products | `/seller/products` |
+| Add Product | `/seller/products/new` |
+| Orders | `/seller/orders` |
+| Analytics | `/seller/analytics` |
+| Settings | `/seller/settings` |
+
+---
+
+## 📧 Support
+
+For issues or questions:
+1. Check this guide first
+2. Review the implementation documentation
+3. Check error messages in the UI (toast notifications)
+4. Verify all required fields are filled correctly
+
+---
+
+## 🎯 Success Metrics
+
+Track your seller success:
+- ✅ Monitor revenue trends
+- ✅ Track order count growth
+- ✅ Maintain high customer ratings
+- ✅ Keep products up to date
+- ✅ Respond to customer messages promptly
+- ✅ Update inventory regularly
+
+Happy selling! 🎉
    - Description
    - Price
    - Category

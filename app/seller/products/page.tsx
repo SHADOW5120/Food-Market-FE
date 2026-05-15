@@ -1,59 +1,54 @@
 ﻿'use client';
 
 import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { SellerLayout } from '@/components/seller/SellerLayout';
 import { ProductRow } from '@/components/seller/ProductRow';
 import { Button } from '@/components/auth/Button';
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  image?: string;
-  status: 'available' | 'unavailable';
-  category: string;
-}
+import { sellerApi } from '@/lib/api';
+import { Product } from '@/lib/types';
+import toast from 'react-hot-toast';
 
 export default function ProductsPage() {
   const { user } = useAuth();
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'available' | 'unavailable'>('all');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // Mock data - replace with API call
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: '1',
-      name: 'Margherita Pizza',
-      price: 12.99,
-      image: undefined,
-      status: 'available',
-      category: 'Pizza',
-    },
-    {
-      id: '2',
-      name: 'Caesar Salad',
-      price: 8.99,
-      image: undefined,
-      status: 'available',
-      category: 'Salad',
-    },
-    {
-      id: '3',
-      name: 'Burger Combo',
-      price: 15.99,
-      image: undefined,
-      status: 'unavailable',
-      category: 'Burgers',
-    },
-  ]);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const status = filterStatus === 'all' ? undefined : filterStatus;
+        const response = await sellerApi.getSellerProducts(currentPage, 10, status);
+        
+        if (response.success && response.data) {
+          setProducts(response.data.items);
+          setTotalPages(response.data.totalPages);
+        } else {
+          toast.error('Failed to load products');
+        }
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+        toast.error('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchProducts();
+    }
+  }, [user, filterStatus, currentPage]);
 
   const filteredProducts = products
-    .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    .filter((p) => filterStatus === 'all' || p.status === filterStatus);
+    .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const handleAddProduct = () => {
     router.push('/seller/products/new');
@@ -63,18 +58,43 @@ export default function ProductsPage() {
     router.push(`/seller/products/${id}`);
   };
 
-  const handleDelete = (id: string) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      const response = await sellerApi.deleteSellerProduct(id);
+      if (response.success) {
+        setProducts((prev) => prev.filter((p) => p.id !== id));
+        toast.success('Product deleted successfully');
+      } else {
+        toast.error('Failed to delete product');
+      }
+    } catch (error) {
+      console.error('Failed to delete product:', error);
+      toast.error('Failed to delete product');
+    }
   };
 
-  const handleToggle = (id: string) => {
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === id
-          ? { ...p, status: p.status === 'available' ? 'unavailable' : 'available' }
-          : p
-      )
-    );
+  const handleToggle = async (id: string) => {
+    const product = products.find(p => p.id === id);
+    if (!product) return;
+
+    const newStatus = product.status === 'available' ? 'unavailable' : 'available';
+    
+    try {
+      const response = await sellerApi.updateSellerProduct(id, { status: newStatus });
+      if (response.success) {
+        setProducts((prev) =>
+          prev.map((p) =>
+            p.id === id ? { ...p, status: newStatus } : p
+          )
+        );
+        toast.success('Product status updated');
+      } else {
+        toast.error('Failed to update product status');
+      }
+    } catch (error) {
+      console.error('Failed to update product status:', error);
+      toast.error('Failed to update product status');
+    }
   };
 
   if (!user) {
@@ -132,11 +152,16 @@ export default function ProductsPage() {
         </div>
 
         {/* Products Table */}
-        {filteredProducts.length > 0 ? (
-          <div className="bg-card rounded-lg shadow border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] overflow-hidden">
+        {loading ? (
+          <div className="bg-card rounded-lg shadow border border-border p-8 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="text-muted-foreground mt-2">Loading products...</p>
+          </div>
+        ) : filteredProducts.length > 0 ? (
+          <div className="bg-card rounded-lg shadow border border-border overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-muted border-b border-[color:hsl(var(--border))]">
+                <thead className="bg-muted border-b border-border">
                   <tr>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                       Product
@@ -167,7 +192,7 @@ export default function ProductsPage() {
             </div>
           </div>
         ) : (
-          <div className="bg-card rounded-lg shadow p-12 text-center border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]">
+          <div className="bg-card rounded-lg shadow p-12 text-center border border-border">
             <p className="text-muted-foreground text-lg mb-4">No products found</p>
             <Button onClick={handleAddProduct} variant="primary">
               Add your first product

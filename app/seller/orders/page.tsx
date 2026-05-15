@@ -1,22 +1,14 @@
 ﻿'use client';
 
 import { Inbox } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { SellerLayout } from '@/components/seller/SellerLayout';
 import { StatusBadge } from '@/components/seller/StatusBadge';
-
-interface Order {
-  id: string;
-  orderNumber: string;
-  customer: string;
-  email: string;
-  total: number;
-  status: 'pending' | 'confirmed' | 'delivering' | 'completed';
-  items: number;
-  date: string;
-}
+import { sellerApi } from '@/lib/api';
+import { Order } from '@/lib/types';
+import toast from 'react-hot-toast';
 
 const mockOrders: Order[] = [
   {
@@ -75,16 +67,46 @@ const statusOptions = ['All', 'pending', 'confirmed', 'delivering', 'completed']
 
 export default function OrdersPage() {
   const { user } = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [newStatus, setNewStatus] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const status = statusFilter === 'All' ? undefined : statusFilter;
+        const response = await sellerApi.getSellerOrders(currentPage, 10, status);
+        
+        if (response.success && response.data) {
+          setOrders(response.data.items);
+          setTotalPages(response.data.totalPages);
+        } else {
+          toast.error('Failed to load orders');
+        }
+      } catch (error) {
+        console.error('Failed to fetch orders:', error);
+        toast.error('Failed to load orders');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user) {
+      fetchOrders();
+    }
+  }, [user, statusFilter, currentPage]);
 
   const filteredOrders = useMemo(() => {
-    return mockOrders.filter((order) => {
+    return orders.filter((order) => {
       const matchesSearch =
-        order.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        order.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        order.customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
         order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesStatus = statusFilter === 'All' || order.status === statusFilter;
@@ -96,16 +118,20 @@ export default function OrdersPage() {
   const handleStatusUpdate = async (orderId: string) => {
     if (!newStatus) return;
     try {
-      // TODO: Replace with actual API call
-      // await updateOrderStatus(orderId, newStatus);
-      
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      setSelectedOrder(null);
-      setNewStatus('');
-      // Update would happen here in real implementation
+      const response = await sellerApi.updateOrderStatus(orderId, { status: newStatus as Order['status'] });
+      if (response.success) {
+        setOrders(prev => prev.map(order => 
+          order.id === orderId ? { ...order, status: newStatus as Order['status'] } : order
+        ));
+        toast.success('Order status updated successfully');
+        setSelectedOrder(null);
+        setNewStatus('');
+      } else {
+        toast.error('Failed to update order status');
+      }
     } catch (error) {
-      console.error('Failed to update order status');
+      console.error('Failed to update order status:', error);
+      toast.error('Failed to update order status');
     }
   };
 
@@ -154,7 +180,12 @@ export default function OrdersPage() {
         </div>
 
         {/* Orders Table */}
-        {filteredOrders.length === 0 ? (
+        {loading ? (
+          <div className="bg-card rounded-lg shadow border border-border p-8 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="text-muted-foreground mt-2">Loading orders...</p>
+          </div>
+        ) : filteredOrders.length === 0 ? (
           <div className="bg-card rounded-lg shadow border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-12 text-center">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
               <Inbox className="h-6 w-6" />
@@ -209,11 +240,11 @@ export default function OrdersPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div>
-                          <p className="text-sm font-medium text-foreground">{order.customer}</p>
-                          <p className="text-xs text-muted-foreground">{order.email}</p>
+                          <p className="text-sm font-medium text-foreground">{order.customer.name}</p>
+                          <p className="text-xs text-muted-foreground">{order.customer.email}</p>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-muted-foreground">{order.items} items</td>
+                      <td className="px-6 py-4 text-sm text-muted-foreground">{order.items.length} items</td>
                       <td className="px-6 py-4 text-sm font-semibold text-foreground">
                         ${order.total.toFixed(2)}
                       </td>
@@ -221,7 +252,7 @@ export default function OrdersPage() {
                         <StatusBadge status={order.status} />
                       </td>
                       <td className="px-6 py-4 text-sm text-muted-foreground">
-                        {new Date(order.date).toLocaleDateString()}
+                        {new Date(order.createdAt || Date.now()).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 text-sm space-y-2">
                         <div className="flex gap-2">

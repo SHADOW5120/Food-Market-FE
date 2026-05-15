@@ -25,6 +25,17 @@ import {
   UpdateReviewPayload,
   ApiResponse,
   UserProfile,
+  SellerRegisterPayload,
+  SellerDashboardStats,
+  SellerAnalytics,
+  CreateProductPayload,
+  UpdateProductPayload,
+  UpdateOrderStatusPayload,
+  Order,
+  Store,
+  SellerNotification,
+  PaginatedResponse,
+  Product,
 } from './types';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api';
@@ -291,6 +302,113 @@ export const reviewApi = {
   markReviewHelpful: async (reviewId: string) => apiClient.post<ApiResponse<null>>(`/reviews/${reviewId}/helpful`, undefined, undefined, { authRequired: true }),
 };
 
+// Seller Auth API functions
+export const sellerAuthApi = {
+  register: async (payload: SellerRegisterPayload): Promise<AuthLoginResponse> => {
+    return apiClient.post('/seller/auth/register', payload);
+  },
+
+  login: async (payload: { email: string; password: string }): Promise<AuthLoginResponse> => {
+    return apiClient.post('/seller/auth/login', payload);
+  },
+};
+
+// Seller Dashboard API functions
+export const sellerApi = {
+  // Dashboard
+  getDashboardStats: async (): Promise<ApiResponse<SellerDashboardStats>> => 
+    apiClient.get('/seller/dashboard/stats', undefined, { authRequired: true }),
+  
+  getAnalytics: async (period: 'week' | 'month' | 'year' = 'month'): Promise<ApiResponse<SellerAnalytics[]>> => 
+    apiClient.get(`/seller/dashboard/analytics?period=${period}`, undefined, { authRequired: true }),
+
+  // Products (use existing Product type with storeId)
+  getSellerProducts: async (page = 1, limit = 10, status?: string): Promise<PaginatedResponse<Product>> => {
+    const params = new URLSearchParams();
+    params.append('page', String(page));
+    params.append('limit', String(limit));
+    if (status) params.append('status', status);
+    return apiClient.get(`/seller/products?${params}`, undefined, { authRequired: true });
+  },
+
+  getSellerProductById: async (productId: string): Promise<ApiResponse<Product>> => 
+    apiClient.get(`/seller/products/${productId}`, undefined, { authRequired: true }),
+
+  createSellerProduct: async (data: CreateProductPayload) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        if ((value as any) instanceof File) {
+          formData.append(key, value as unknown as File);
+        } else {
+          formData.append(key, String(value));
+        }
+      }
+    });
+    return apiClient.postForm<ApiResponse<Product>>('/seller/products', formData, undefined, { authRequired: true });
+  },
+
+  updateSellerProduct: async (productId: string, data: UpdateProductPayload) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        if ((value as any) instanceof File) {
+          formData.append(key, value as unknown as File);
+        } else {
+          formData.append(key, String(value));
+        }
+      }
+    });
+    return apiClient.postForm<ApiResponse<Product>>(`/seller/products/${productId}`, formData, undefined, { authRequired: true });
+  },
+
+  deleteSellerProduct: async (productId: string): Promise<ApiResponse<null>> => 
+    apiClient.delete(`/seller/products/${productId}`, undefined, { authRequired: true }),
+
+  // Orders
+  getSellerOrders: async (page = 1, limit = 10, status?: string): Promise<PaginatedResponse<Order>> => {
+    const params = new URLSearchParams();
+    params.append('page', String(page));
+    params.append('limit', String(limit));
+    if (status) params.append('status', status);
+    return apiClient.get(`/seller/orders?${params}`, undefined, { authRequired: true });
+  },
+
+  getSellerOrderById: async (orderId: string): Promise<ApiResponse<Order>> => 
+    apiClient.get(`/seller/orders/${orderId}`, undefined, { authRequired: true }),
+
+  updateOrderStatus: async (orderId: string, data: UpdateOrderStatusPayload): Promise<ApiResponse<Order>> => 
+    apiClient.put(`/seller/orders/${orderId}/status`, data, undefined, { authRequired: true }),
+
+  // Store Profile (use existing Store type)
+  getStore: async (storeId: string): Promise<ApiResponse<Store>> => 
+    apiClient.get(`/seller/stores/${storeId}`, undefined, { authRequired: true }),
+
+  getStores: async (): Promise<ApiResponse<Store[]>> => 
+    apiClient.get('/seller/stores', undefined, { authRequired: true }),
+
+  updateStore: async (storeId: string, data: Partial<Store>) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        if ((value as any) instanceof File) {
+          formData.append(key, value as unknown as File);
+        } else {
+          formData.append(key, String(value));
+        }
+      }
+    });
+    return apiClient.postForm<ApiResponse<Store>>(`/seller/stores/${storeId}`, formData, undefined, { authRequired: true });
+  },
+
+  // Notifications
+  getNotifications: async (): Promise<ApiResponse<SellerNotification[]>> => 
+    apiClient.get('/seller/notifications', undefined, { authRequired: true }),
+
+  markNotificationAsRead: async (notificationId: string): Promise<ApiResponse<null>> => 
+    apiClient.put(`/seller/notifications/${notificationId}/read`, {}, undefined, { authRequired: true }),
+};
+
 // Top-level convenience export helpers
 export const login = authApi.login;
 export const register = authApi.register;
@@ -298,6 +416,10 @@ export const forgotPassword = authApi.forgotPassword;
 export const resetPassword = authApi.resetPassword;
 
 export const getProducts = productApi.getProducts;
+
+// Seller convenience exports
+export const sellerLogin = sellerAuthApi.login;
+export const sellerRegister = sellerAuthApi.register;
 export const getProductById = productApi.getProduct;
 export const getCategories = categoryApi.getCategories;
 
