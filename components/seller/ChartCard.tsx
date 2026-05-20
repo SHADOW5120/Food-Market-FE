@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { fadeInUp } from '@/components/ui/motion';
 
 interface ChartCardProps {
   title: string;
@@ -12,9 +13,9 @@ interface ChartCardProps {
 export function ChartCard({ title, children, isLoading = false }: ChartCardProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={fadeInUp}
+      initial="hidden"
+      animate="visible"
       className="bg-card rounded-xl shadow-sm border border-border p-6"
     >
       <h3 className="text-lg font-bold text-foreground mb-4">{title}</h3>

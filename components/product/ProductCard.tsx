@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { motion } from 'framer-motion';
+import { cardHover } from '@/components/ui/motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/lib/types';
@@ -15,8 +16,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <motion.article
       layout
       initial={false} // Prevent initial animation on mount
-      whileHover={{ y: -6, scale: 1.01, boxShadow: '0 28px 90px rgba(15, 23, 42, 0.16)' }}
-      transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+      {...cardHover}
       className="group overflow-hidden rounded-[1.75rem] border border-[color:hsl(var(--border))] bg-card/95 shadow-[0_10px_40px_rgba(15,23,42,0.08)] backdrop-blur-xl"
     >
       <Link href={`/products/${product.id}`} className="block">

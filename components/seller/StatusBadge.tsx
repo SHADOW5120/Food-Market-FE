@@ -2,6 +2,7 @@
 
 interface StatusBadgeProps {
   status: 'pending' | 'confirmed' | 'delivering' | 'completed' | 'cancelled' | 'available' | 'unavailable';
+  size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
@@ -15,11 +16,17 @@ const statusConfig = {
   unavailable: { bg: 'bg-muted', text: 'text-foreground', label: 'Unavailable' },
 };
 
-export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
+export function StatusBadge({ status, size = 'md', className = '' }: StatusBadgeProps) {
   const config = statusConfig[status];
+  const sizeClasses =
+    size === 'sm'
+      ? 'px-2 py-0.5 text-xs'
+      : size === 'lg'
+      ? 'px-4 py-1.5 text-base'
+      : 'px-3 py-1 text-sm';
 
   return (
-    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${config.bg} ${config.text} ${className}`}>
+    <span className={`inline-flex items-center rounded-full font-semibold ${sizeClasses} ${config.bg} ${config.text} ${className}`}>
       {config.label}
     </span>
   );

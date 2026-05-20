@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import { Inbox } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { SellerLayout } from '@/components/seller/SellerLayout';
@@ -9,59 +9,6 @@ import { StatusBadge } from '@/components/seller/StatusBadge';
 import { sellerApi } from '@/lib/api';
 import { Order } from '@/lib/types';
 import toast from 'react-hot-toast';
-
-const mockOrders: Order[] = [
-  {
-    id: '1',
-    orderNumber: '#ORD-001',
-    customer: 'John Doe',
-    email: 'john@example.com',
-    total: 45.99,
-    status: 'pending',
-    items: 3,
-    date: '2024-03-21',
-  },
-  {
-    id: '2',
-    orderNumber: '#ORD-002',
-    customer: 'Jane Smith',
-    email: 'jane@example.com',
-    total: 62.50,
-    status: 'confirmed',
-    items: 2,
-    date: '2024-03-20',
-  },
-  {
-    id: '3',
-    orderNumber: '#ORD-003',
-    customer: 'Mike Johnson',
-    email: 'mike@example.com',
-    total: 28.99,
-    status: 'delivering',
-    items: 1,
-    date: '2024-03-20',
-  },
-  {
-    id: '4',
-    orderNumber: '#ORD-004',
-    customer: 'Sarah Williams',
-    email: 'sarah@example.com',
-    total: 89.00,
-    status: 'completed',
-    items: 4,
-    date: '2024-03-19',
-  },
-  {
-    id: '5',
-    orderNumber: '#ORD-005',
-    customer: 'Robert Brown',
-    email: 'robert@example.com',
-    total: 34.50,
-    status: 'pending',
-    items: 2,
-    date: '2024-03-19',
-  },
-];
 
 const statusOptions = ['All', 'pending', 'confirmed', 'delivering', 'completed'];
 

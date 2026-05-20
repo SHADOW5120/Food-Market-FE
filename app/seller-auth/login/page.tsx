@@ -12,26 +12,7 @@ import { useAuthNavigation } from '@/lib/hooks';
 import { validateEmail } from '@/lib/validators';
 import { Mail, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4 },
-  },
-};
+import { sectionStagger, fadeInUp } from '@/components/ui/motion';
 
 export default function SellerLoginPage() {
   const router = useRouter();
@@ -118,12 +99,12 @@ export default function SellerLoginPage() {
       <motion.form
         onSubmit={handleSubmit}
         className="space-y-5"
-        variants={containerVariants}
+        variants={sectionStagger}
         initial="hidden"
         animate="visible"
       >
         {/* Email Input */}
-        <motion.div variants={itemVariants}>
+        <motion.div variants={fadeInUp}>
           <Input
             label="Email"
             name="email"
@@ -139,7 +120,7 @@ export default function SellerLoginPage() {
         </motion.div>
 
         {/* Password Input */}
-        <motion.div variants={itemVariants}>
+        <motion.div variants={fadeInUp}>
           <Input
             label="Password"
             name="password"
@@ -155,7 +136,7 @@ export default function SellerLoginPage() {
         </motion.div>
 
         {/* Remember Me & Forgot Password */}
-        <motion.div variants={itemVariants} className="flex items-center justify-between">
+        <motion.div variants={fadeInUp} className="flex items-center justify-between">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -175,19 +156,18 @@ export default function SellerLoginPage() {
         </motion.div>
 
         {/* Submit Button */}
-        <motion.div variants={itemVariants} className="pt-2">
+        <motion.div variants={fadeInUp} className="pt-2">
           <Button
             type="submit"
             disabled={isLoading}
             className="w-full"
-            size="lg"
           >
             {isLoading ? 'Logging in...' : 'Login to Dashboard'}
           </Button>
         </motion.div>
 
         {/* Register Link */}
-        <motion.div variants={itemVariants} className="text-center">
+        <motion.div variants={fadeInUp} className="text-center">
           <p className="text-sm text-muted-foreground">
             Don't have a seller account?{' '}
             <Link href="/seller-auth/register" className="text-primary hover:underline font-medium">
@@ -197,7 +177,7 @@ export default function SellerLoginPage() {
         </motion.div>
 
         {/* Regular User Link */}
-        <motion.div variants={itemVariants} className="text-center pt-2 border-t border-muted">
+        <motion.div variants={fadeInUp} className="text-center pt-2 border-t border-muted">
           <p className="text-xs text-muted-foreground mb-2">
             Shopping as a customer?
           </p>

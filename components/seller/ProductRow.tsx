@@ -39,7 +39,7 @@ export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowPr
         ${product.price.toFixed(2)}
       </td>
       <td className="px-6 py-4">
-        <StatusBadge status={product.status} />
+        <StatusBadge status={product.status ?? 'unavailable'} />
       </td>
       <td className="px-6 py-4 text-sm space-x-2">
         <button

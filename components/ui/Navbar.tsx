@@ -1,9 +1,10 @@
 'use client';
 
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, ShoppingBag } from 'lucide-react';
+import { accordionVariants, buttonMotion, fadeInUp } from './motion';
 import { useAuthStore } from '@/lib/auth-store';
 import { ActionMenu } from './ActionMenu';
 
@@ -32,12 +33,13 @@ export function Navbar() {
 
   return (
     <motion.header
-      initial={false} // Prevent initial animation on mount
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      variants={fadeInUp}
+      initial="hidden"
+      animate="visible"
       style={{
         height: headerHeight,
         backdropFilter: `blur(${headerBlur}px)`,
+        opacity: headerOpacity,
       }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
@@ -49,21 +51,18 @@ export function Navbar() {
         <div className="flex justify-between items-center h-full">
           <Link href="/" className="flex items-center gap-3 flex-shrink-0">
             <ShoppingBag className="w-8 h-8 text-primary-foreground" />
-            <motion.h1
-              animate={{ fontSize: isScrolled ? '1.25rem' : '1.5rem' }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
-              className="font-bold text-foreground"
+            <h1
+              className={`font-bold text-foreground transition-all duration-200 ease-out ${isScrolled ? 'text-[1.25rem]' : 'text-[1.5rem]'}`}
             >
               Food Market
-            </motion.h1>
+            </h1>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/" className="group">
               <motion.span
-                whileHover={{ y: -1 }}
-                transition={{ type: 'spring', stiffness: 240, damping: 22 }}
+                {...buttonMotion}
                 className="text-muted-foreground hover:text-accent font-medium transition-colors"
               >
                 Home
@@ -71,13 +70,14 @@ export function Navbar() {
             </Link>
             <Link href="/products" className="group">
               <motion.span
-                whileHover={{ y: -1 }}
-                transition={{ type: 'spring', stiffness: 240, damping: 22 }}
+                {...buttonMotion}
                 className="text-muted-foreground hover:text-accent font-medium transition-colors"
               >
                 Menu
               </motion.span>
             </Link>
+
+
 
             {hasHydrated && role === 'seller' && (
               <Link href="/seller" className="text-muted-foreground hover:text-accent font-medium transition-colors">
@@ -89,23 +89,25 @@ export function Navbar() {
           </nav>
 
           {/* Mobile menu button */}
-          <button
+          <motion.button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
+            {...buttonMotion}
             className="md:hidden p-2 rounded-md text-muted-foreground hover:text-accent transition-colors"
           >
             <Menu className="w-6 h-6" />
-          </button>
+          </motion.button>
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="md:hidden border-t border-white/10 py-4 overflow-hidden"
-          >
+        <AnimatePresence initial={false}>
+          {isMenuOpen && (
+            <motion.div
+              variants={accordionVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="md:hidden border-t border-white/10 py-4 overflow-hidden"
+            >
             <nav className="flex flex-col gap-4">
               <Link
                 href="/"
@@ -121,6 +123,8 @@ export function Navbar() {
               >
                 Menu
               </Link>
+
+
 
               {hasHydrated && role === 'seller' && (
                 <Link
@@ -139,7 +143,8 @@ export function Navbar() {
               )}
             </nav>
           </motion.div>
-        )}
+          )}
+        </AnimatePresence>
       </div>
     </motion.header>
   );

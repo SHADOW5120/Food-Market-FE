@@ -14,15 +14,9 @@ import { Button } from '@/components/auth/Button';
 import { sellerApi } from '@/lib/api';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import toast from 'react-hot-toast';
+import type { SellerDashboardStats } from '@/lib/types';
 
-interface DashboardStats {
-  totalOrders: number;
-  revenue: number;
-  totalProducts: number;
-  activeProducts: number;
-  avgRating: number;
-  totalCustomers: number;
-}
+interface DashboardStats extends SellerDashboardStats {}
 
 export default function SellerDashboard() {
   const { user } = useAuth();
@@ -30,11 +24,13 @@ export default function SellerDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats>({
     totalOrders: 0,
-    revenue: 0,
+    totalRevenue: 0,
     totalProducts: 0,
     activeProducts: 0,
-    avgRating: 4.8,
+    averageRating: 4.8,
     totalCustomers: 0,
+    pendingOrders: 0,
+    completedOrders: 0,
   });
 
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
@@ -106,28 +102,24 @@ export default function SellerDashboard() {
               icon={<ShoppingCart className="w-6 h-6 text-success" />}
               trend={{ value: 12, direction: 'up' }}
               onClick={() => router.push('/seller/orders')}
-              isLoading={isLoading}
             />
             <StatCard
               title="Revenue"
-              value={`$${stats.revenue.toLocaleString()}`}
+              value={`$${stats.totalRevenue.toLocaleString()}`}
               icon={<DollarSign className="w-6 h-6 text-success" />}
               trend={{ value: 8, direction: 'up' }}
-              isLoading={isLoading}
             />
             <StatCard
               title="Products"
               value={stats.totalProducts}
               icon={<Package className="w-6 h-6 text-primary" />}
               onClick={() => router.push('/seller/products')}
-              isLoading={isLoading}
             />
             <StatCard
               title="Avg Rating"
-              value={stats.avgRating}
+              value={stats.averageRating}
               icon={<Star className="w-6 h-6 text-yellow-500" />}
               trend={{ value: 2, direction: 'up' }}
-              isLoading={isLoading}
             />
           </div>
 
@@ -161,7 +153,7 @@ export default function SellerDashboard() {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold text-foreground">Recent Orders</h2>
               <Link href="/seller/orders">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="outline" className="gap-2">
                   View All
                   <ArrowRight className="w-4 h-4" />
                 </Button>

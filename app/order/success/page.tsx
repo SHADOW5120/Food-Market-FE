@@ -97,11 +97,15 @@ function OrderSuccessContent() {
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Order Date</p>
                     <p className="text-lg font-semibold text-foreground">
-                      {new Date(order.createdAt).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                      {order.createdAt ? (
+                        new Date(order.createdAt).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
+                      ) : (
+                        'Unknown date'
+                      )}
                     </p>
                   </div>
                 </div>

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { fadeInUp } from '@/components/ui/motion';
 import { ShoppingBag } from 'lucide-react';
 
 interface AuthCardProps {
@@ -11,23 +12,11 @@ interface AuthCardProps {
   imageSrc?: string;
 }
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-};
-
 export function AuthCard({ children, title, subtitle, imageSrc }: AuthCardProps) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <motion.div
-        variants={cardVariants}
+        variants={fadeInUp}
         initial="hidden"
         animate="visible"
         className="flex w-full max-w-5xl gap-8 lg:gap-0"

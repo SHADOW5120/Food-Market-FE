@@ -97,7 +97,7 @@ export default function OrderDetailPage() {
   }
 
   const order = currentOrder;
-  const orderDate = new Date(order.createdAt);
+  const orderDate = order.createdAt ? new Date(order.createdAt) : null;
 
   return (
     <ProtectedRoute>
@@ -109,11 +109,15 @@ export default function OrderDetailPage() {
               <div>
                 <h1 className="text-3xl font-bold text-muted-foreground">Order #{order.orderNumber}</h1>
                 <p className="text-muted-foreground mt-1">
-                  {orderDate.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
+                  {orderDate ? (
+                    orderDate.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })
+                  ) : (
+                    'Unknown date'
+                  )}
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -211,7 +215,9 @@ export default function OrderDetailPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-muted-foreground">Order Placed</p>
-                      <p className="text-xs text-muted-foreground">{orderDate.toLocaleDateString()}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {orderDate ? orderDate.toLocaleDateString() : 'Unknown date'}
+                      </p>
                     </div>
                   </div>
 

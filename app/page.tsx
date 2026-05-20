@@ -13,7 +13,7 @@ import { HeroCTA } from '@/components/home/HeroCTA';
 import { CTASection } from '@/components/home/CTASection';
 import { productApi, categoryApi } from '@/lib/api';
 import { Product, Category, ProductsResponse, CategoriesResponse } from '@/lib/types';
-import { fadeInUp, sectionStagger, gentleSlideUp } from '@/components/ui/motion';
+import { fadeInUp, sectionStagger, gentleSlideUp, subtleFade } from '@/components/ui/motion';
 
 const heroGlow = {
   background: 'radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.16), transparent 32%), radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.12), transparent 28%)',
@@ -25,6 +25,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const { scrollYProgress } = useScroll();
   const heroYOffset = useTransform(scrollYProgress, [0, 0.3], [0, 24]);
+  const heroInitial = 'hidden';
 
   useEffect(() => {
     const loadData = async () => {
@@ -65,7 +66,7 @@ export default function HomePage() {
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             variants={sectionStagger}
-            initial="hidden"
+            initial={heroInitial}
             animate="visible"
             className="text-center"
           >
@@ -73,7 +74,7 @@ export default function HomePage() {
               Delicious food,<br />
               <span className="text-primary">delivered beautifully.</span>
             </motion.h2>
-            <motion.p variants={gentleSlideUp} className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-8">
+            <motion.p variants={subtleFade} className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-8">
               Discover amazing dishes from your favorite restaurants with premium delivery, elegant design, and effortless ordering.
             </motion.p>
 
@@ -84,7 +85,7 @@ export default function HomePage() {
               </Suspense>
             </motion.div>
 
-            <motion.div variants={gentleSlideUp} className="mx-auto max-w-fit">
+            <motion.div variants={subtleFade} className="mx-auto max-w-fit">
               <Suspense fallback={<div className="h-12 w-48 bg-muted rounded-lg animate-pulse mx-auto" />}>
                 <HeroCTA />
               </Suspense>

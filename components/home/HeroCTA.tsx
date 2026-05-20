@@ -3,12 +3,7 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-
-const buttonMotion = {
-  whileHover: { y: -3, scale: 1.02 },
-  whileTap: { scale: 0.98 },
-  transition: { type: 'spring', stiffness: 260, damping: 24 },
-};
+import { btnMotion, buttonMotion, subtleFade } from '@/components/ui/motion';
 
 export function HeroCTA() {
   const { isAuthenticated, hasHydrated } = useAuth();
@@ -22,8 +17,8 @@ export function HeroCTA() {
 
   if (isAuthenticated) {
     return (
-      <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}>
-        <motion.div {...buttonMotion} className="inline-flex rounded-lg">
+      <motion.div variants={subtleFade} initial="hidden" animate="visible">
+        <motion.div {...btnMotion} className="inline-flex rounded-lg">
           <Link
             href="/products"
             className="inline-flex items-center px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary transition-colors"
@@ -39,8 +34,8 @@ export function HeroCTA() {
   }
 
   return (
-    <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }} className="flex flex-col sm:flex-row gap-4 justify-center">
-      <motion.div {...buttonMotion} className="inline-flex rounded-lg">
+    <motion.div variants={subtleFade} initial="hidden" animate="visible" className="flex flex-col sm:flex-row gap-4 justify-center">
+      <motion.div {...btnMotion} className="inline-flex rounded-lg">
         <Link
           href="/register"
           className="inline-flex items-center px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary transition-colors"
@@ -62,6 +57,7 @@ export function HeroCTA() {
           </svg>
         </Link>
       </motion.div>
+
     </motion.div>
   );
 }

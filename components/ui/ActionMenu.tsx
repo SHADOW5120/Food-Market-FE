@@ -94,6 +94,16 @@ export function ActionMenu() {
                   </Link>
                 </li>
                 <li>
+                  <Link
+                    href="/seller-auth/login"
+                    onClick={handleClose}
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    Seller Login
+                  </Link>
+                </li>
+                <li>
                   <div className="border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] my-1"></div>
                 </li>
               </>

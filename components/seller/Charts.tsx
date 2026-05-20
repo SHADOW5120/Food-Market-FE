@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { barGrow } from '@/components/ui/motion';
 
 interface SimpleChartData {
   label: string;
@@ -20,23 +21,27 @@ export function SimpleBarChart({ data, height = 300 }: SimpleBarChartProps) {
   return (
     <div className="w-full" style={{ height }}>
       <div className="flex items-end justify-around gap-4 h-full">
-        {data.map((item, index) => (
-          <motion.div
-            key={item.label}
-            initial={{ height: 0 }}
-            animate={{ height: `${(item.value / maxValue) * 100}%` }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-            className="flex flex-col items-center gap-2 flex-1"
-          >
-            <div
-              className={`w-full rounded-t-lg ${item.color || 'bg-primary'} hover:opacity-80 transition-opacity`}
-              title={`${item.label}: ${item.value}`}
-            />
-            <span className="text-xs font-medium text-muted-foreground text-center truncate">
-              {item.label}
-            </span>
-          </motion.div>
-        ))}
+        {data.map((item, index) => {
+          const heightPercent = (item.value / maxValue) * 100;
+          return (
+            <motion.div
+              key={item.label}
+              variants={barGrow}
+              custom={heightPercent}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-col items-center gap-2 flex-1"
+            >
+              <div
+                className={`w-full rounded-t-lg ${item.color || 'bg-primary'} hover:opacity-80 transition-opacity`}
+                title={`${item.label}: ${item.value}`}
+              />
+              <span className="text-xs font-medium text-muted-foreground text-center truncate">
+                {item.label}
+              </span>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );

@@ -109,26 +109,22 @@ export default function SellerAnalyticsPage() {
               value={`$${stats.totalRevenue.toLocaleString()}`}
               icon={<TrendingUp className="w-6 h-6 text-success" />}
               trend={{ value: 15, direction: 'up' }}
-              isLoading={isLoading}
             />
             <StatCard
               title="Total Orders"
               value={stats.totalOrders}
               icon={<BarChart3 className="w-6 h-6 text-primary" />}
               trend={{ value: 8, direction: 'up' }}
-              isLoading={isLoading}
             />
             <StatCard
               title="Average Order Value"
               value={`$${stats.averageOrderValue.toFixed(2)}`}
               icon={<PieChart className="w-6 h-6 text-blue-500" />}
-              isLoading={isLoading}
             />
             <StatCard
               title="Conversion Rate"
               value={`${stats.conversionRate}%`}
               icon={<Calendar className="w-6 h-6 text-yellow-500" />}
-              isLoading={isLoading}
             />
           </div>
 

@@ -26,6 +26,7 @@ export default function NewProductPage() {
     categoryId: '',
     storeId: '', // Will be set from user context
     status: 'available' as 'available' | 'unavailable',
+    stock: '',
     image: null as File | null,
   });
 
@@ -36,10 +37,11 @@ export default function NewProductPage() {
       try {
         const response = await sellerApi.getStores();
         if (response.success && response.data) {
-          setStores(response.data);
+          const stores = response.data;
+          setStores(stores);
           // Set default store if user has only one
-          if (response.data.length === 1) {
-            setFormData(prev => ({ ...prev, storeId: response.data[0].id }));
+          if (stores.length === 1 && stores[0]) {
+            setFormData(prev => ({ ...prev, storeId: stores[0].id }));
           }
         }
       } catch (error) {
@@ -128,8 +130,9 @@ export default function NewProductPage() {
         description: formData.description,
         price: parseFloat(formData.price),
         categoryId: formData.categoryId,
-        storeId: formData.storeId || user?.storeId || '', // Get from user context or form
+        storeId: formData.storeId,
         status: formData.status,
+        stock: formData.stock ? parseInt(formData.stock, 10) : undefined,
         image: formData.image || undefined,
       };
 
@@ -331,200 +334,6 @@ export default function NewProductPage() {
         </div>
       </SellerLayout>
     </ProtectedRoute>
-  );
-}
-
-  if (!user) {
-    return (
-      <SellerLayout>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Please log in as a seller</p>
-        </div>
-      </SellerLayout>
-    );
-  }
-
-  return (
-    <SellerLayout user={user}>
-      <div className="max-w-2xl mx-auto space-y-6">
-        {/* Header */}
-        <div>
-          <button
-            onClick={() => router.back()}
-            className="text-success hover:text-success font-semibold mb-4 flex items-center gap-2"
-          >
-            <ChevronLeft className="w-4 h-4" />
-            Back to Products
-          </button>
-          <h1 className="text-3xl font-bold text-foreground">Add New Product</h1>
-        </div>
-
-        {/* Error Messages */}
-        {errors.submit && (
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-destructive text-sm">
-            {errors.submit}
-          </div>
-        )}
-
-        {successMessage && (
-          <div className="bg-muted border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] rounded-lg p-4 text-success text-sm inline-flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4" />
-            {successMessage}
-          </div>
-        )}
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-card rounded-lg shadow p-6 border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] space-y-6">
-          {/* Image Upload */}
-          <div>
-            <label className="block text-sm font-semibold text-foreground mb-2">
-              Product Image
-            </label>
-            <div className="flex gap-6">
-              {/* Image Preview */}
-              <div className="w-32 h-32 rounded-lg bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
-                {imagePreview ? (
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <Package className="w-10 h-10 text-muted-foreground" />
-                )}
-              </div>
-
-              {/* Upload Area */}
-              <div className="flex-1">
-                <label className="flex flex-col items-center justify-center px-6 py-10 border-2 border-dashed border-[color:hsl(var(--border))] rounded-lg cursor-pointer hover:border-success hover:bg-muted transition-colors">
-                  <Camera className="w-10 h-10 mb-2 text-muted-foreground" />
-                  <span className="text-sm font-semibold text-foreground">
-                    Click to upload image
-                  </span>
-                  <span className="text-xs text-muted-foreground">PNG, JPG up to 5MB</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="hidden"
-                  />
-                </label>
-                {errors.image && <p className="text-sm text-destructive mt-2">{errors.image}</p>}
-              </div>
-            </div>
-          </div>
-
-          {/* Product Name */}
-          <Input
-            label="Product Name"
-            name="name"
-            placeholder="e.g., Margherita Pizza"
-            value={formData.name}
-            onChange={handleInputChange}
-            error={errors.name}
-            disabled={isLoading}
-          />
-
-          {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">
-              Description
-            </label>
-            <textarea
-              name="description"
-              placeholder="Describe your product..."
-              value={formData.description}
-              onChange={handleInputChange}
-              rows={4}
-              className={`w-full px-4 py-3 rounded-lg border-2 transition-colors focus:outline-none ${
-                errors.description
-                  ? 'border-destructive focus:border-destructive'
-                  : 'border-[color:hsl(var(--border))] focus:border-success'
-              }`}
-              disabled={isLoading}
-            />
-            {errors.description && (
-              <p className="text-sm text-destructive mt-2">{errors.description}</p>
-            )}
-          </div>
-
-          {/* Price & Category */}
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              label="Price"
-              name="price"
-              type="number"
-              placeholder="0.00"
-              value={formData.price}
-              onChange={handleInputChange}
-              error={errors.price}
-              disabled={isLoading}
-              step="0.01"
-              min="0"
-            />
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Category
-              </label>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-lg border-2 border-[color:hsl(var(--border))] focus:border-success focus:outline-none"
-                disabled={isLoading}
-              >
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Status */}
-          <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Status</label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="status"
-                  value="available"
-                  checked={formData.status === 'available'}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                />
-                <span className="text-sm text-foreground">Available</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="status"
-                  value="unavailable"
-                  checked={formData.status === 'unavailable'}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                />
-                <span className="text-sm text-foreground">Unavailable</span>
-              </label>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex gap-4 pt-4">
-            <Button type="submit" isLoading={isLoading} disabled={isLoading} fullWidth>
-              Add Product
-            </Button>
-            <button
-              type="button"
-              onClick={() => router.back()}
-              disabled={isLoading}
-              className="w-full px-4 py-3 bg-muted hover:bg-muted text-foreground rounded-lg font-semibold transition-colors disabled:opacity-50"
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </div>
-    </SellerLayout>
   );
 }
 

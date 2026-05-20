@@ -9,7 +9,7 @@ import { Button } from '@/components/auth/Button';
 import { Input } from '@/components/auth/Input';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { sellerApi } from '@/lib/api';
-import { SellerStore } from '@/lib/types';
+import { Store } from '@/lib/types';
 import toast from 'react-hot-toast';
 
 export default function SellerSettingsPage() {
@@ -18,7 +18,7 @@ export default function SellerSettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [store, setStore] = useState<SellerStore | null>(null);
+  const [store, setStore] = useState<Store | null>(null);
   const [formData, setFormData] = useState({
     storeName: '',
     description: '',
@@ -39,22 +39,23 @@ export default function SellerSettingsPage() {
   const loadStoreData = async () => {
     try {
       setIsLoading(true);
-      const response = await sellerApi.getStore();
+      const response = await sellerApi.getStores();
 
-      if (response.success && response.data) {
-        setStore(response.data);
+      if (response.success && response.data?.length) {
+        const storeData = response.data[0];
+        setStore(storeData);
         setFormData({
-          storeName: response.data.name,
-          description: response.data.description || '',
-          phone: response.data.phone,
-          address: response.data.address,
-          city: response.data.city,
-          state: response.data.state,
-          zip: response.data.zip,
+          storeName: storeData.name,
+          description: storeData.description || '',
+          phone: storeData.phone || '',
+          address: storeData.address || '',
+          city: storeData.city || '',
+          state: storeData.state || '',
+          zip: storeData.zip || '',
           logo: null,
         });
-        if (response.data.logo) {
-          setLogoPreview(response.data.logo);
+        if (storeData.logo) {
+          setLogoPreview(storeData.logo);
         }
       } else {
         toast.error('Failed to load store data');
@@ -136,10 +137,16 @@ export default function SellerSettingsPage() {
       return;
     }
 
+    if (!store) {
+      toast.error('Store not loaded yet');
+      return;
+    }
+
     setIsSaving(true);
 
     try {
-      const updateData: Partial<SellerStore> = {
+      type UpdateStoreData = Omit<Partial<Store>, 'logo'> & { logo?: string | File };
+      const updateData: UpdateStoreData = {
         name: formData.storeName,
         description: formData.description,
         phone: formData.phone,
@@ -150,11 +157,11 @@ export default function SellerSettingsPage() {
         logo: formData.logo || undefined,
       };
 
-      const response = await sellerApi.updateStore(updateData);
+      const response = await sellerApi.updateStore(store.id, updateData as any);
 
       if (response.success) {
         toast.success('Store settings updated successfully');
-        setStore(response.data);
+        setStore(response.data || null);
       } else {
         toast.error(response.message || 'Failed to update store settings');
       }

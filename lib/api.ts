@@ -387,7 +387,7 @@ export const sellerApi = {
   getStores: async (): Promise<ApiResponse<Store[]>> => 
     apiClient.get('/seller/stores', undefined, { authRequired: true }),
 
-  updateStore: async (storeId: string, data: Partial<Store>) => {
+  updateStore: async (storeId: string, data: Partial<Store> & { logo?: File | string }) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {

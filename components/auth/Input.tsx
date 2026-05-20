@@ -1,9 +1,23 @@
 'use client';
 
 import { InputHTMLAttributes, useState, forwardRef } from 'react';
+import { motion } from 'framer-motion';
+import { interactiveMotion } from '@/components/ui/motion';
 import { EyeIcon, EyeOffIcon } from './Icons';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+type MotionFriendlyInputAttributes = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  | 'onDrag'
+  | 'onDragStart'
+  | 'onDragEnd'
+  | 'onDragEnter'
+  | 'onDragExit'
+  | 'onDragLeave'
+  | 'onDragOver'
+  | 'onDrop'
+>;
+
+interface InputProps extends MotionFriendlyInputAttributes {
   label?: string;
   error?: string;
   icon?: React.ReactNode;
@@ -23,6 +37,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const [showPassword, setShowPassword] = useState(false);
+  const motionInputProps = props as any;
 
   const inputType = showPasswordToggle ? (showPassword ? 'text' : 'password') : type;
 
@@ -39,15 +54,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {icon}
           </div>
         )}
-        <input
+        <motion.input
           ref={ref}
           type={inputType}
+          {...interactiveMotion}
           className={`w-full px-4 ${icon ? 'pl-12' : ''} py-3 rounded-lg border-2 transition-colors duration-200 focus:outline-none ${
             error
               ? 'border-destructive focus:border-destructive'
               : 'border-[color:hsl(var(--border))] focus:border-primary'
           } bg-input text-foreground placeholder-muted-foreground`}
-          {...props}
+          {...motionInputProps}
         />
         {showPasswordToggle && (
           <button

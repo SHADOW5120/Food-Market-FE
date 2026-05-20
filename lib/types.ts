@@ -156,6 +156,7 @@ export interface CreateProductPayload {
   categoryId: string;
   storeId: string;
   status?: 'available' | 'unavailable';
+  stock?: number;
   image?: File;
 }
 
@@ -230,6 +231,12 @@ export interface SellerRegisterPayload {
   username: string;
   email: string;
   password: string;
+  storeName: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
 }
 
 export interface UpdateOrderStatusPayload {
@@ -561,6 +568,11 @@ export interface Store {
   logo: string;
   banner: string;
   description: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
   rating: number;
   deliveryTime?: string;
   productCount?: number;

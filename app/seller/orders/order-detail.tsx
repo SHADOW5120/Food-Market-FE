@@ -59,7 +59,7 @@ export default function SellerOrderDetailPage() {
         notes: `Order status updated to ${newStatus}`,
       });
 
-      if (response.success) {
+      if (response.success && response.data) {
         toast.success('Order status updated successfully');
         setOrder(response.data);
       } else {

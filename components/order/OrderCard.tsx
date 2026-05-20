@@ -10,17 +10,14 @@ interface OrderCardProps {
 }
 
 export function OrderCard({ order, className = '' }: OrderCardProps) {
-  const orderDate = new Date(order.createdAt);
-  const formattedDate = orderDate.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+  const orderDate = order.createdAt ? new Date(order.createdAt) : null;
+  const formattedDate = orderDate
+    ? orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    : '—';
 
-  const formattedTime = orderDate.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const formattedTime = orderDate
+    ? orderDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+    : '—';
 
   return (
     <Link href={`/orders/${order.id}`}>
