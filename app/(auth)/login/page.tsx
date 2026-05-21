@@ -14,6 +14,7 @@ import { useAuthStore } from '@/lib/auth-store';
 import { validateLoginForm } from '@/lib/validators';
 import { AuthLoginResponse } from '@/lib/types';
 import toast from 'react-hot-toast';
+import { USER_ROLES } from '@/lib/constants';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -84,7 +85,7 @@ export default function LoginPage() {
           router.push(intendedRoute);
         } else {
           // Role-based redirect
-          if (user.role === 'seller') {
+          if (user.role === USER_ROLES.USER) {
             router.push('/seller');
           } else {
             router.push('/');

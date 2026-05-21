@@ -2,17 +2,19 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { HelpCircle, LogIn, LogOut, Moon, Package, Settings, ShoppingCart, Sun, User, UserPlus, Heart } from 'lucide-react';
+import { HelpCircle, LogIn, LogOut, Moon, Package, Settings, ShoppingCart, Sun, User, UserPlus, Heart, BookDashed, LayoutDashboardIcon, Store, ListOrdered, LucideFolderOpen } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/useTheme';
 import { Avatar } from './Avatar';
 import toast from 'react-hot-toast';
+import { USER_ROLES } from '@/lib/constants';
 
 export function ActionMenu() {
   const { isAuthenticated, hasHydrated, user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const isSeller = user?.role === USER_ROLES.SELLER;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -94,16 +96,6 @@ export function ActionMenu() {
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/seller-auth/login"
-                    onClick={handleClose}
-                    className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    Seller Login
-                  </Link>
-                </li>
-                <li>
                   <div className="border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] my-1"></div>
                 </li>
               </>
@@ -148,51 +140,72 @@ export function ActionMenu() {
                 </li>
               </>
             )}
-
-            <li>
-              <div className="px-4 py-2 text-xs text-muted-foreground uppercase tracking-wide font-semibold">
-                Shopping
-              </div>
-            </li>
-            <li>
-              <Link
-                href="/cart"
-                onClick={handleClose}
-                className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
-              >
-                <ShoppingCart className="w-4 h-4" />
-                Cart
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/favorites"
-                onClick={handleClose}
-                className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
-              >
-                <Heart className="w-4 h-4" />
-                Favorites
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/orders"
-                onClick={handleClose}
-                className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
-              >
-                <Package className="w-4 h-4" />
-                Orders
-              </Link>
-            </li>
-            <li>
-              <div className="border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] my-1"></div>
-            </li>
-
-            <li>
-              <div className="px-4 py-2 text-xs text-muted-foreground uppercase tracking-wide font-semibold">
-                Settings
-              </div>
-            </li>
+            {isAuthenticated && isSeller && (
+              <>
+                <li>
+                  <div className="px-4 py-2 text-xs text-muted-foreground uppercase tracking-wide font-semibold">
+                    Seller
+                  </div>
+                </li>
+                <li>
+                  <Link
+                    href="/seller/products"
+                    onClick={handleClose}
+                    className='flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors'
+                    >
+                    <LayoutDashboardIcon className="w-4 h-4" />
+                    Store Management
+                  </Link>
+                </li>
+              </>
+            )}
+            {isAuthenticated && (
+              <>
+                <li>
+                  <div className="px-4 py-2 text-xs text-muted-foreground uppercase tracking-wide font-semibold">
+                    Shopping
+                  </div>
+                </li>
+                <li>
+                  <Link
+                    href="/cart"
+                    onClick={handleClose}
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Cart
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/favorites"
+                    onClick={handleClose}
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                  >
+                    <Heart className="w-4 h-4" />
+                    Favorites
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/orders"
+                    onClick={handleClose}
+                    className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted hover:text-accent transition-colors"
+                  >
+                    <Package className="w-4 h-4" />
+                    Orders
+                  </Link>
+                </li>
+                <li>
+                  <div className="border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] my-1"></div>
+                </li>
+                {/* <li>
+                  <div className="px-4 py-2 text-xs text-muted-foreground uppercase tracking-wide font-semibold">
+                    Settings
+                  </div>
+                </li> */}
+              </>
+            )}
             <li>
               <button
                 onClick={() => {

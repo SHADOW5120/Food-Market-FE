@@ -41,6 +41,15 @@ export const API_ENDPOINTS = {
 } as const;
 
 /**
+ * User roles
+ */
+export const USER_ROLES = {
+  ADMIN: 'Admin',
+  USER: 'User',
+  SELLER: 'Seller',
+} as const;
+
+/**
  * Route paths
  */
 export const ROUTES = {

@@ -2,7 +2,7 @@
  * Shared type definitions for the authentication system
  */
 
-export type UserRole = 'user' | 'seller' | 'admin';
+export type UserRole = 'User' | 'Seller' | 'Admin';
 
 export interface User {
   id: string;

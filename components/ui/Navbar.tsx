@@ -77,14 +77,6 @@ export function Navbar() {
               </motion.span>
             </Link>
 
-
-
-            {hasHydrated && role === 'seller' && (
-              <Link href="/seller" className="text-muted-foreground hover:text-accent font-medium transition-colors">
-                Seller Dashboard
-              </Link>
-            )}
-
             {hasHydrated && <ActionMenu />}
           </nav>
 
@@ -123,18 +115,6 @@ export function Navbar() {
               >
                 Menu
               </Link>
-
-
-
-              {hasHydrated && role === 'seller' && (
-                <Link
-                  href="/seller"
-                  className="text-muted-foreground hover:text-accent font-medium transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Seller Dashboard
-                </Link>
-              )}
 
               {hasHydrated && (
                 <div className="border-t border-white/10 pt-4 mt-4">

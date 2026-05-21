@@ -302,17 +302,6 @@ export const reviewApi = {
   markReviewHelpful: async (reviewId: string) => apiClient.post<ApiResponse<null>>(`/reviews/${reviewId}/helpful`, undefined, undefined, { authRequired: true }),
 };
 
-// Seller Auth API functions
-export const sellerAuthApi = {
-  register: async (payload: SellerRegisterPayload): Promise<AuthLoginResponse> => {
-    return apiClient.post('/seller/auth/register', payload);
-  },
-
-  login: async (payload: { email: string; password: string }): Promise<AuthLoginResponse> => {
-    return apiClient.post('/seller/auth/login', payload);
-  },
-};
-
 // Seller Dashboard API functions
 export const sellerApi = {
   // Dashboard
@@ -418,8 +407,6 @@ export const resetPassword = authApi.resetPassword;
 export const getProducts = productApi.getProducts;
 
 // Seller convenience exports
-export const sellerLogin = sellerAuthApi.login;
-export const sellerRegister = sellerAuthApi.register;
 export const getProductById = productApi.getProduct;
 export const getCategories = categoryApi.getCategories;
 

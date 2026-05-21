@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/lib/useTheme';
 import { Navbar } from '@/components/ui/Navbar';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { AppToaster } from '@/components/ui/shadcn/toast';
+import { Sidebar } from "@/components/seller/Sidebar";
 import './globals.css';
 
 const geistSans = Geist({
@@ -45,6 +46,7 @@ export default function RootLayout({
               <CartProvider>
                 <OrderProvider>
                   <VoucherProvider>
+                    <Sidebar />
                     <Navbar />
                     <main className="flex-1 pt-16 md:pt-20">
                       <PageTransition>{children}</PageTransition>
