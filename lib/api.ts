@@ -17,7 +17,6 @@ import {
   StoreProductsResponse,
   ProfileResponse,
   UpdateProfilePayload,
-  User,
   ChangePasswordPayload,
   ReviewsResponse,
   CreateReviewPayload,
@@ -25,7 +24,6 @@ import {
   UpdateReviewPayload,
   ApiResponse,
   UserProfile,
-  SellerRegisterPayload,
   SellerDashboardStats,
   SellerAnalytics,
   CreateProductPayload,
@@ -36,6 +34,8 @@ import {
   SellerNotification,
   PaginatedResponse,
   Product,
+  CreateStorePayload,
+  UpdateStorePayload,
 } from './types';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api';
@@ -370,25 +370,20 @@ export const sellerApi = {
     apiClient.put(`/seller/orders/${orderId}/status`, data, undefined, { authRequired: true }),
 
   // Store Profile (use existing Store type)
-  getStore: async (storeId: string): Promise<ApiResponse<Store>> => 
-    apiClient.get(`/seller/stores/${storeId}`, undefined, { authRequired: true }),
-
-  getStores: async (): Promise<ApiResponse<Store[]>> => 
+  getSellerStore: async (): Promise<ApiResponse<Store>> => 
     apiClient.get('/seller/stores', undefined, { authRequired: true }),
 
-  updateStore: async (storeId: string, data: Partial<Store> & { logo?: File | string }) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        if ((value as any) instanceof File) {
-          formData.append(key, value as unknown as File);
-        } else {
-          formData.append(key, String(value));
-        }
-      }
-    });
-    return apiClient.postForm<ApiResponse<Store>>(`/seller/stores/${storeId}`, formData, undefined, { authRequired: true });
-  },
+  getSellerStoreById: async (storeId: string): Promise<ApiResponse<Store>> => 
+    apiClient.get(`/seller/stores/${storeId}`, undefined, { authRequired: true }),
+
+  createSellerStore: async (data: CreateStorePayload): Promise<ApiResponse<Store>> => 
+    apiClient.post('/seller/stores', data, undefined, { authRequired: true }),
+
+  updateSellerStore: async (storeId: string, data: UpdateStorePayload): Promise<ApiResponse<Store>> => 
+    apiClient.put(`/seller/stores/${storeId}`, data, undefined, { authRequired: true }),
+
+  deleteSellerStore: async (storeId: string): Promise<ApiResponse<null>> => 
+    apiClient.delete(`/seller/stores/${storeId}`, undefined, { authRequired: true }),
 
   // Notifications
   getNotifications: async (): Promise<ApiResponse<SellerNotification[]>> => 
@@ -404,9 +399,8 @@ export const register = authApi.register;
 export const forgotPassword = authApi.forgotPassword;
 export const resetPassword = authApi.resetPassword;
 
+// User convenience exports
 export const getProducts = productApi.getProducts;
-
-// Seller convenience exports
 export const getProductById = productApi.getProduct;
 export const getCategories = categoryApi.getCategories;
 
@@ -433,4 +427,27 @@ export const createReview = reviewApi.createReview;
 export const updateReview = reviewApi.updateReview;
 export const deleteReview = reviewApi.deleteReview;
 export const markReviewHelpful = reviewApi.markReviewHelpful;
+
+// Seller convenience exports
+export const getDashboardStats = sellerApi.getDashboardStats;
+export const getAnalytics = sellerApi.getAnalytics;
+
+export const getSellerProducts = sellerApi.getSellerProducts;
+export const getSellerProductById = sellerApi.getSellerProductById;
+export const createSellerProduct = sellerApi.createSellerProduct;
+export const updateSellerProduct = sellerApi.updateSellerProduct;
+export const deleteSellerProduct = sellerApi.deleteSellerProduct;
+
+export const getSellerOrders = sellerApi.getSellerOrders;
+export const getSellerOrderById = sellerApi.getSellerOrderById;
+export const updateOrderStatus = sellerApi.updateOrderStatus;
+
+export const getSellerStore = sellerApi.getSellerStore;
+export const getSellerStoreById = sellerApi.getSellerStoreById;
+export const createSellerStore = sellerApi.createSellerStore;
+export const updateSellerStore = sellerApi.updateSellerStore;
+export const deleteSellerStore = sellerApi.deleteSellerStore;
+
+export const getNotifications = sellerApi.getNotifications;
+export const markNotificationAsRead = sellerApi.markNotificationAsRead;
 

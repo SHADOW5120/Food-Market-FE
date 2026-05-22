@@ -146,6 +146,34 @@ export interface ApiError {
 export type AuthStatus = 'idle' | 'loading' | 'success' | 'error';
 
 /**
+ * Seller/Store types for store management
+ */
+
+export interface CreateStorePayload {
+  name: string;
+  description: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  logo?: File;
+  coverImage?: File;
+}
+
+export interface UpdateStorePayload {
+  name?: string;
+  description?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zip?: string;
+  logo?: File;
+  coverImage?: File;
+}
+
+/**
  * Seller/Product types for store management
  */
 
