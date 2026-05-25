@@ -370,7 +370,7 @@ export const sellerApi = {
     apiClient.put(`/seller/orders/${orderId}/status`, data, undefined, { authRequired: true }),
 
   // Store Profile (use existing Store type)
-  getSellerStore: async (): Promise<ApiResponse<Store>> => 
+  getSellerStore: async (): Promise<ApiResponse<Store[]>> => 
     apiClient.get('/seller/stores', undefined, { authRequired: true }),
 
   getSellerStoreById: async (storeId: string): Promise<ApiResponse<Store>> => 

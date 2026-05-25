@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { HelpCircle, LogIn, LogOut, Moon, Package, Settings, ShoppingCart, Sun, User, UserPlus, Heart, BookDashed, LayoutDashboardIcon, Store, ListOrdered, LucideFolderOpen } from 'lucide-react';
+import { HelpCircle, LogIn, LogOut, Moon, Package, Settings, ShoppingCart, Sun, User, UserPlus, Heart, LayoutDashboardIcon } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { useTheme } from '@/lib/useTheme';
 import { Avatar } from './Avatar';

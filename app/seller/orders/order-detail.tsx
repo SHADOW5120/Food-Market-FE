@@ -11,6 +11,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { sellerApi } from '@/lib/api';
 import { Order } from '@/lib/types';
 import toast from 'react-hot-toast';
+import { USER_ROLES } from '@/lib/constants';
 
 export default function SellerOrderDetailPage() {
   const { user } = useAuth();
@@ -74,7 +75,7 @@ export default function SellerOrderDetailPage() {
 
   if (isLoading) {
     return (
-      <ProtectedRoute requiredRoles={['seller']}>
+      <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
         <SellerLayout user={user} storeName="My Store">
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center">
@@ -89,7 +90,7 @@ export default function SellerOrderDetailPage() {
 
   if (!order) {
     return (
-      <ProtectedRoute requiredRoles={['seller']}>
+      <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
         <SellerLayout user={user} storeName="My Store">
           <div className="text-center py-12">
             <p className="text-muted-foreground">Order not found</p>
@@ -100,7 +101,7 @@ export default function SellerOrderDetailPage() {
   }
 
   return (
-    <ProtectedRoute requiredRoles={['seller']}>
+    <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
       <SellerLayout user={user} storeName="My Store">
         <div className="max-w-4xl mx-auto space-y-6">
           {/* Header */}

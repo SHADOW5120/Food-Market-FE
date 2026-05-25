@@ -11,6 +11,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { sellerApi } from '@/lib/api';
 import { Store } from '@/lib/types';
 import toast from 'react-hot-toast';
+import { USER_ROLES } from '@/lib/constants';
 
 export default function SellerSettingsPage() {
   const { user, updateUser } = useAuth();
@@ -39,7 +40,7 @@ export default function SellerSettingsPage() {
   const loadStoreData = async () => {
     try {
       setIsLoading(true);
-      const response = await sellerApi.getStores();
+      const response = await sellerApi.getSellerStore();
 
       if (response.success && response.data?.length) {
         const storeData = response.data[0];
@@ -157,7 +158,7 @@ export default function SellerSettingsPage() {
         logo: formData.logo || undefined,
       };
 
-      const response = await sellerApi.updateStore(store.id, updateData as any);
+      const response = await sellerApi.updateSellerStore(store.id, updateData as any);
 
       if (response.success) {
         toast.success('Store settings updated successfully');
@@ -175,7 +176,7 @@ export default function SellerSettingsPage() {
 
   if (isLoading) {
     return (
-      <ProtectedRoute requiredRoles={['seller']}>
+      <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
         <SellerLayout user={user} storeName="My Store">
           <div className="flex items-center justify-center min-h-screen">
             <div className="text-center">
@@ -189,7 +190,7 @@ export default function SellerSettingsPage() {
   }
 
   return (
-    <ProtectedRoute requiredRoles={['seller']}>
+    <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
       <SellerLayout user={user} storeName={formData.storeName}>
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Header */}

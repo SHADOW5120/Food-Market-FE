@@ -11,6 +11,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { sellerApi } from '@/lib/api';
 import { CreateProductPayload, Store } from '@/lib/types';
 import toast from 'react-hot-toast';
+import { USER_ROLES } from '@/lib/constants';
 
 export default function NewProductPage() {
   const { user } = useAuth();
@@ -35,7 +36,7 @@ export default function NewProductPage() {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await sellerApi.getStores();
+        const response = await sellerApi.getSellerStore();
         if (response.success && response.data) {
           const stores = response.data;
           setStores(stores);
@@ -153,7 +154,7 @@ export default function NewProductPage() {
   };
 
   return (
-    <ProtectedRoute requiredRoles={['seller']}>
+    <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
       <SellerLayout user={user} storeName="My Store">
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Header */}

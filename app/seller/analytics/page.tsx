@@ -10,6 +10,7 @@ import { StatCard } from '@/components/seller/StatCard';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { sellerApi } from '@/lib/api';
 import toast from 'react-hot-toast';
+import { USER_ROLES } from '@/lib/constants';
 
 type PeriodType = 'week' | 'month' | 'year';
 
@@ -74,7 +75,7 @@ export default function SellerAnalyticsPage() {
   };
 
   return (
-    <ProtectedRoute requiredRoles={['seller']}>
+    <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
       <SellerLayout user={user} storeName="My Store">
         <div className="space-y-6">
           {/* Header */}

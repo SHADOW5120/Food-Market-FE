@@ -15,6 +15,7 @@ import { sellerApi } from '@/lib/api';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import toast from 'react-hot-toast';
 import type { SellerDashboardStats } from '@/lib/types';
+import { USER_ROLES } from '@/lib/constants';
 
 interface DashboardStats extends SellerDashboardStats {}
 
@@ -77,7 +78,7 @@ export default function SellerDashboard() {
   };
 
   return (
-    <ProtectedRoute requiredRoles={['seller']}>
+    <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
       <SellerLayout user={user} storeName={storeName}>
         <div className="space-y-6">
           {/* Header */}

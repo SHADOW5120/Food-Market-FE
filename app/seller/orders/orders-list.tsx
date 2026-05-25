@@ -12,6 +12,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { sellerApi } from '@/lib/api';
 import { Order } from '@/lib/types';
 import toast from 'react-hot-toast';
+import { USER_ROLES } from '@/lib/constants';
 
 export default function SellerOrdersPage() {
   const { user } = useAuth();
@@ -52,7 +53,7 @@ export default function SellerOrdersPage() {
   );
 
   return (
-    <ProtectedRoute requiredRoles={['seller']}>
+    <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
       <SellerLayout user={user} storeName="My Store">
         <div className="space-y-6">
           {/* Header */}
