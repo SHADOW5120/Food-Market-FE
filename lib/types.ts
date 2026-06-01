@@ -70,25 +70,82 @@ export interface LoginPayload {
   rememberMe?: boolean;
 }
 
-export interface Product {
+export interface ProductDto {
+  id: string;
+  name: string;
+  price: number;
+  isAvailable: boolean;
+  imageUrl: string;
+}
+
+export interface ProductImage {
+  id: string;
+  imageUrl: string;
+  isPrimary: boolean;
+}
+
+export interface ProductOptionValue {
+  id: string;
+  name: string;
+  priceModifier: number;
+}
+
+export interface ProductOption {
+  id: string;
+  name: string;
+  isRequired: boolean;
+  isMultiple: boolean;
+  values: ProductOptionValue[];
+}
+
+export interface ProductDetailDto {
   id: string;
   name: string;
   description: string;
   price: number;
+  isAvailable: boolean;
+  createdAt: string;
+  images: ProductImage[];
+  options: ProductOption[];
+  category: CategoryDto;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
   image?: string;
-  categoryId: string;
-  storeId: string;
+  imageUrl?: string;
+  categoryId?: string;
+  category?: CategoryDto;
+  storeId?: string;
   rating?: number;
   reviewCount?: number;
   status?: 'available' | 'unavailable';
   isAvailable?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  images?: ProductImage[];
+  options?: ProductOption[];
 }
 
-export interface Category {
+export interface PagedProductResponse {
+  items: ProductDto[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export type ProductsResponse = PagedProductResponse;
+export type ProductDetailResponse = ProductDetailDto;
+
+export interface CategoryDto {
   id: string;
   name: string;
+}
+
+export interface Category extends CategoryDto {
   image?: string;
   description?: string;
   createdAt?: string;
@@ -302,6 +359,7 @@ export interface UpdateOrderStatusPayload {
  */
 
 export interface ProductFilters {
+  categoryId?: string;
   category?: string;
   minPrice?: number;
   maxPrice?: number;
@@ -309,32 +367,7 @@ export interface ProductFilters {
   sortBy?: 'price_asc' | 'price_desc' | 'popularity' | 'newest';
 }
 
-export interface ProductsResponse {
-  success: boolean;
-  data?: {
-    products: Product[];
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
-  message?: string;
-  error?: string;
-}
-
-export interface ProductDetailResponse {
-  success: boolean;
-  data?: Product;
-  message?: string;
-  error?: string;
-}
-
-export interface CategoriesResponse {
-  success: boolean;
-  data?: Category[];
-  message?: string;
-  error?: string;
-}
+export type CategoriesResponse = CategoryDto[];
 
 export interface CartItem {
   id: string;
@@ -590,35 +623,52 @@ export interface CancelOrderResponse {
  * Store System Types
  */
 
+export interface StoreListItemDto {
+  id: string;
+  name: string;
+  logoUrl: string;
+  rating: number;
+  isOpen: boolean;
+}
+
+export interface StoreResponseDto {
+  id: string;
+  name: string;
+  logoUrl: string;
+  bannerUrl: string;
+  description: string;
+  rating: number;
+  isOpen: boolean;
+}
+
+export interface PagedStoreResponse {
+  items: StoreListItemDto[];
+  totalCount: number;
+  page: number;
+  pageSize: number;
+}
+
 export interface Store {
   id: string;
   name: string;
-  logo: string;
-  banner: string;
-  description: string;
+  logoUrl: string;
+  bannerUrl?: string;
+  description?: string;
+  rating: number;
+  isOpen: boolean;
+  logo?: string;
+  banner?: string;
   phone?: string;
   address?: string;
   city?: string;
   state?: string;
   zip?: string;
-  rating: number;
   deliveryTime?: string;
   productCount?: number;
 }
 
-export interface StoreResponse {
-  success: boolean;
-  data?: Store;
-  message?: string;
-  error?: string;
-}
-
-export interface StoresResponse {
-  success: boolean;
-  data?: Store[];
-  message?: string;
-  error?: string;
-}
+export type StoreResponse = StoreResponseDto;
+export type StoresResponse = PagedStoreResponse;
 
 export interface StoreProductsResponse {
   success: boolean;

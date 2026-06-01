@@ -31,15 +31,15 @@ export default function HomePage() {
     const loadData = async () => {
       try {
         // Load featured/popular products
-        const productsResponse: ProductsResponse = await productApi.getProducts({}, 1, 8);
-        if (productsResponse.success && productsResponse.data) {
-          setFeaturedProducts(productsResponse.data.products);
+        const productsResponse = await productApi.getProducts({}, 1, 8);
+        if (productsResponse) {
+          setFeaturedProducts(productsResponse.items);
         }
 
         // Load categories
-        const categoriesResponse: CategoriesResponse = await categoryApi.getCategories();
-        if (categoriesResponse.success && categoriesResponse.data) {
-          setCategories(categoriesResponse.data);
+        const categoriesResponse = await categoryApi.getCategories();
+        if (Array.isArray(categoriesResponse)) {
+          setCategories(categoriesResponse);
         }
       } catch (error) {
         console.error('Failed to load home page data:', error);
@@ -151,7 +151,7 @@ export default function HomePage() {
               {categories.slice(0, 6).map((category) => (
                 <motion.div key={category.id} variants={fadeInUp} className="group">
                   <Link
-                    href={`/products?category=${category.id}`}
+                    href={`/products?categoryId=${category.id}`}
                     className="text-center p-4 bg-card rounded-3xl border border-white/10 shadow-[0_15px_45px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:bg-primary/5"
                   >
                     <div className="w-20 h-20 bg-muted rounded-full mx-auto mb-3 flex items-center justify-center group-hover:bg-primary-200 transition-colors duration-300">
@@ -273,7 +273,7 @@ export default function HomePage() {
               <ul className="space-y-2 text-muted-foreground">
                 {categories.slice(0, 4).map((category) => (
                   <li key={category.id}>
-                    <Link href={`/products?category=${category.id}`} className="hover:text-accent">
+                    <Link href={`/products?categoryId=${category.id}`} className="hover:text-accent">
                       {category.name}
                     </Link>
                   </li>

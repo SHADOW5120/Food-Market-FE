@@ -31,8 +31,8 @@ export const useStoreStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await getStores();
-      if (response.success) {
-        set({ stores: response.data || [], loading: false });
+      if (response.success && response.data) {
+        set({ stores: response.data.items || [], loading: false });
       } else {
         set({ error: response.error || 'Failed to fetch stores', loading: false });
       }

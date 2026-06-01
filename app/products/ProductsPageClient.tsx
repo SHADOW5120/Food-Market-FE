@@ -22,11 +22,10 @@ export default function ProductsPageClient() {
 
   // Parse filters from URL
   const filters: ProductFilters = {
-    category: searchParams.get('category') || undefined,
+    categoryId: searchParams.get('categoryId') || undefined,
     minPrice: searchParams.get('minPrice') ? parseInt(searchParams.get('minPrice')!) : undefined,
     maxPrice: searchParams.get('maxPrice') ? parseInt(searchParams.get('maxPrice')!) : undefined,
     search: searchParams.get('search') || undefined,
-    sortBy: (searchParams.get('sortBy') as ProductFilters['sortBy']) || 'popularity',
   };
 
   const page = parseInt(searchParams.get('page') || '1');
@@ -37,17 +36,17 @@ export default function ProductsPageClient() {
       try {
         // Load products
         const productsResponse = await getProducts(filters, page, 12);
-        if (productsResponse.success && productsResponse.data) {
-          setProducts(productsResponse.data.products);
-          setTotalPages(productsResponse.data.totalPages);
-          setCurrentPage(productsResponse.data.page);
-          setTotalProducts(productsResponse.data.total);
+        if (productsResponse) {
+          setProducts(productsResponse.items);
+          setTotalPages(productsResponse.pageSize ? Math.ceil(productsResponse.total / productsResponse.pageSize) : 1);
+          setCurrentPage(productsResponse.page);
+          setTotalProducts(productsResponse.total);
         }
 
         // Load categories
         const categoriesResponse = await getCategories();
-        if (categoriesResponse.success && categoriesResponse.data) {
-          setCategories(categoriesResponse.data);
+        if (Array.isArray(categoriesResponse)) {
+          setCategories(categoriesResponse);
         }
       } catch (error) {
         console.error('Failed to load products:', error);

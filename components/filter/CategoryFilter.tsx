@@ -12,19 +12,19 @@ interface CategoryFilterProps {
 export function CategoryFilter({ categories, loading = false }: CategoryFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('categoryId') || '');
 
   useEffect(() => {
-    const category = searchParams.get('category') || '';
+    const category = searchParams.get('categoryId') || '';
     setSelectedCategory(category);
   }, [searchParams]);
 
   const handleCategoryChange = (categoryId: string) => {
     const params = new URLSearchParams(searchParams.toString());
     if (categoryId) {
-      params.set('category', categoryId);
+      params.set('categoryId', categoryId);
     } else {
-      params.delete('category');
+      params.delete('categoryId');
     }
     params.delete('page'); // Reset to first page on filter change
 

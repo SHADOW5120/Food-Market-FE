@@ -174,6 +174,18 @@ class ApiClient {
     }, config);
   }
 
+  async postText<T>(endpoint: string, data: string, options?: RequestInit, config?: RequestConfig): Promise<T> {
+    const headers = new Headers(options?.headers || undefined);
+    headers.set('Content-Type', 'text/plain');
+
+    return this.request<T>(endpoint, {
+      ...options,
+      method: 'POST',
+      headers,
+      body: data,
+    }, config);
+  }
+
   async postForm<T>(endpoint: string, formData: FormData, options?: RequestInit, config?: RequestConfig): Promise<T> {
     return this.request<T>(endpoint, {
       ...options,
@@ -186,6 +198,14 @@ class ApiClient {
     return this.request<T>(endpoint, {
       ...options,
       method: 'PUT',
+      body: data ? JSON.stringify(data) : undefined,
+    }, config);
+  }
+
+  async patch<T>(endpoint: string, data?: any, options?: RequestInit, config?: RequestConfig): Promise<T> {
+    return this.request<T>(endpoint, {
+      ...options,
+      method: 'PATCH',
       body: data ? JSON.stringify(data) : undefined,
     }, config);
   }
@@ -230,20 +250,20 @@ export const profileApi = {
 
 // Product API functions
 export const productApi = {
-  getProducts: async (params?: any, page?: number, limit?: number): Promise<ProductsResponse> => {
+  getProducts: async (params?: any, page: number = 1, pageSize: number = 10): Promise<ProductsResponse> => {
     const queryParams = new URLSearchParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
+        if (value !== undefined && value !== null && value !== '') {
           queryParams.append(key, String(value));
         }
       });
     }
-    if (page) queryParams.append('page', String(page));
-    if (limit) queryParams.append('limit', String(limit));
+    queryParams.append('page', String(page));
+    queryParams.append('pageSize', String(pageSize));
 
     const query = queryParams.toString();
-    return apiClient.get(`/products${query ? `?${query}` : ''}`);
+    return apiClient.get(`/products?${query}`);
   },
 
   getProduct: async (id: string): Promise<ProductDetailResponse> => {
@@ -261,12 +281,19 @@ export const productApi = {
   deleteProduct: async (id: string) => {
     return apiClient.delete(`/products/${id}`, undefined, { authRequired: true });
   },
+
+  toggleAvailability: async (id: string) => {
+    return apiClient.patch(`/products/${id}/toggle-availability`, undefined, undefined, { authRequired: true });
+  },
 };
 
 // Category API functions
 export const categoryApi = {
   getCategories: async (): Promise<CategoriesResponse> => {
     return apiClient.get('/categories');
+  },
+  createCategory: async (name: string) => {
+    return apiClient.postText<string>('/categories', name, undefined, { authRequired: true });
   },
 };
 
@@ -287,7 +314,17 @@ export const orderApi = {
 
 // Store API functions
 export const storeApi = {
-  getStores: async (): Promise<StoresResponse> => apiClient.get<StoresResponse>('/stores'),
+  getStores: async (params?: { page?: number; pageSize?: number; search?: string; minRating?: number }): Promise<StoresResponse> => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      if (params.page !== undefined) queryParams.append('page', String(params.page));
+      if (params.pageSize !== undefined) queryParams.append('pageSize', String(params.pageSize));
+      if (params.search) queryParams.append('search', params.search);
+      if (params.minRating !== undefined) queryParams.append('minRating', String(params.minRating));
+    }
+    const query = queryParams.toString();
+    return apiClient.get(`/stores${query ? `?${query}` : ''}`);
+  },
   getStoreById: async (storeId: string): Promise<StoreResponse> => apiClient.get<StoreResponse>(`/stores/${storeId}`),
   getStoreProducts: async (storeId: string): Promise<StoreProductsResponse> => apiClient.get<StoreProductsResponse>(`/stores/${storeId}/products`),
 };
@@ -370,20 +407,32 @@ export const sellerApi = {
     apiClient.put(`/seller/orders/${orderId}/status`, data, undefined, { authRequired: true }),
 
   // Store Profile (use existing Store type)
-  getSellerStore: async (): Promise<ApiResponse<Store[]>> => 
+  getSellerStores: async (sellerId: string, params?: { page?: number; pageSize?: number; search?: string; minRating?: number }): Promise<ApiResponse<Store[]>> => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      if (params.page !== undefined) queryParams.append('page', String(params.page));
+      if (params.pageSize !== undefined) queryParams.append('pageSize', String(params.pageSize));
+      if (params.search) queryParams.append('search', params.search);
+      if (params.minRating !== undefined) queryParams.append('minRating', String(params.minRating));
+    }
+    const query = queryParams.toString();
+    return apiClient.get(`/stores/seller/${sellerId}${query ? `?${query}` : ''}`, undefined, { authRequired: true });
+  },
+
+  getSellerStore: async (): Promise<ApiResponse<Store[]>> =>
     apiClient.get('/seller/stores', undefined, { authRequired: true }),
 
-  getSellerStoreById: async (storeId: string): Promise<ApiResponse<Store>> => 
-    apiClient.get(`/seller/stores/${storeId}`, undefined, { authRequired: true }),
+  getSellerStoreById: async (sellerId: string, storeId: string): Promise<ApiResponse<Store>> => 
+    apiClient.get(`/stores/seller/${sellerId}/${storeId}`, undefined, { authRequired: true }),
 
   createSellerStore: async (data: CreateStorePayload): Promise<ApiResponse<Store>> => 
-    apiClient.post('/seller/stores', data, undefined, { authRequired: true }),
+    apiClient.post('/stores', data, undefined, { authRequired: true }),
 
   updateSellerStore: async (storeId: string, data: UpdateStorePayload): Promise<ApiResponse<Store>> => 
-    apiClient.put(`/seller/stores/${storeId}`, data, undefined, { authRequired: true }),
+    apiClient.put(`/stores/${storeId}`, data, undefined, { authRequired: true }),
 
   deleteSellerStore: async (storeId: string): Promise<ApiResponse<null>> => 
-    apiClient.delete(`/seller/stores/${storeId}`, undefined, { authRequired: true }),
+    apiClient.delete(`/stores/${storeId}`, undefined, { authRequired: true }),
 
   // Notifications
   getNotifications: async (): Promise<ApiResponse<SellerNotification[]>> => 
@@ -443,6 +492,7 @@ export const getSellerOrderById = sellerApi.getSellerOrderById;
 export const updateOrderStatus = sellerApi.updateOrderStatus;
 
 export const getSellerStore = sellerApi.getSellerStore;
+export const getSellerStores = sellerApi.getSellerStores;
 export const getSellerStoreById = sellerApi.getSellerStoreById;
 export const createSellerStore = sellerApi.createSellerStore;
 export const updateSellerStore = sellerApi.updateSellerStore;
