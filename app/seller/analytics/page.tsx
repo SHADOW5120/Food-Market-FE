@@ -35,7 +35,7 @@ export default function SellerAnalyticsPage() {
     try {
       setIsLoading(true);
 
-      // Load analytics data
+      // Load analytics data using correct API endpoint
       const analyticsRes = await sellerApi.getAnalytics(period);
       if (analyticsRes.success && analyticsRes.data) {
         const data = analyticsRes.data;

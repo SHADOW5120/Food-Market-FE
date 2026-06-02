@@ -12,6 +12,10 @@ import {
   OrderResponse,
   CancelOrderResponse,
   CreateOrderPayload,
+  CartResponse,
+  Cart,
+  AddToCartPayload,
+  UpdateCartItemPayload,
   StoresResponse,
   StoreResponse,
   StoreProductsResponse,
@@ -22,6 +26,7 @@ import {
   CreateReviewPayload,
   CreateReviewResponse,
   UpdateReviewPayload,
+  ProductReviewsData,
   ApiResponse,
   UserProfile,
   SellerDashboardStats,
@@ -34,8 +39,14 @@ import {
   SellerNotification,
   PaginatedResponse,
   Product,
+  VoucherDto,
+  VoucherResponse,
+  VouchersApiResponse,
+  VoucherApiResponse,
+  ApplyVoucherApiResponse,
   CreateStorePayload,
   UpdateStorePayload,
+  ApplyVoucherPayload,
 } from './types';
 
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://localhost:7225/api';
@@ -297,6 +308,14 @@ export const categoryApi = {
   },
 };
 
+// Voucher API functions
+export const voucherApi = {
+  getVouchers: async (): Promise<VouchersApiResponse> => apiClient.get<VouchersApiResponse>('/vouchers'),
+  getVoucherByCode: async (code: string): Promise<VoucherApiResponse> => apiClient.get<VoucherApiResponse>(`/vouchers/code/${encodeURIComponent(code)}`),
+  applyVoucher: async (payload: ApplyVoucherPayload): Promise<ApplyVoucherApiResponse> => apiClient.post<ApplyVoucherApiResponse>('/vouchers/apply', payload),
+  removeVoucher: async (): Promise<VoucherResponse> => apiClient.delete<VoucherResponse>('/vouchers/remove'),
+};
+
 // Favorites API functions
 export const favoriteApi = {
   getFavorites: async (): Promise<FavoritesResponse> => apiClient.get<FavoritesResponse>('/favorites', undefined, { authRequired: true }),
@@ -304,11 +323,20 @@ export const favoriteApi = {
   removeFromFavorites: async (productId: string): Promise<RemoveFromFavoritesResponse> => apiClient.delete<RemoveFromFavoritesResponse>(`/favorites/${productId}`, undefined, { authRequired: true }),
 };
 
+// Cart API functions
+export const cartApi = {
+  getCart: async (): Promise<CartResponse> => apiClient.get<CartResponse>('/cart', undefined, { authRequired: true }),
+  addToCart: async (payload: AddToCartPayload): Promise<CartResponse> => apiClient.post<CartResponse>('/cart', payload, undefined, { authRequired: true }),
+  updateCartItem: async (productId: string, payload: UpdateCartItemPayload): Promise<CartResponse> => apiClient.put<CartResponse>(`/cart/${encodeURIComponent(productId)}`, payload, undefined, { authRequired: true }),
+  removeItem: async (productId: string): Promise<CartResponse> => apiClient.delete<CartResponse>(`/cart/${encodeURIComponent(productId)}`, undefined, { authRequired: true }),
+  clearCart: async (): Promise<CartResponse> => apiClient.delete<CartResponse>('/cart', undefined, { authRequired: true }),
+};
+
 // Order API functions
 export const orderApi = {
-  getUserOrders: async (): Promise<OrdersResponse> => apiClient.get<OrdersResponse>('/orders', undefined, { authRequired: true }),
-  getUserOrderById: async (orderId: string): Promise<OrderResponse> => apiClient.get<OrderResponse>(`/orders/${orderId}`, undefined, { authRequired: true }),
-  cancelOrder: async (orderId: string): Promise<CancelOrderResponse> => apiClient.post<CancelOrderResponse>(`/orders/${orderId}/cancel`, undefined, undefined, { authRequired: true }),
+  getUserOrders: async (page = 1, pageSize = 10): Promise<OrdersResponse> => apiClient.get<OrdersResponse>(`/orders?page=${page}&pageSize=${pageSize}`, undefined, { authRequired: true }),
+  getUserOrderById: async (orderId: string): Promise<OrderResponse> => apiClient.get<OrderResponse>(`/orders/${encodeURIComponent(orderId)}`, undefined, { authRequired: true }),
+  cancelOrder: async (orderId: string): Promise<CancelOrderResponse> => apiClient.put<CancelOrderResponse>(`/orders/${encodeURIComponent(orderId)}/cancel`, undefined, undefined, { authRequired: true }),
   createOrder: async (payload: CreateOrderPayload): Promise<OrderResponse> => apiClient.post<OrderResponse>('/orders', payload, undefined, { authRequired: true }),
 };
 
@@ -331,22 +359,89 @@ export const storeApi = {
 
 // Review API functions
 export const reviewApi = {
-  getProductReviews: async (productId: string, page = 1, limit = 10) =>
-    apiClient.get<ReviewsResponse>(`/products/${productId}/reviews?page=${page}&limit=${limit}`),
+  getProductReviews: async (productId: string, page = 1, pageSize = 10, sortBy: string = 'newest') =>
+    apiClient.get<ReviewsResponse>(`/products/${encodeURIComponent(productId)}/reviews?page=${page}&pageSize=${pageSize}&sortBy=${encodeURIComponent(sortBy)}`),
+  getProductRatingSummary: async (productId: string) =>
+    apiClient.get<ApiResponse<ProductReviewsData>>(`/products/${encodeURIComponent(productId)}/rating-summary`),
+  getProductReviewsPaged: async (productId: string, page = 1, pageSize = 10) =>
+    apiClient.get<ReviewsResponse>(`/products/${encodeURIComponent(productId)}/reviews/paged?page=${page}&pageSize=${pageSize}`),
   createReview: async (payload: CreateReviewPayload) => apiClient.post<CreateReviewResponse>('/reviews', payload, undefined, { authRequired: true }),
-  updateReview: async (reviewId: string, payload: UpdateReviewPayload) => apiClient.put<CreateReviewResponse>(`/reviews/${reviewId}`, payload, undefined, { authRequired: true }),
-  deleteReview: async (reviewId: string) => apiClient.delete<ApiResponse<null>>(`/reviews/${reviewId}`, undefined, { authRequired: true }),
-  markReviewHelpful: async (reviewId: string) => apiClient.post<ApiResponse<null>>(`/reviews/${reviewId}/helpful`, undefined, undefined, { authRequired: true }),
+  updateReview: async (reviewId: string, payload: UpdateReviewPayload) => apiClient.put<CreateReviewResponse>(`/reviews/${encodeURIComponent(reviewId)}`, payload, undefined, { authRequired: true }),
+  deleteReview: async (reviewId: string) => apiClient.delete<ApiResponse<null>>(`/reviews/${encodeURIComponent(reviewId)}`, undefined, { authRequired: true }),
+  markReviewHelpful: async (reviewId: string) => apiClient.post<ApiResponse<null>>(`/reviews/${encodeURIComponent(reviewId)}/helpful`, undefined, undefined, { authRequired: true }),
 };
 
 // Seller Dashboard API functions
 export const sellerApi = {
-  // Dashboard
+  // Dashboard - matching backend contract
+  getDashboardSummary: async (): Promise<ApiResponse<SellerDashboardStats>> => 
+    apiClient.get('/seller/dashboard/summary', undefined, { authRequired: true }),
+  
   getDashboardStats: async (): Promise<ApiResponse<SellerDashboardStats>> => 
-    apiClient.get('/seller/dashboard/stats', undefined, { authRequired: true }),
+    apiClient.get('/seller/dashboard/summary', undefined, { authRequired: true }),
   
   getAnalytics: async (period: 'week' | 'month' | 'year' = 'month'): Promise<ApiResponse<SellerAnalytics[]>> => 
     apiClient.get(`/seller/dashboard/analytics?period=${period}`, undefined, { authRequired: true }),
+
+  // Chart endpoints matching backend contract
+  getStoreRevenueChart: async (params?: { from?: string; to?: string; groupBy?: 'day' | 'week' | 'month' | 'year' }): Promise<ApiResponse<any[]>> => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      if (params.from) queryParams.append('from', params.from);
+      if (params.to) queryParams.append('to', params.to);
+      if (params.groupBy) queryParams.append('groupBy', params.groupBy);
+    }
+    return apiClient.get(`/seller/dashboard/charts/store-revenue${queryParams.toString() ? `?${queryParams}` : ''}`, undefined, { authRequired: true });
+  },
+
+  getProductRevenueChart: async (params?: { from?: string; to?: string; groupBy?: string }): Promise<ApiResponse<any[]>> => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      if (params.from) queryParams.append('from', params.from);
+      if (params.to) queryParams.append('to', params.to);
+      if (params.groupBy) queryParams.append('groupBy', params.groupBy);
+    }
+    return apiClient.get(`/seller/dashboard/charts/product-revenue${queryParams.toString() ? `?${queryParams}` : ''}`, undefined, { authRequired: true });
+  },
+
+  getOrderRevenueChart: async (params?: { from?: string; to?: string; groupBy?: string }): Promise<ApiResponse<any[]>> => {
+    const queryParams = new URLSearchParams();
+    if (params) {
+      if (params.from) queryParams.append('from', params.from);
+      if (params.to) queryParams.append('to', params.to);
+      if (params.groupBy) queryParams.append('groupBy', params.groupBy);
+    }
+    return apiClient.get(`/seller/dashboard/charts/order-revenue${queryParams.toString() ? `?${queryParams}` : ''}`, undefined, { authRequired: true });
+  },
+
+  getOrderStatusPieChart: async (): Promise<ApiResponse<any>> =>
+    apiClient.get('/seller/dashboard/pie/order-status', undefined, { authRequired: true }),
+
+  getStoreRevenuePie: async (): Promise<ApiResponse<any>> =>
+    apiClient.get('/seller/dashboard/pie/store-revenue', undefined, { authRequired: true }),
+
+  getProductRevenuePie: async (): Promise<ApiResponse<any>> =>
+    apiClient.get('/seller/dashboard/pie/product-revenue', undefined, { authRequired: true }),
+
+  // Top statistics
+  getTopRevenue: async (top = 5): Promise<ApiResponse<any[]>> =>
+    apiClient.get(`/seller/stores/top-revenue?top=${top}`, undefined, { authRequired: true }),
+
+  getTopProducts: async (top = 5): Promise<ApiResponse<any[]>> =>
+    apiClient.get(`/seller/products/top-revenue?top=${top}`, undefined, { authRequired: true }),
+
+  // Count APIs
+  getCustomerCount: async (): Promise<ApiResponse<number>> =>
+    apiClient.get('/seller/counts/customers', undefined, { authRequired: true }),
+
+  getProductCount: async (): Promise<ApiResponse<number>> =>
+    apiClient.get('/seller/counts/products', undefined, { authRequired: true }),
+
+  getStoreCount: async (): Promise<ApiResponse<number>> =>
+    apiClient.get('/seller/counts/stores', undefined, { authRequired: true }),
+
+  getOrderCount: async (): Promise<ApiResponse<number>> =>
+    apiClient.get('/seller/counts/orders', undefined, { authRequired: true }),
 
   // Products (use existing Product type with storeId)
   getSellerProducts: async (page = 1, limit = 10, status?: string): Promise<PaginatedResponse<Product>> => {
@@ -358,7 +453,7 @@ export const sellerApi = {
   },
 
   getSellerProductById: async (productId: string): Promise<ApiResponse<Product>> => 
-    apiClient.get(`/seller/products/${productId}`, undefined, { authRequired: true }),
+    apiClient.get(`/seller/products/${encodeURIComponent(productId)}`, undefined, { authRequired: true }),
 
   createSellerProduct: async (data: CreateProductPayload) => {
     const formData = new FormData();
@@ -385,11 +480,11 @@ export const sellerApi = {
         }
       }
     });
-    return apiClient.postForm<ApiResponse<Product>>(`/seller/products/${productId}`, formData, undefined, { authRequired: true });
+    return apiClient.postForm<ApiResponse<Product>>(`/seller/products/${encodeURIComponent(productId)}`, formData, undefined, { authRequired: true });
   },
 
   deleteSellerProduct: async (productId: string): Promise<ApiResponse<null>> => 
-    apiClient.delete(`/seller/products/${productId}`, undefined, { authRequired: true }),
+    apiClient.delete(`/seller/products/${encodeURIComponent(productId)}`, undefined, { authRequired: true }),
 
   // Orders
   getSellerOrders: async (page = 1, limit = 10, status?: string): Promise<PaginatedResponse<Order>> => {
@@ -397,14 +492,14 @@ export const sellerApi = {
     params.append('page', String(page));
     params.append('limit', String(limit));
     if (status) params.append('status', status);
-    return apiClient.get(`/seller/orders?${params}`, undefined, { authRequired: true });
+    return apiClient.get(`/orders/seller?${params}`, undefined, { authRequired: true });
   },
 
   getSellerOrderById: async (orderId: string): Promise<ApiResponse<Order>> => 
-    apiClient.get(`/seller/orders/${orderId}`, undefined, { authRequired: true }),
+    apiClient.get<ApiResponse<Order>>(`/orders/seller/${encodeURIComponent(orderId)}`, undefined, { authRequired: true }),
 
   updateOrderStatus: async (orderId: string, data: UpdateOrderStatusPayload): Promise<ApiResponse<Order>> => 
-    apiClient.put(`/seller/orders/${orderId}/status`, data, undefined, { authRequired: true }),
+    apiClient.put(`/orders/seller/${encodeURIComponent(orderId)}/status`, data, undefined, { authRequired: true }),
 
   // Store Profile (use existing Store type)
   getSellerStores: async (sellerId: string, params?: { page?: number; pageSize?: number; search?: string; minRating?: number }): Promise<ApiResponse<Store[]>> => {
@@ -416,30 +511,30 @@ export const sellerApi = {
       if (params.minRating !== undefined) queryParams.append('minRating', String(params.minRating));
     }
     const query = queryParams.toString();
-    return apiClient.get(`/stores/seller/${sellerId}${query ? `?${query}` : ''}`, undefined, { authRequired: true });
+    return apiClient.get(`/stores/seller/${encodeURIComponent(sellerId)}${query ? `?${query}` : ''}`, undefined, { authRequired: true });
   },
 
   getSellerStore: async (): Promise<ApiResponse<Store[]>> =>
     apiClient.get('/seller/stores', undefined, { authRequired: true }),
 
   getSellerStoreById: async (sellerId: string, storeId: string): Promise<ApiResponse<Store>> => 
-    apiClient.get(`/stores/seller/${sellerId}/${storeId}`, undefined, { authRequired: true }),
+    apiClient.get(`/stores/seller/${encodeURIComponent(sellerId)}/${encodeURIComponent(storeId)}`, undefined, { authRequired: true }),
 
   createSellerStore: async (data: CreateStorePayload): Promise<ApiResponse<Store>> => 
     apiClient.post('/stores', data, undefined, { authRequired: true }),
 
   updateSellerStore: async (storeId: string, data: UpdateStorePayload): Promise<ApiResponse<Store>> => 
-    apiClient.put(`/stores/${storeId}`, data, undefined, { authRequired: true }),
+    apiClient.put(`/stores/${encodeURIComponent(storeId)}`, data, undefined, { authRequired: true }),
 
   deleteSellerStore: async (storeId: string): Promise<ApiResponse<null>> => 
-    apiClient.delete(`/stores/${storeId}`, undefined, { authRequired: true }),
+    apiClient.delete(`/stores/${encodeURIComponent(storeId)}`, undefined, { authRequired: true }),
 
   // Notifications
   getNotifications: async (): Promise<ApiResponse<SellerNotification[]>> => 
     apiClient.get('/seller/notifications', undefined, { authRequired: true }),
 
   markNotificationAsRead: async (notificationId: string): Promise<ApiResponse<null>> => 
-    apiClient.put(`/seller/notifications/${notificationId}/read`, {}, undefined, { authRequired: true }),
+    apiClient.put(`/seller/notifications/${encodeURIComponent(notificationId)}/read`, {}, undefined, { authRequired: true }),
 };
 
 // Top-level convenience export helpers

@@ -371,14 +371,17 @@ export type CategoriesResponse = CategoryDto[];
 
 export interface CartItem {
   id: string;
+  productId: string;
   product: Product;
   quantity: number;
   subtotal: number; // price * quantity
+  options?: Array<{ optionId: string; valueId: string }>;
 }
 
 export interface Cart {
+  id?: string;
   items: CartItem[];
-  total: number;
+  totalPrice: number;
 }
 
 export interface CartResponse {
@@ -391,6 +394,7 @@ export interface CartResponse {
 export interface AddToCartPayload {
   productId: string;
   quantity: number;
+  selectedOptions?: Array<{ optionId: string; valueId: string }>;
 }
 
 export interface UpdateCartItemPayload {
@@ -460,6 +464,17 @@ export interface Voucher {
   updatedAt?: string;
 }
 
+export interface VoucherDto {
+  voucherId: string;
+  code: string;
+  description: string;
+  discountAmount: number | null;
+  discountPercent: number | null;
+  expiryDate: string;
+  minOrderAmount?: number | null;
+  maxDiscountAmount?: number | null;
+}
+
 export interface VoucherResponse {
   success: boolean;
   data?: Voucher;
@@ -474,10 +489,36 @@ export interface VouchersResponse {
   error?: string;
 }
 
+export interface VouchersApiResponse {
+  success: boolean;
+  data?: VoucherDto[];
+  message?: string;
+  error?: string;
+}
+
 export interface ApplyVoucherPayload {
   voucherCode: string;
   cartTotal: number;
-  cartItems: CartItem[];
+}
+
+export interface ApplyVoucherApiResponse {
+  success: boolean;
+  data?: {
+    isValid: boolean;
+    voucherCode: string;
+    cartTotal: number;
+    discountApplied: number;
+    finalTotal: number;
+  };
+  message?: string;
+  error?: string;
+}
+
+export interface VoucherApiResponse {
+  success: boolean;
+  data?: VoucherDto;
+  message?: string;
+  error?: string;
 }
 
 export interface ApplyVoucherResponse {
@@ -601,13 +642,14 @@ export interface OrdersResponse {
 }
 
 export interface CreateOrderPayload {
-  cartItems: CartItem[];
+  cartId: string;
   deliveryAddress: {
     street: string;
     city: string;
     state: string;
     zip: string;
   };
+  paymentMethod: 'COD' | string;
   notes?: string;
   voucherCode?: string;
 }

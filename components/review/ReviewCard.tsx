@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Review } from '@/lib/types';
 import { RatingStars } from './RatingStars';
+import { ReviewImageGallery } from './ReviewImageGallery';
 import { Button } from '@/components/ui/Button';
 
 interface ReviewCardProps {
@@ -50,7 +51,7 @@ export function ReviewCard({
   const shouldShowReadMore = review.content.length > 200;
 
   return (
-    <div className={`bg-card rounded-lg shadow-sm border border-[color:hsl(var(--border))] border-[color:hsl(var(--border))] p-6 ${className}`}>
+    <div className={`bg-card rounded-lg shadow-sm border border-border p-6 ${className}`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -134,27 +135,15 @@ export function ReviewCard({
         )}
       </div>
 
-      {/* Review Images */}
+      {/* Review Images - Using ReviewImageGallery */}
       {review.images && review.images.length > 0 && (
         <div className="mb-4">
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {review.images.map((image, index) => (
-              <div key={index} className="aspect-square relative rounded-lg overflow-hidden bg-muted">
-                <Image
-                  src={image}
-                  alt={`Review image ${index + 1}`}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform cursor-pointer"
-                  sizes="(max-width: 640px) 50vw, 33vw"
-                />
-              </div>
-            ))}
-          </div>
+          <ReviewImageGallery images={review.images} />
         </div>
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between pt-4 border-t border-[color:hsl(var(--border))] border-[color:hsl(var(--border))]">
+      <div className="flex items-center justify-between pt-4 border-t border-border">
         <div className="flex items-center gap-4">
           {onMarkHelpful && (
             <button
@@ -179,5 +168,3 @@ export function ReviewCard({
     </div>
   );
 }
-
-

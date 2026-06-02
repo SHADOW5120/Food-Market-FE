@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode, useCallback 
 import { CartItem, Product } from './types';
 
 interface CartContextType {
+  cartId: string | null;
   items: CartItem[];
   totalPrice: number;
   totalItems: number;
@@ -23,6 +24,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const [cartId, setCartId] = useState<string | null>(null);
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,27 +37,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const loadInitialCart = async () => {
       setIsLoading(true);
       try {
-        const token = localStorage.getItem('accessToken');
-        if (token) {
-          // User is logged in - could load from backend here
-          // For now, we'll use localStorage
-          const stored = localStorage.getItem('cart');
-          if (stored) {
-            try {
-              setItems(JSON.parse(stored));
-            } catch (error) {
-              console.error('Failed to parse cart from localStorage', error);
-            }
-          }
-        } else {
-          // Load from localStorage for non-authenticated users
-          const stored = localStorage.getItem('cart');
-          if (stored) {
-            try {
-              setItems(JSON.parse(stored));
-            } catch (error) {
-              console.error('Failed to parse cart from localStorage', error);
-            }
+        let storedCartId = localStorage.getItem('cartId');
+        if (!storedCartId) {
+          storedCartId = typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+            ? crypto.randomUUID()
+            : `cart-${Date.now()}`;
+          localStorage.setItem('cartId', storedCartId);
+        }
+        setCartId(storedCartId);
+
+        const stored = localStorage.getItem('cart');
+        if (stored) {
+          try {
+            setItems(JSON.parse(stored));
+          } catch (error) {
+            console.error('Failed to parse cart from localStorage', error);
           }
         }
       } catch (error) {
@@ -76,6 +72,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('cart');
     }
   }, [items]);
+
+  useEffect(() => {
+    if (cartId) {
+      localStorage.setItem('cartId', cartId);
+    }
+  }, [cartId]);
 
   const getCartItem = useCallback(
     (productId: string): CartItem | undefined => {
@@ -107,6 +109,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           ...prev,
           {
             id: `${product.id}-${Date.now()}`,
+            productId: product.id,
             product,
             quantity,
             subtotal: quantity * product.price,
@@ -147,6 +150,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const loadCart = async (): Promise<void> => {
     setIsLoading(true);
     try {
+      let storedCartId = localStorage.getItem('cartId');
+      if (!storedCartId) {
+        storedCartId = typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : `cart-${Date.now()}`;
+        localStorage.setItem('cartId', storedCartId);
+      }
+      setCartId(storedCartId);
+
       const stored = localStorage.getItem('cart');
       if (stored) {
         setItems(JSON.parse(stored));
@@ -161,6 +173,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   return (
     <CartContext.Provider
       value={{
+        cartId,
         items,
         totalPrice,
         totalItems,

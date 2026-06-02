@@ -1,152 +1,88 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
-import { API_BASE_URL } from './api';
-import { Voucher, CartItem } from './types';
+import { useCart } from '@/lib/cart-context';
+import { voucherApi } from './api';
+import { Voucher, VoucherDto, CartItem } from './types';
 
 interface VoucherContextType {
-  // State
   availableVouchers: Voucher[];
   appliedVoucher: Voucher | null;
   discountAmount: number;
   isLoading: boolean;
   error: string | null;
-
-  // Actions
   loadVouchers: () => Promise<void>;
   applyVoucher: (code: string, cartItems: CartItem[], cartTotal: number) => Promise<boolean>;
   removeVoucher: () => Promise<void>;
   clearError: () => void;
-
-  // Utilities
   calculateDiscount: (voucher: Voucher, cartItems: CartItem[], cartTotal: number) => number;
   isVoucherValid: (voucher: Voucher, cartItems: CartItem[], cartTotal: number) => { valid: boolean; reason?: string };
 }
 
 const VoucherContext = createContext<VoucherContextType | undefined>(undefined);
 
+function mapVoucherDto(dto: VoucherDto): Voucher {
+  const isFixed = dto.discountAmount !== null && dto.discountAmount !== undefined;
+  return {
+    id: dto.voucherId,
+    code: dto.code,
+    name: dto.code,
+    description: dto.description,
+    discountType: isFixed ? 'fixed' : 'percentage',
+    discountValue: isFixed ? dto.discountAmount! : dto.discountPercent ?? 0,
+    maxDiscount: dto.maxDiscountAmount ?? undefined,
+    minOrderValue: dto.minOrderAmount ?? undefined,
+    expiryDate: dto.expiryDate,
+    isActive: true,
+    usageLimit: undefined,
+    usedCount: 0,
+    applicableCategories: [],
+    applicableProducts: [],
+    createdAt: new Date().toISOString(),
+  };
+}
+
 export function VoucherProvider({ children }: { children: ReactNode }) {
+  const { items, totalPrice } = useCart();
   const [availableVouchers, setAvailableVouchers] = useState<Voucher[]>([]);
   const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load available vouchers on mount
-  useEffect(() => {
-    loadVouchers();
-  }, []);
-
-  // Persist applied voucher to localStorage
-  useEffect(() => {
-    if (appliedVoucher) {
-      localStorage.setItem('appliedVoucher', JSON.stringify(appliedVoucher));
-      localStorage.setItem('discountAmount', discountAmount.toString());
-    } else {
-      localStorage.removeItem('appliedVoucher');
-      localStorage.removeItem('discountAmount');
-    }
-  }, [appliedVoucher, discountAmount]);
-
-  // Load persisted voucher on mount
-  useEffect(() => {
-    const storedVoucher = localStorage.getItem('appliedVoucher');
-    const storedDiscount = localStorage.getItem('discountAmount');
-
-    if (storedVoucher && storedDiscount) {
-      try {
-        setAppliedVoucher(JSON.parse(storedVoucher));
-        setDiscountAmount(parseFloat(storedDiscount));
-      } catch (error) {
-        console.error('Failed to parse stored voucher:', error);
-        localStorage.removeItem('appliedVoucher');
-        localStorage.removeItem('discountAmount');
-      }
-    }
-  }, []);
-
-  async function safeParseJson<T>(response: Response): Promise<T | null> {
-    const text = await response.text();
-    if (!text) {
-      return null;
-    }
-
-    const contentType = response.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      console.error('Expected JSON response from voucher API but received:', contentType, text);
-      return null;
-    }
-
-    try {
-      return JSON.parse(text) as T;
-    } catch (error) {
-      console.error('Failed to parse voucher API JSON:', error, text);
-      return null;
-    }
-  }
-
-  const loadVouchers = async (): Promise<void> => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/vouchers`);
-      const data = await safeParseJson<{ success: boolean; data?: Voucher[]; error?: string }>(response);
-
-      if (!response.ok) {
-        setError(data?.error || `Failed to load vouchers (${response.status})`);
-        return;
-      }
-
-      if (data?.success && data.data) {
-        setAvailableVouchers(data.data);
-      } else {
-        setError(data?.error || 'Failed to load vouchers');
-      }
-    } catch (error) {
-      setError('Network error while loading vouchers');
-      console.error('Failed to load vouchers:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // Define calculateDiscount before it's used in useEffect
   const calculateDiscount = useCallback((voucher: Voucher, cartItems: CartItem[], cartTotal: number): number => {
     if (voucher.discountType === 'fixed') {
       return Math.min(voucher.discountValue, cartTotal);
-    } else {
-      // Percentage discount
-      const discount = (cartTotal * voucher.discountValue) / 100;
-      return voucher.maxDiscount ? Math.min(discount, voucher.maxDiscount) : discount;
     }
+
+    const discount = (cartTotal * voucher.discountValue) / 100;
+    return voucher.maxDiscount ? Math.min(discount, voucher.maxDiscount) : discount;
   }, []);
 
+  // Define isVoucherValid before it's used in useEffect
   const isVoucherValid = useCallback((voucher: Voucher, cartItems: CartItem[], cartTotal: number): { valid: boolean; reason?: string } => {
-    // Check if voucher is active
     if (!voucher.isActive) {
       return { valid: false, reason: 'Voucher is not active' };
     }
 
-    // Check expiry date
     if (new Date(voucher.expiryDate) < new Date()) {
       return { valid: false, reason: 'Voucher has expired' };
     }
 
-    // Check minimum order value
     if (voucher.minOrderValue && cartTotal < voucher.minOrderValue) {
       return { valid: false, reason: `Minimum order value is $${voucher.minOrderValue}` };
     }
 
-    // Check usage limit
     if (voucher.usageLimit && voucher.usedCount >= voucher.usageLimit) {
       return { valid: false, reason: 'Voucher usage limit exceeded' };
     }
 
-    // Check applicable categories/products
     if (voucher.applicableCategories && voucher.applicableCategories.length > 0) {
-      const hasApplicableCategory = cartItems.some(item =>
-        voucher.applicableCategories!.includes(item.product.categoryId)
-      );
+      const hasApplicableCategory = cartItems.some(item => {
+        const categoryId = item.product.categoryId ?? item.product.category?.id;
+        return categoryId && voucher.applicableCategories!.includes(categoryId);
+      });
       if (!hasApplicableCategory) {
         return { valid: false, reason: 'Voucher not applicable to items in cart' };
       }
@@ -164,60 +100,92 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
     return { valid: true };
   }, []);
 
+  const loadVouchers = async (): Promise<void> => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await voucherApi.getVouchers();
+      if (response.success && response.data) {
+        setAvailableVouchers(response.data.map(mapVoucherDto));
+      } else {
+        setError(response.error || 'Failed to load vouchers');
+      }
+    } catch (err) {
+      setError('Network error while loading vouchers');
+      console.error('Failed to load vouchers:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void loadVouchers();
+  }, []);
+
+  useEffect(() => {
+    if (appliedVoucher) {
+      setDiscountAmount(calculateDiscount(appliedVoucher, items, totalPrice));
+    } else {
+      setDiscountAmount(0);
+    }
+  }, [appliedVoucher, items, totalPrice, calculateDiscount]);
+
+  useEffect(() => {
+    const storedVoucher = localStorage.getItem('appliedVoucher');
+    if (storedVoucher) {
+      try {
+        setAppliedVoucher(JSON.parse(storedVoucher));
+      } catch (parseError) {
+        console.error('Failed to parse stored voucher:', parseError);
+        localStorage.removeItem('appliedVoucher');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (appliedVoucher) {
+      localStorage.setItem('appliedVoucher', JSON.stringify(appliedVoucher));
+    } else {
+      localStorage.removeItem('appliedVoucher');
+    }
+  }, [appliedVoucher]);
+
   const applyVoucher = async (code: string, cartItems: CartItem[], cartTotal: number): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // First, get voucher details
-      const voucherResponse = await fetch(`${API_BASE_URL}/vouchers/code/${code}`);
-      const voucherData = await safeParseJson<{ success: boolean; data?: Voucher; error?: string }>(voucherResponse);
-
-      if (!voucherResponse.ok) {
-        setError(voucherData?.error || `Invalid voucher code (${voucherResponse.status})`);
+      const response = await voucherApi.getVoucherByCode(code);
+      if (!response.success || !response.data) {
+        setError(response.error || 'Invalid voucher code');
         return false;
       }
 
-      if (!voucherData?.success || !voucherData.data) {
-        setError(voucherData?.error || 'Invalid voucher code');
-        return false;
-      }
-
-      const voucher = voucherData.data;
-
-      // Validate voucher
+      const voucher = mapVoucherDto(response.data);
       const validation = isVoucherValid(voucher, cartItems, cartTotal);
       if (!validation.valid) {
         setError(validation.reason || 'Voucher is not valid');
         return false;
       }
 
-      // Apply voucher via API
-      const applyResponse = await fetch(`${API_BASE_URL}/vouchers/apply`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          voucherCode: code,
-          cartTotal,
-          cartItems,
-        }),
-      });
-
-      const applyData = await safeParseJson<{ success: boolean; data?: { discountAmount: number }; error?: string }>(applyResponse);
-
-      if (applyData?.success && applyData.data) {
-        setAppliedVoucher(voucher);
-        setDiscountAmount(applyData.data.discountAmount);
-        return true;
-      } else {
-        setError(applyData?.error || 'Failed to apply voucher');
+      const applyResponse = await voucherApi.applyVoucher({ voucherCode: code, cartTotal });
+      if (!applyResponse.success || !applyResponse.data) {
+        setError(applyResponse.error || 'Failed to apply voucher');
         return false;
       }
-    } catch (error) {
+
+      if (!applyResponse.data.isValid) {
+        setError('Voucher not valid for this cart');
+        return false;
+      }
+
+      setAppliedVoucher(voucher);
+      setDiscountAmount(applyResponse.data.discountApplied);
+      return true;
+    } catch (err) {
       setError('Network error while applying voucher');
-      console.error('Failed to apply voucher:', error);
+      console.error('Failed to apply voucher:', err);
       return false;
     } finally {
       setIsLoading(false);
@@ -229,21 +197,16 @@ export function VoucherProvider({ children }: { children: ReactNode }) {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/vouchers/remove`, {
-        method: 'DELETE',
-      });
-
-      const data = await safeParseJson<{ success: boolean; error?: string }>(response);
-
-      if (data?.success) {
+      const response = await voucherApi.removeVoucher();
+      if (response.success) {
         setAppliedVoucher(null);
         setDiscountAmount(0);
       } else {
-        setError(data?.error || 'Failed to remove voucher');
+        setError(response.error || 'Failed to remove voucher');
       }
-    } catch (error) {
+    } catch (err) {
       setError('Network error while removing voucher');
-      console.error('Failed to remove voucher:', error);
+      console.error('Failed to remove voucher:', err);
     } finally {
       setIsLoading(false);
     }

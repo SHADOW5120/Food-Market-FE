@@ -15,7 +15,7 @@ const DELIVERY_FEE = 2.99;
 const TAX_RATE = 0.1;
 
 export default function CheckoutPage() {
-  const { items, totalPrice, clearCart, isLoading: cartLoading } = useCart();
+  const { cartId, items, totalPrice, clearCart, isLoading: cartLoading } = useCart();
   const { isAuthenticated } = useAuth();
   const { appliedVoucher, discountAmount } = useVoucher();
   const router = useRouter();
@@ -51,13 +51,14 @@ export default function CheckoutPage() {
   const total = subtotal + tax + deliveryFee - discountAmount;
 
   const handlePlaceOrder = async () => {
-    if (!isAuthenticated || items.length === 0) return;
+    if (!isAuthenticated || items.length === 0 || !cartId) return;
 
     setIsProcessing(true);
     try {
       const orderPayload = {
-        cartItems: items,
+        cartId,
         deliveryAddress,
+        paymentMethod: 'COD',
         notes: specialInstructions,
         voucherCode: appliedVoucher?.code,
       };

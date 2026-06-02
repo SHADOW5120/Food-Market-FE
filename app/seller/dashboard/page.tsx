@@ -46,8 +46,8 @@ export default function SellerDashboard() {
     try {
       setIsLoading(true);
 
-      // Load stats
-      const statsRes = await sellerApi.getDashboardStats();
+      // Load stats from correct endpoint
+      const statsRes = await sellerApi.getDashboardSummary();
       if (statsRes.success && statsRes.data) {
         setStats(statsRes.data);
         setStoreName(user?.username || 'My Store');
