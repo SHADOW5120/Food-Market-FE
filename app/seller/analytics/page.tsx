@@ -15,7 +15,8 @@ import { USER_ROLES } from '@/lib/constants';
 type PeriodType = 'week' | 'month' | 'year';
 
 export default function SellerAnalyticsPage() {
-  const { user } = useAuth();
+  const { user, role, hasHydrated } = useAuth();
+  const isSeller = role === USER_ROLES.SELLER;
   const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState<PeriodType>('month');
   const [revenueData, setRevenueData] = useState<any[]>([]);
@@ -28,8 +29,11 @@ export default function SellerAnalyticsPage() {
   });
 
   useEffect(() => {
+    if (!hasHydrated || !isSeller) {
+      return;
+    }
     loadAnalytics();
-  }, [period]);
+  }, [period, hasHydrated, isSeller]);
 
   const loadAnalytics = async () => {
     try {

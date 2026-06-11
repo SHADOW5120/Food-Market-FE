@@ -8,12 +8,15 @@ import { SellerLayout } from '@/components/seller/SellerLayout';
 import { StatusBadge } from '@/components/seller/StatusBadge';
 import { sellerApi } from '@/lib/api';
 import { Order } from '@/lib/types';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { USER_ROLES } from '@/lib/constants';
 import toast from 'react-hot-toast';
 
 const statusOptions = ['All', 'pending', 'confirmed', 'delivering', 'completed'];
 
 export default function OrdersPage() {
-  const { user } = useAuth();
+  const { user, role, hasHydrated } = useAuth();
+  const isSeller = role === USER_ROLES.SELLER;
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,10 +47,15 @@ export default function OrdersPage() {
       }
     };
 
+    if (!hasHydrated || !isSeller) {
+      setLoading(false);
+      return;
+    }
+
     if (user) {
       fetchOrders();
     }
-  }, [user, statusFilter, currentPage]);
+  }, [user, statusFilter, currentPage, hasHydrated, isSeller]);
 
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
@@ -82,18 +90,9 @@ export default function OrdersPage() {
     }
   };
 
-  if (!user) {
-    return (
-      <SellerLayout>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Please log in as a seller</p>
-        </div>
-      </SellerLayout>
-    );
-  }
-
   return (
-    <SellerLayout user={user}>
+    <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
+      <SellerLayout user={user}>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
@@ -268,6 +267,7 @@ export default function OrdersPage() {
         )}
       </div>
     </SellerLayout>
+  </ProtectedRoute>
   );
 }
 

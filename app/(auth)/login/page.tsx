@@ -85,8 +85,8 @@ export default function LoginPage() {
           router.push(intendedRoute);
         } else {
           // Role-based redirect
-          if (user.role === USER_ROLES.USER) {
-            router.push('/seller');
+          if (user.role === USER_ROLES.SELLER) {
+            router.push('/seller/dashboard');
           } else {
             router.push('/');
           }

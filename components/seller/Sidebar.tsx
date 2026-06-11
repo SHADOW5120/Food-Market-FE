@@ -19,7 +19,6 @@ import {
   Users,
   X,
 } from 'lucide-react';
-import { useAuth } from '@/lib/auth-context';
 import type { User } from '@/lib/types';
 import type { LucideIcon } from 'lucide-react';
 
@@ -50,26 +49,13 @@ const menuSections: {
       { label: 'Notifications', href: '/seller/notifications', icon: Bell },
     ],
   },
-  {
-    title: 'Configure',
-    items: [
-      { label: 'Store Settings', href: '/seller/settings', icon: Settings },
-      { label: 'Account', href: '/profile', icon: Users },
-    ],
-  },
 ];
 
-export function Sidebar({ user, storeName, isCollapsed, setIsCollapsed }: SidebarProps) {
+export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const { logout } = useAuth();
   const pathname = usePathname();
 
   const isActive = (href: string) => pathname.startsWith(href);
-
-  const handleLogout = () => {
-    logout();
-    window.location.href = '/';
-  };
 
   return (
     <>
@@ -89,11 +75,11 @@ export function Sidebar({ user, storeName, isCollapsed, setIsCollapsed }: Sideba
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 top-0 z-40 flex flex-col bg-card border-r border-border shadow-2xl transition-all duration-300 ease-out overflow-hidden ${
+        className={`fixed left-0 top-16 md:top-20 bottom-0 z-40 flex flex-col bg-card border-r border-border shadow-2xl transition-all duration-300 ease-out overflow-hidden ${
           isMobileOpen ? 'w-72 translate-x-0' : '-translate-x-full md:translate-x-0'
         } ${isCollapsed ? 'md:w-20' : 'md:w-72'}`}
       >
-        <div className="flex h-full flex-col pt-20 md:pt-6">
+        <div className="flex h-full flex-col pt-6">
           <div className="px-4 pb-4 border-b border-border md:px-5">
             <div className="flex items-center justify-between gap-3">
               <div className={`flex items-center gap-3 ${isCollapsed ? 'justify-center w-full' : ''}`}>
@@ -102,15 +88,14 @@ export function Sidebar({ user, storeName, isCollapsed, setIsCollapsed }: Sideba
                 </div>
                 {!isCollapsed && (
                   <div>
-                    <h2 className="text-lg font-semibold text-foreground">Food Market</h2>
-                    <p className="text-xs text-muted-foreground">Seller dashboard</p>
+                    <h2 className="text-lg font-semibold text-foreground">Seller Dashboard</h2>
                   </div>
                 )}
               </div>
               <button
                 type="button"
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="hidden h-10 w-10 items-center justify-center rounded-full border border-border text-muted-foreground transition hover:bg-muted hover:text-foreground md:flex"
+                className="absolute right-0 top-1/2 z-50 hidden h-10 w-10 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card text-muted-foreground shadow-lg transition hover:bg-muted hover:text-foreground md:flex"
                 aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               >
                 <ChevronLeft className={`w-4 h-4 transition-transform ${isCollapsed ? 'rotate-180' : ''}`} />
@@ -118,28 +103,7 @@ export function Sidebar({ user, storeName, isCollapsed, setIsCollapsed }: Sideba
             </div>
           </div>
 
-          <div className="space-y-3 px-4 py-4 md:px-5">
-            <div
-              className="group relative rounded-3xl border border-border bg-muted p-4 transition hover:border-primary"
-              title={isCollapsed ? `${storeName ?? 'My Store'} - Active` : undefined}
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-success to-success/70 text-success-foreground text-lg font-semibold">
-                  {user?.username?.charAt(0)?.toUpperCase() ?? 'S'}
-                </div>
-                {!isCollapsed ? (
-                  <div>
-                    <p className="font-semibold text-foreground">{user?.username ?? 'Seller'}</p>
-                    <p className="text-sm text-muted-foreground">{storeName ?? 'My Store'}</p>
-                    <span className="mt-2 inline-flex rounded-full bg-success/10 px-2.5 py-1 text-[11px] font-semibold text-success">
-                      Active
-                    </span>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            <div className={isCollapsed ? 'grid gap-3' : 'grid gap-2'}>
+          <div className={isCollapsed ? 'grid gap-3 px-4 py-4 md:px-5' : 'grid gap-2 px-4 py-4 md:px-5'}>
               {[
                 { label: 'Add product', href: '/seller/products/new', icon: Package },
                 { label: 'Stores', href: '/seller/stores', icon: Store },
@@ -158,7 +122,6 @@ export function Sidebar({ user, storeName, isCollapsed, setIsCollapsed }: Sideba
                 </Link>
               ))}
             </div>
-          </div>
 
           <nav className="flex-1 overflow-y-auto px-2 pb-6 md:px-4">
             {menuSections.map((section) => (
@@ -189,32 +152,6 @@ export function Sidebar({ user, storeName, isCollapsed, setIsCollapsed }: Sideba
               </div>
             ))}
           </nav>
-
-          <div className="px-4 pb-6 md:px-5">
-            <div className="rounded-3xl border border-border bg-muted p-4 text-sm text-muted-foreground">
-              {!isCollapsed ? (
-                <>
-                  <p className="font-semibold text-foreground">Seller support</p>
-                  <p className="mt-1">Review notifications, store status, and account actions.</p>
-                </>
-              ) : (
-                <div className="flex items-center justify-center">
-                  <Inbox className="w-5 h-5" />
-                </div>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-              className={`mt-4 flex w-full items-center gap-3 rounded-2xl border border-border px-3 py-3 text-sm font-semibold text-destructive transition hover:bg-destructive/10 ${
-                isCollapsed ? 'justify-center' : ''
-              }`}
-            >
-              <LogOut className="w-5 h-5" />
-              {!isCollapsed ? 'Logout' : null}
-            </button>
-          </div>
         </div>
       </aside>
     </>

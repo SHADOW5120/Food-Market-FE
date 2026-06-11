@@ -20,7 +20,8 @@ import { USER_ROLES } from '@/lib/constants';
 interface DashboardStats extends SellerDashboardStats {}
 
 export default function SellerDashboard() {
-  const { user } = useAuth();
+  const { user, role, hasHydrated } = useAuth();
+  const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats>({
@@ -39,8 +40,11 @@ export default function SellerDashboard() {
   const [storeName, setStoreName] = useState('My Store');
 
   useEffect(() => {
+    if (!hasHydrated || !isSeller) {
+      return;
+    }
     loadDashboardData();
-  }, []);
+  }, [hasHydrated, isSeller]);
 
   const loadDashboardData = async () => {
     try {

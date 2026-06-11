@@ -49,6 +49,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       // Add new item
       const newItem: CartItem = {
         id: `${product.id}-${Date.now()}`, // Simple ID generation
+        productId: product.id,
         product,
         quantity,
         subtotal: quantity * product.price,

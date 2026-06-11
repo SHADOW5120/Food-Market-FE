@@ -7,7 +7,7 @@ const protectedRoutes: Record<string, string[]> = {
   '/profile': ['user', 'seller', 'admin'],
   '/orders': ['user', 'seller', 'admin'],
   '/favorites': ['user', 'seller', 'admin'],
-  '/seller': ['seller', 'admin'],
+  '/seller': ['seller'],
   '/checkout': ['user', 'seller', 'admin'],
 };
 

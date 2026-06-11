@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Upload, Loader } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import { SellerLayout } from '@/components/seller/SellerLayout';
@@ -14,11 +14,14 @@ import toast from 'react-hot-toast';
 import { USER_ROLES } from '@/lib/constants';
 
 export default function SellerSettingsPage() {
-  const { user, updateUser } = useAuth();
+  const { user, role, hasHydrated } = useAuth();
+  const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [selectedStoreId, setSelectedStoreId] = useState<string>('');
   const [store, setStore] = useState<Store | null>(null);
   const [formData, setFormData] = useState({
     storeName: '',
@@ -33,31 +36,52 @@ export default function SellerSettingsPage() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const searchParams = useSearchParams();
+
   useEffect(() => {
+    if (!hasHydrated || !isSeller) {
+      return;
+    }
     loadStoreData();
-  }, []);
+  }, [hasHydrated, isSeller]);
+
+  useEffect(() => {
+    if (!selectedStoreId || !stores.length) {
+      return;
+    }
+
+    const selected = stores.find((item) => item.id === selectedStoreId);
+    if (selected && selected.id !== store?.id) {
+      applyStoreData(selected);
+    }
+  }, [selectedStoreId, stores]);
+
+  const applyStoreData = (storeData: Store) => {
+    setStore(storeData);
+    setSelectedStoreId(storeData.id);
+    setFormData({
+      storeName: storeData.name,
+      description: storeData.description || '',
+      phone: storeData.phone || '',
+      address: storeData.address || '',
+      city: storeData.city || '',
+      state: storeData.state || '',
+      zip: storeData.zip || '',
+      logo: null,
+    });
+    setLogoPreview(storeData.logo || null);
+  };
 
   const loadStoreData = async () => {
     try {
       setIsLoading(true);
       const response = await sellerApi.getSellerStore();
 
-      if (response.success && response.data?.length) {
-        const storeData = response.data[0];
-        setStore(storeData);
-        setFormData({
-          storeName: storeData.name,
-          description: storeData.description || '',
-          phone: storeData.phone || '',
-          address: storeData.address || '',
-          city: storeData.city || '',
-          state: storeData.state || '',
-          zip: storeData.zip || '',
-          logo: null,
-        });
-        if (storeData.logo) {
-          setLogoPreview(storeData.logo);
-        }
+      if (response.success && Array.isArray(response.data) && response.data.length) {
+        setStores(response.data);
+        const requestedStoreId = searchParams?.get('storeId');
+        const initialStore = response.data.find((item) => item.id === requestedStoreId) ?? response.data[0];
+        applyStoreData(initialStore);
       } else {
         toast.error('Failed to load store data');
       }
@@ -126,6 +150,10 @@ export default function SellerSettingsPage() {
       newErrors.zip = 'ZIP code is required';
     }
 
+    if (!selectedStoreId) {
+      newErrors.storeName = 'Please select a store to manage';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -138,8 +166,8 @@ export default function SellerSettingsPage() {
       return;
     }
 
-    if (!store) {
-      toast.error('Store not loaded yet');
+    if (!selectedStoreId) {
+      toast.error('Select a store first');
       return;
     }
 
@@ -158,7 +186,7 @@ export default function SellerSettingsPage() {
         logo: formData.logo || undefined,
       };
 
-      const response = await sellerApi.updateSellerStore(store.id, updateData as any);
+      const response = await sellerApi.updateSellerStore(selectedStoreId, updateData as any);
 
       if (response.success) {
         toast.success('Store settings updated successfully');
@@ -191,7 +219,7 @@ export default function SellerSettingsPage() {
 
   return (
     <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
-      <SellerLayout user={user} storeName={formData.storeName}>
+      <SellerLayout user={user} storeName={store?.name || 'My Stores'}>
         <div className="max-w-2xl mx-auto space-y-6">
           {/* Header */}
           <div>
@@ -208,6 +236,25 @@ export default function SellerSettingsPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {stores.length > 1 && (
+              <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+                <label className="block text-sm font-medium text-foreground mb-2">Store</label>
+                <select
+                  value={selectedStoreId}
+                  onChange={(e) => setSelectedStoreId(e.target.value)}
+                  disabled={isSaving}
+                  className="w-full px-4 py-3 rounded-lg border-2 border-border bg-input text-foreground focus:outline-none focus:border-primary"
+                >
+                  <option value="">Select a store</option>
+                  {stores.map((storeItem) => (
+                    <option key={storeItem.id} value={storeItem.id}>
+                      {storeItem.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             {/* Store Logo */}
             <div className="bg-card rounded-xl shadow-sm border border-border p-6">
               <h2 className="text-lg font-bold text-foreground mb-4">Store Logo</h2>
@@ -343,7 +390,7 @@ export default function SellerSettingsPage() {
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSaving}>
+              <Button type="submit" disabled={isSaving || !selectedStoreId}>
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>

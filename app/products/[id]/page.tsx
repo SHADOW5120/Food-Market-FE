@@ -29,8 +29,8 @@ export default function ProductDetailPage() {
       setLoading(true);
       try {
         const response = await getProductById(productId);
-        if (response.success && response.data) {
-          setProduct(response.data);
+        if (response && response.id) {
+          setProduct(response);
           // In a real app, you'd load related products here
           // For now, we'll just set an empty array
           setRelatedProducts([]);

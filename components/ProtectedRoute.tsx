@@ -27,7 +27,6 @@ export function ProtectedRoute({
     }
 
     if (!isAuthenticated) {
-      // Save intended route
       const authStore = useAuthStore.getState();
       if (authStore.intendedRoute !== pathname) {
         authStore.setIntendedRoute(pathname);
@@ -36,7 +35,7 @@ export function ProtectedRoute({
       return;
     }
 
-    if (requiredRoles.length > 0 && role && !requiredRoles.includes(role)) {
+    if (requiredRoles.length > 0 && (!role || !requiredRoles.includes(role))) {
       router.push(fallbackPath);
       return;
     }
@@ -57,15 +56,8 @@ export function ProtectedRoute({
     return null;
   }
 
-  if (requiredRoles.length > 0 && role && !requiredRoles.includes(role)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-destructive mb-4">403 - Unauthorized</h1>
-          <p className="text-muted-foreground">You do not have permission to access this page.</p>
-        </div>
-      </div>
-    );
+  if (requiredRoles.length > 0 && (!role || !requiredRoles.includes(role))) {
+    return null;
   }
 
   return <>{children}</>;

@@ -35,6 +35,9 @@ export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowPr
           </div>
         </div>
       </td>
+      <td className="px-6 py-4 text-sm text-muted-foreground">
+        {product.storeId || 'N/A'}
+      </td>
       <td className="px-6 py-4 text-sm font-semibold text-foreground">
         ${product.price.toFixed(2)}
       </td>

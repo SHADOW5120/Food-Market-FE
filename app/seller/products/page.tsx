@@ -9,10 +9,13 @@ import { ProductRow } from '@/components/seller/ProductRow';
 import { Button } from '@/components/auth/Button';
 import { sellerApi } from '@/lib/api';
 import { Product } from '@/lib/types';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { USER_ROLES } from '@/lib/constants';
 import toast from 'react-hot-toast';
 
 export default function ProductsPage() {
-  const { user } = useAuth();
+  const { user, role, hasHydrated } = useAuth();
+  const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'available' | 'unavailable'>('all');
@@ -42,10 +45,15 @@ export default function ProductsPage() {
       }
     };
 
+    if (!hasHydrated || !isSeller) {
+      setLoading(false);
+      return;
+    }
+
     if (user) {
       fetchProducts();
     }
-  }, [user, filterStatus, currentPage]);
+  }, [user, filterStatus, currentPage, hasHydrated, isSeller]);
 
   const filteredProducts = products
     .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -97,18 +105,9 @@ export default function ProductsPage() {
     }
   };
 
-  if (!user) {
-    return (
-      <SellerLayout>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Please log in as a seller</p>
-        </div>
-      </SellerLayout>
-    );
-  }
-
   return (
-    <SellerLayout user={user}>
+    <ProtectedRoute requiredRoles={[USER_ROLES.SELLER]}>
+      <SellerLayout user={user}>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -167,6 +166,9 @@ export default function ProductsPage() {
                       Product
                     </th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
+                      Store
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
                       Price
                     </th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-foreground">
@@ -201,6 +203,7 @@ export default function ProductsPage() {
         )}
       </div>
     </SellerLayout>
+  </ProtectedRoute>
   );
 }
 

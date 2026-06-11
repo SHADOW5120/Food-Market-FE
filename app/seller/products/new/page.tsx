@@ -14,7 +14,8 @@ import toast from 'react-hot-toast';
 import { USER_ROLES } from '@/lib/constants';
 
 export default function NewProductPage() {
-  const { user } = useAuth();
+  const { user, role, hasHydrated } = useAuth();
+  const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -53,10 +54,15 @@ export default function NewProductPage() {
       }
     };
 
+    if (!hasHydrated || !isSeller) {
+      setLoadingStores(false);
+      return;
+    }
+
     if (user) {
       fetchStores();
     }
-  }, [user]);
+  }, [user, hasHydrated, isSeller]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

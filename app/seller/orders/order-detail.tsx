@@ -14,7 +14,8 @@ import toast from 'react-hot-toast';
 import { USER_ROLES } from '@/lib/constants';
 
 export default function SellerOrderDetailPage() {
-  const { user } = useAuth();
+  const { user, role, hasHydrated } = useAuth();
+  const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const params = useParams();
   const orderId = params.id as string;
@@ -25,8 +26,12 @@ export default function SellerOrderDetailPage() {
   const [newStatus, setNewStatus] = useState<string>('');
 
   useEffect(() => {
+    if (!hasHydrated || !isSeller) {
+      setIsLoading(false);
+      return;
+    }
     loadOrder();
-  }, [orderId]);
+  }, [orderId, hasHydrated, isSeller]);
 
   const loadOrder = async () => {
     try {

@@ -2,6 +2,15 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { User, UserRole } from './types';
 
+function normalizeUserRole(role: string | UserRole | null | undefined): UserRole | null {
+  if (!role) return null;
+  const normalized = String(role).trim().toLowerCase();
+  if (normalized === 'seller') return 'Seller';
+  if (normalized === 'admin') return 'Admin';
+  if (normalized === 'user' || normalized === 'customer') return 'User';
+  return null;
+}
+
 interface AuthState {
   user: User | null;
   accessToken: string | null;
@@ -36,7 +45,7 @@ export const useAuthStore = create<AuthState>()(
           user,
           accessToken: token,
           isAuthenticated: true,
-          role: user.role,
+          role: normalizeUserRole(user.role),
           isLoading: false,
           hasHydrated: true,
         });
@@ -63,7 +72,7 @@ export const useAuthStore = create<AuthState>()(
       setUser: (user: User | null) => {
         set({
           user,
-          role: user?.role || null,
+          role: normalizeUserRole(user?.role),
           isAuthenticated: !!user,
         });
       },
@@ -72,7 +81,7 @@ export const useAuthStore = create<AuthState>()(
         const currentUser = get().user;
         if (currentUser) {
           const newUser = { ...currentUser, ...updatedUser };
-          set({ user: newUser, role: newUser.role });
+          set({ user: newUser, role: normalizeUserRole(newUser.role) });
         }
       },
 
@@ -130,7 +139,7 @@ export const useAuthStore = create<AuthState>()(
               const user = data.data;
               set({
                 user,
-                role: user.role,
+                role: normalizeUserRole(user.role),
                 isAuthenticated: true,
                 isLoading: false,
               });
@@ -169,7 +178,7 @@ export const useAuthStore = create<AuthState>()(
               const user = data.data;
               set({
                 user,
-                role: user.role,
+                role: normalizeUserRole(user.role),
                 isAuthenticated: true,
               });
               return user;

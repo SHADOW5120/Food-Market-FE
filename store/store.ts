@@ -31,11 +31,7 @@ export const useStoreStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await getStores();
-      if (response.success && response.data) {
-        set({ stores: response.data.items || [], loading: false });
-      } else {
-        set({ error: response.error || 'Failed to fetch stores', loading: false });
-      }
+      set({ stores: response.items || [], loading: false });
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'Unknown error', loading: false });
     }
@@ -45,11 +41,7 @@ export const useStoreStore = create<StoreState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const response = await getStoreById(id);
-      if (response.success) {
-        set({ currentStore: response.data || null, loading: false });
-      } else {
-        set({ error: response.error || 'Failed to fetch store', loading: false });
-      }
+      set({ currentStore: response || null, loading: false });
     } catch (error) {
       set({ error: error instanceof Error ? error.message : 'Unknown error', loading: false });
     }
