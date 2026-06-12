@@ -17,14 +17,14 @@ import toast from 'react-hot-toast';
 import type { SellerDashboardStats } from '@/lib/types';
 import { USER_ROLES } from '@/lib/constants';
 
-interface DashboardStats extends SellerDashboardStats {}
-
 export default function SellerDashboard() {
   const { user, role, hasHydrated } = useAuth();
   const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [stats, setStats] = useState<DashboardStats>({
+  
+  // Dùng trực tiếp SellerDashboardStats từ file types
+  const [stats, setStats] = useState<SellerDashboardStats>({
     totalOrders: 0,
     totalRevenue: 0,
     totalProducts: 0,
@@ -37,6 +37,7 @@ export default function SellerDashboard() {
 
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [revenueData, setRevenueData] = useState<any[]>([]);
+  const [orderStatusData, setOrderStatusData] = useState<any[]>([]);
   const [storeName, setStoreName] = useState('My Store');
 
   useEffect(() => {
@@ -50,29 +51,53 @@ export default function SellerDashboard() {
     try {
       setIsLoading(true);
 
-      // Load stats from correct endpoint
-      const statsRes = await sellerApi.getDashboardSummary();
-      if (statsRes.success && statsRes.data) {
-        setStats(statsRes.data);
+      const to = new Date();
+      const from = new Date();
+      from.setDate(to.getDate() - 30); // Mặc định lấy 30 ngày gần nhất
+
+      // Gọi đồng thời các API để tối ưu tốc độ load
+      const [statsRes, analyticsRes, ordersRes, orderStatusRes] = await Promise.all([
+        sellerApi.getDashboardSummary(),
+        sellerApi.getStoreRevenueChart({
+          from: from.toISOString(),
+          to: to.toISOString(),
+          groupBy: 'day'
+        }),
+        sellerApi.getSellerOrders(1, 5),
+        sellerApi.getOrderStatusPieChart()
+      ]);
+
+      // 1. Cập nhật Stats tổng quan
+      const summaryData = statsRes && 'data' in statsRes ? statsRes.data : statsRes;
+      if (summaryData) {
+        setStats(prev => ({ ...prev, ...summaryData }));
         setStoreName(user?.username || 'My Store');
       }
 
-      // Load analytics data
-      const analyticsRes = await sellerApi.getAnalytics('month');
-      if (analyticsRes.success && analyticsRes.data) {
-        setRevenueData(
-          analyticsRes.data.map((item) => ({
-            label: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-            value: item.revenue,
-          }))
-        );
-      }
+      // 2. Cập nhật biểu đồ doanh thu (Revenue Trend)
+      const revenueChartData: any[] = Array.isArray(analyticsRes) ? analyticsRes : (analyticsRes as any)?.data || [];
+      setRevenueData(
+        revenueChartData.map((item: any) => ({
+          label: new Date(item.date || item.time || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+          value: item.totalRevenue || item.revenue || 0,
+        }))
+      );
 
-      // Load recent orders
-      const ordersRes = await sellerApi.getSellerOrders(1, 5);
-      if (ordersRes.success && ordersRes.data?.items) {
-        setRecentOrders(ordersRes.data.items);
-      }
+      // 3. Cập nhật biểu đồ trạng thái đơn hàng
+      const statusDataList: any[] = Array.isArray(orderStatusRes) ? orderStatusRes : (orderStatusRes as any)?.data || [];
+      const colors = ['bg-yellow-500', 'bg-blue-500', 'bg-purple-500', 'bg-success', 'bg-destructive'];
+      
+      const mappedStatusData = statusDataList.map((st: any, index: number) => ({
+        label: st.status || st.name || 'Unknown',
+        value: st.count || st.value || 0,
+        color: colors[index % colors.length]
+      }));
+      setOrderStatusData(mappedStatusData);
+
+      // 4. Cập nhật danh sách đơn hàng gần đây
+      const ordersList = (ordersRes as any)?.data?.items || (ordersRes as any)?.items || [];
+      setRecentOrders(ordersList);
+
     } catch (error) {
       toast.error('Failed to load dashboard data');
       console.error('Dashboard error:', error);
@@ -105,14 +130,12 @@ export default function SellerDashboard() {
               title="Total Orders"
               value={stats.totalOrders}
               icon={<ShoppingCart className="w-6 h-6 text-success" />}
-              trend={{ value: 12, direction: 'up' }}
               onClick={() => router.push('/seller/orders')}
             />
             <StatCard
               title="Revenue"
               value={`$${stats.totalRevenue.toLocaleString()}`}
               icon={<DollarSign className="w-6 h-6 text-success" />}
-              trend={{ value: 8, direction: 'up' }}
             />
             <StatCard
               title="Products"
@@ -124,7 +147,6 @@ export default function SellerDashboard() {
               title="Avg Rating"
               value={stats.averageRating}
               icon={<Star className="w-6 h-6 text-yellow-500" />}
-              trend={{ value: 2, direction: 'up' }}
             />
           </div>
 
@@ -134,22 +156,20 @@ export default function SellerDashboard() {
               {revenueData.length > 0 ? (
                 <SimpleLineChart data={revenueData} height={300} />
               ) : (
-                <div className="h-300 flex items-center justify-center text-muted-foreground">
+                <div className="h-[300px] flex items-center justify-center text-muted-foreground">
                   No data available
                 </div>
               )}
             </ChartCard>
 
             <ChartCard title="Order Status Distribution" isLoading={isLoading}>
-              <SimpleBarChart
-                data={[
-                  { label: 'Pending', value: 12, color: 'bg-yellow-500' },
-                  { label: 'Confirmed', value: 28, color: 'bg-blue-500' },
-                  { label: 'Delivering', value: 15, color: 'bg-purple-500' },
-                  { label: 'Completed', value: 45, color: 'bg-success' },
-                ]}
-                height={300}
-              />
+              {orderStatusData.length > 0 ? (
+                <SimpleBarChart data={orderStatusData} height={300} />
+              ) : (
+                <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                  No data available
+                </div>
+              )}
             </ChartCard>
           </div>
 
@@ -177,12 +197,12 @@ export default function SellerDashboard() {
                   <Link key={order.id} href={`/seller/orders/${order.id}`}>
                     <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg hover:bg-muted transition-colors cursor-pointer">
                       <div className="flex-1">
-                        <p className="font-medium text-foreground">Order #{order.orderNumber}</p>
-                        <p className="text-sm text-muted-foreground">{order.customer?.name}</p>
+                        <p className="font-medium text-foreground">Order #{order.orderNumber || order.id.substring(0, 8)}</p>
+                        <p className="text-sm text-muted-foreground">{order.customer?.name || order.customerName || 'Guest'}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-foreground">${order.total}</p>
-                        <StatusBadge status={order.status} size="sm" />
+                        <p className="font-semibold text-foreground">${order.totalAmount || order.total || 0}</p>
+                        <StatusBadge status={order.status || 'pending'} size="sm" />
                       </div>
                     </div>
                   </Link>

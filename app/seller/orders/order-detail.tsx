@@ -37,10 +37,12 @@ export default function SellerOrderDetailPage() {
     try {
       setIsLoading(true);
       const response = await sellerApi.getSellerOrderById(orderId);
+      
+      const orderData = response && 'data' in response ? response.data : response;
 
-      if (response.success && response.data) {
-        setOrder(response.data);
-        setNewStatus(response.data.status);
+      if (orderData) {
+        setOrder(orderData as Order);
+        setNewStatus((orderData as Order).status || 'pending');
       } else {
         toast.error('Failed to load order');
       }
@@ -60,17 +62,20 @@ export default function SellerOrderDetailPage() {
 
     try {
       setIsUpdating(true);
-      const response = await sellerApi.updateOrderStatus(orderId, {
+      
+      await sellerApi.updateOrderStatus(orderId, {
         status: newStatus as 'confirmed' | 'delivering' | 'completed' | 'cancelled',
         notes: `Order status updated to ${newStatus}`,
       });
 
-      if (response.success && response.data) {
-        toast.success('Order status updated successfully');
-        setOrder(response.data);
-      } else {
-        toast.error('Failed to update order status');
-      }
+      toast.success('Order status updated successfully');
+      
+      // Fix lỗi 1: Ép kiểu cho newStatus để khớp với Order['status']
+      setOrder({ 
+        ...order, 
+        status: newStatus as "pending" | "confirmed" | "delivering" | "completed" | "cancelled" 
+      });
+      
     } catch (error) {
       toast.error('Error updating order');
     } finally {
@@ -118,8 +123,8 @@ export default function SellerOrderDetailPage() {
               <ArrowLeft className="w-4 h-4" />
               Back
             </button>
-            <h1 className="text-3xl font-bold text-foreground">Order #{order.orderNumber}</h1>
-            <p className="text-muted-foreground">Order placed on {new Date(order.createdAt || '').toLocaleDateString()}</p>
+            <h1 className="text-3xl font-bold text-foreground">Order #{order.orderNumber || order.id?.substring(0, 8)}</h1>
+            <p className="text-muted-foreground">Order placed on {new Date(order.createdAt || new Date()).toLocaleDateString()}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -135,16 +140,17 @@ export default function SellerOrderDetailPage() {
                         {item.image && (
                           <img
                             src={item.image}
-                            alt={item.name}
+                            alt={item.name || 'Product'}
                             className="w-12 h-12 rounded object-cover"
                           />
                         )}
                         <div>
-                          <p className="font-medium text-foreground">{item.name}</p>
+                          {/* Fix lỗi 2: Dùng item.name thay vì item.productName */}
+                          <p className="font-medium text-foreground">{item.name || 'Unknown Product'}</p>
                           <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                         </div>
                       </div>
-                      <p className="font-semibold text-foreground">${(item.price * item.quantity).toFixed(2)}</p>
+                      <p className="font-semibold text-foreground">${((item.price || 0) * (item.quantity || 1)).toFixed(2)}</p>
                     </div>
                   ))}
                 </div>
@@ -157,7 +163,7 @@ export default function SellerOrderDetailPage() {
                   Delivery Address
                 </h2>
                 <div className="text-foreground space-y-1">
-                  <p>{order.deliveryAddress?.street}</p>
+                  <p>{order.deliveryAddress?.street || 'No street provided'}</p>
                   <p>{order.deliveryAddress?.city}, {order.deliveryAddress?.state} {order.deliveryAddress?.zip}</p>
                 </div>
               </div>
@@ -168,11 +174,11 @@ export default function SellerOrderDetailPage() {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 text-foreground">
                     <Mail className="w-4 h-4 text-muted-foreground" />
-                    {order.customer?.email}
+                    {order.customer?.email || 'N/A'}
                   </div>
                   <div className="flex items-center gap-2 text-foreground">
                     <Phone className="w-4 h-4 text-muted-foreground" />
-                    {order.customer?.phone}
+                    {order.customer?.phone || 'N/A'}
                   </div>
                 </div>
               </div>
@@ -186,19 +192,20 @@ export default function SellerOrderDetailPage() {
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-foreground">
                     <span>Subtotal</span>
-                    <span>${order.subtotal?.toFixed(2)}</span>
+                    <span>${order.subtotal?.toFixed(2) || '0.00'}</span>
                   </div>
                   <div className="flex justify-between text-foreground">
                     <span>Tax</span>
-                    <span>${order.tax?.toFixed(2)}</span>
+                    <span>${order.tax?.toFixed(2) || '0.00'}</span>
                   </div>
                   <div className="flex justify-between text-foreground">
                     <span>Delivery Fee</span>
-                    <span>${order.deliveryFee?.toFixed(2)}</span>
+                    <span>${order.deliveryFee?.toFixed(2) || '0.00'}</span>
                   </div>
                   <div className="border-t border-border pt-2 flex justify-between font-bold text-lg text-foreground">
                     <span>Total</span>
-                    <span>${order.total?.toFixed(2)}</span>
+                    {/* Fix lỗi 3: Dùng order.total thay vì order.totalAmount */}
+                    <span>${order.total?.toFixed(2) || '0.00'}</span>
                   </div>
                 </div>
               </div>
@@ -207,7 +214,7 @@ export default function SellerOrderDetailPage() {
               <div className="bg-card rounded-xl shadow-sm border border-border p-6">
                 <h3 className="font-bold text-foreground mb-4">Current Status</h3>
                 <div className="mb-4">
-                  <StatusBadge status={order.status} size="lg" />
+                  <StatusBadge status={order.status || 'pending'} size="lg" />
                 </div>
 
                 <div className="space-y-3">

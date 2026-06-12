@@ -36,14 +36,25 @@ export default function NewProductPage() {
 
   useEffect(() => {
     const fetchStores = async () => {
+      // Đảm bảo lấy được ID của seller
+      const sellerId = user?.id || (user as any)?.userId;
+      
+      if (!sellerId) {
+        setLoadingStores(false);
+        return;
+      }
+
       try {
-        const response = await sellerApi.getSellerStore();
-        if (response.success && response.data) {
-          const stores = response.data;
-          setStores(stores);
+        const response = (await sellerApi.getSellerStores(sellerId)) as any;
+        
+        // Xử lý an toàn vì BE có thể trả về array trực tiếp hoặc bọc trong thuộc tính data
+        const storesData = response && response.data ? response.data : response;
+
+        if (Array.isArray(storesData)) {
+          setStores(storesData);
           // Set default store if user has only one
-          if (stores.length === 1 && stores[0]) {
-            setFormData(prev => ({ ...prev, storeId: stores[0].id }));
+          if (storesData.length === 1 && storesData[0]) {
+            setFormData((prev) => ({ ...prev, storeId: storesData[0].id }));
           }
         }
       } catch (error) {
@@ -137,19 +148,19 @@ export default function NewProductPage() {
         description: formData.description,
         price: parseFloat(formData.price),
         categoryId: formData.categoryId,
-        storeId: formData.storeId,
+        storeId: formData.storeId, // Thêm lại trường storeId để sửa lỗi TS2741
         status: formData.status,
         stock: formData.stock ? parseInt(formData.stock, 10) : undefined,
         image: formData.image || undefined,
       };
 
-      const response = await sellerApi.createSellerProduct(payload);
+      const response = (await sellerApi.createSellerProduct(formData.storeId, payload)) as any;
 
-      if (response.success) {
+      if (response && response.success !== false) {
         toast.success('Product created successfully');
         router.push('/seller/products');
       } else {
-        toast.error(response.message || 'Failed to create product');
+        toast.error(response?.message || 'Failed to create product');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to create product';
@@ -190,6 +201,29 @@ export default function NewProductPage() {
                 error={errors.name}
                 disabled={isLoading}
               />
+
+              {/* Description */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Description
+                </label>
+                <textarea
+                  name="description"
+                  placeholder="Describe your product..."
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  disabled={isLoading}
+                  rows={4}
+                  className={`w-full px-4 py-3 rounded-lg border-2 transition-colors duration-200 focus:outline-none resize-none ${
+                    errors.description
+                      ? 'border-destructive focus:border-destructive'
+                      : 'border-border focus:border-primary'
+                  } bg-input text-foreground`}
+                />
+                {errors.description && (
+                  <p className="text-sm text-destructive mt-2">{errors.description}</p>
+                )}
+              </div>
 
               {/* Store Selection */}
               <div>
@@ -343,7 +377,3 @@ export default function NewProductPage() {
     </ProtectedRoute>
   );
 }
-
-
-
-

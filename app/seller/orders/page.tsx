@@ -31,7 +31,7 @@ export default function OrdersPage() {
       try {
         setLoading(true);
         const status = statusFilter === 'All' ? undefined : statusFilter;
-        const response = await sellerApi.getSellerOrders(currentPage, 10, status);
+        const response = await sellerApi.getSellerOrders(currentPage, 10);
         
         if (response.success && response.data) {
           setOrders(response.data.items);

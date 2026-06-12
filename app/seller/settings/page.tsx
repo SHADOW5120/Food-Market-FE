@@ -50,7 +50,8 @@ export default function SellerSettingsPage() {
       return;
     }
 
-    const selected = stores.find((item) => item.id === selectedStoreId);
+    // Fix lỗi 2: Thêm type (item: Store)
+    const selected = stores.find((item: Store) => item.id === selectedStoreId);
     if (selected && selected.id !== store?.id) {
       applyStoreData(selected);
     }
@@ -75,12 +76,25 @@ export default function SellerSettingsPage() {
   const loadStoreData = async () => {
     try {
       setIsLoading(true);
-      const response = await sellerApi.getSellerStore();
+      
+      const sellerId = user?.id || (user as any)?.userId;
+      if (!sellerId) {
+        setIsLoading(false);
+        return;
+      }
 
-      if (response.success && Array.isArray(response.data) && response.data.length) {
-        setStores(response.data);
+      // Fix lỗi 1: Gọi đúng hàm getSellerStores và truyền sellerId
+      const response = (await sellerApi.getSellerStores(sellerId)) as any;
+      
+      // Xử lý linh hoạt format trả về của BE
+      const storesData = response && response.data ? response.data : response;
+
+      if (Array.isArray(storesData) && storesData.length > 0) {
+        setStores(storesData);
         const requestedStoreId = searchParams?.get('storeId');
-        const initialStore = response.data.find((item) => item.id === requestedStoreId) ?? response.data[0];
+        
+        // Fix lỗi 2: Thêm type (item: Store)
+        const initialStore = storesData.find((item: Store) => item.id === requestedStoreId) ?? storesData[0];
         applyStoreData(initialStore);
       } else {
         toast.error('Failed to load store data');
@@ -188,11 +202,12 @@ export default function SellerSettingsPage() {
 
       const response = await sellerApi.updateSellerStore(selectedStoreId, updateData as any);
 
-      if (response.success) {
+      if (response && response.success !== false) {
         toast.success('Store settings updated successfully');
-        setStore(response.data || null);
+        const updatedData = response && 'data' in response ? response.data : response;
+        setStore(updatedData as Store | null);
       } else {
-        toast.error(response.message || 'Failed to update store settings');
+        toast.error((response as any)?.message || 'Failed to update store settings');
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to update store settings';

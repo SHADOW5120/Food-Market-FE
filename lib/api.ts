@@ -380,8 +380,87 @@ export const sellerApi = {
   getDashboardStats: async (): Promise<ApiResponse<SellerDashboardStats>> => 
     apiClient.get('/seller/dashboard/summary', undefined, { authRequired: true }),
   
-  getAnalytics: async (period: 'week' | 'month' | 'year' = 'month'): Promise<ApiResponse<SellerAnalytics[]>> => 
-    apiClient.get(`/seller/dashboard/analytics?period=${period}`, undefined, { authRequired: true }),
+getStoreRevenueDetailChart: async (
+  params?: {
+    from?: string;
+    to?: string;
+    groupBy?: 'day' | 'week' | 'month' | 'year';
+  }
+) => {
+  const queryParams = new URLSearchParams();
+
+  if (params?.from) queryParams.append('from', params.from);
+  if (params?.to) queryParams.append('to', params.to);
+  if (params?.groupBy) queryParams.append('groupBy', params.groupBy);
+
+  return apiClient.get(
+    `/seller/dashboard/charts/store-revenue-detail${
+      queryParams.toString() ? `?${queryParams.toString()}` : ''
+    }`,
+    undefined,
+    { authRequired: true }
+  );
+},
+
+getProductRevenueDetailChart: async (
+  params?: {
+    from?: string;
+    to?: string;
+    groupBy?: 'day' | 'week' | 'month' | 'year';
+  }
+) => {
+  const queryParams = new URLSearchParams();
+
+  if (params?.from) queryParams.append('from', params.from);
+  if (params?.to) queryParams.append('to', params.to);
+  if (params?.groupBy) queryParams.append('groupBy', params.groupBy);
+
+  return apiClient.get(
+    `/seller/dashboard/charts/product-revenue-detail${
+      queryParams.toString() ? `?${queryParams.toString()}` : ''
+    }`,
+    undefined,
+    { authRequired: true }
+  );
+},
+
+
+getStoreStats: async () =>
+  apiClient.get(
+    '/seller/stores/stats',
+    undefined,
+    { authRequired: true }
+  ),
+
+getProductStats: async () =>
+  apiClient.get(
+    '/seller/products/stats',
+    undefined,
+    { authRequired: true }
+  ),
+
+getStoreProductStats: async (storeId: string) =>
+  apiClient.get(
+    `/seller/stores/${encodeURIComponent(storeId)}/products/stats`,
+    undefined,
+    { authRequired: true }
+  ),
+
+  getNotifications: async () =>
+  apiClient.get(
+    '/seller/notifications',
+    undefined,
+    { authRequired: true }
+  ),
+
+  markNotificationRead: async (notificationId: string) =>
+  apiClient.put(
+    `/seller/notifications/${encodeURIComponent(notificationId)}/read`,
+    {},
+    undefined,
+    { authRequired: true }
+  ),
+
 
   // Chart endpoints matching backend contract
   getStoreRevenueChart: async (params?: { from?: string; to?: string; groupBy?: 'day' | 'week' | 'month' | 'year' }): Promise<ApiResponse<any[]>> => {
@@ -444,78 +523,135 @@ export const sellerApi = {
     apiClient.get('/seller/counts/orders', undefined, { authRequired: true }),
 
   // Products (use existing Product type with storeId)
-  getSellerProducts: async (page = 1, limit = 10, status?: string): Promise<PaginatedResponse<Product>> => {
-    const params = new URLSearchParams();
-    params.append('page', String(page));
-    params.append('limit', String(limit));
-    if (status) params.append('status', status);
-    return apiClient.get(`/seller/products?${params}`, undefined, { authRequired: true });
-  },
+ getSellerProducts: async (
+  storeId: string,
+  page = 1,
+  pageSize = 10
+) => {
+  const params = new URLSearchParams();
 
-  getSellerProductById: async (productId: string): Promise<ApiResponse<Product>> => 
-    apiClient.get(`/seller/products/${encodeURIComponent(productId)}`, undefined, { authRequired: true }),
+  params.append("page", String(page));
+  params.append("pageSize", String(pageSize));
 
-  createSellerProduct: async (data: CreateProductPayload) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        if ((value as any) instanceof File) {
-          formData.append(key, value as unknown as File);
-        } else {
-          formData.append(key, String(value));
-        }
-      }
-    });
-    return apiClient.postForm<ApiResponse<Product>>('/seller/products', formData, undefined, { authRequired: true });
-  },
+  return apiClient.get(
+    `/stores/${encodeURIComponent(storeId)}/products/my?${params}`,
+    undefined,
+    { authRequired: true }
+  );
+},
+getSellerProductById: async (productId: string) =>
+  apiClient.get(
+    `/products/${encodeURIComponent(productId)}`,
+    undefined,
+    { authRequired: true }
+  ),
 
-  updateSellerProduct: async (productId: string, data: UpdateProductPayload) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        if ((value as any) instanceof File) {
-          formData.append(key, value as unknown as File);
-        } else {
-          formData.append(key, String(value));
-        }
-      }
-    });
-    return apiClient.postForm<ApiResponse<Product>>(`/seller/products/${encodeURIComponent(productId)}`, formData, undefined, { authRequired: true });
-  },
+createSellerProduct: async (
+  storeId: string,
+  data: CreateProductPayload
+) => {
+  return apiClient.post(
+    `/stores/${encodeURIComponent(storeId)}/products`,
+    data,
+    undefined,
+    { authRequired: true }
+  );
+},
+updateSellerProduct: async (
+  storeId: string,
+  productId: string,
+  data: UpdateProductPayload
+) =>
+  apiClient.put(
+    `/stores/${encodeURIComponent(storeId)}/products/${encodeURIComponent(productId)}`,
+    data,
+    undefined,
+    { authRequired: true }
+  ),
 
-  deleteSellerProduct: async (productId: string): Promise<ApiResponse<null>> => 
-    apiClient.delete(`/seller/products/${encodeURIComponent(productId)}`, undefined, { authRequired: true }),
+deleteSellerProduct: async (
+  storeId: string,
+  productId: string
+) =>
+  apiClient.delete(
+    `/stores/${encodeURIComponent(storeId)}/products/${encodeURIComponent(productId)}`,
+    undefined,
+    { authRequired: true }
+  ),
+
+  toggleSellerProduct: async (
+  storeId: string,
+  productId: string
+) =>
+  apiClient.patch(
+    `/stores/${encodeURIComponent(storeId)}/products/${encodeURIComponent(productId)}/toggle`,
+    undefined,
+    undefined,
+    { authRequired: true }
+  ),
 
   // Orders
-  getSellerOrders: async (page = 1, limit = 10, status?: string): Promise<PaginatedResponse<Order>> => {
-    const params = new URLSearchParams();
-    params.append('page', String(page));
-    params.append('limit', String(limit));
-    if (status) params.append('status', status);
-    return apiClient.get(`/orders/seller?${params}`, undefined, { authRequired: true });
-  },
+getSellerOrders: async (
+    page = 1,
+    pageSize = 10
+): Promise<PaginatedResponse<Order>> => {
 
+    const params = new URLSearchParams();
+
+    params.append('page', String(page));
+    params.append('pageSize', String(pageSize));
+
+    return apiClient.get(
+        `/orders/seller?${params.toString()}`,
+        undefined,
+        { authRequired: true }
+    );
+},
   getSellerOrderById: async (orderId: string): Promise<ApiResponse<Order>> => 
     apiClient.get<ApiResponse<Order>>(`/orders/seller/${encodeURIComponent(orderId)}`, undefined, { authRequired: true }),
 
-  updateOrderStatus: async (orderId: string, data: UpdateOrderStatusPayload): Promise<ApiResponse<Order>> => 
-    apiClient.put(`/orders/seller/${encodeURIComponent(orderId)}/status`, data, undefined, { authRequired: true }),
+updateOrderStatus: async (
+    orderId: string,
+    data: UpdateOrderStatusPayload
+): Promise<{ success: boolean }> =>
+    apiClient.put(
+        `/orders/seller/${encodeURIComponent(orderId)}/status`,
+        data,
+        undefined,
+        { authRequired: true }
+    ),
 
   // Store Profile (use existing Store type)
-  getSellerStores: async (sellerId: string, params?: { page?: number; pageSize?: number; search?: string; minRating?: number }): Promise<ApiResponse<Store[]>> => {
-    const queryParams = new URLSearchParams();
-    if (params) {
-      if (params.page !== undefined) queryParams.append('page', String(params.page));
-      if (params.pageSize !== undefined) queryParams.append('pageSize', String(params.pageSize));
-      if (params.search) queryParams.append('search', params.search);
-      if (params.minRating !== undefined) queryParams.append('minRating', String(params.minRating));
-    }
-    const query = queryParams.toString();
-    return apiClient.get(`/stores/seller/${encodeURIComponent(sellerId)}${query ? `?${query}` : ''}`, undefined, { authRequired: true });
-  },
+ getSellerStores: async (
+  sellerId: string,
+  params?: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+  }
+): Promise<ApiResponse<Store[]>> => {
 
-  getSellerStore: async (): Promise<ApiResponse<Store[]>> =>
-    apiClient.get('/seller/stores', undefined, { authRequired: true }),
+  const queryParams = new URLSearchParams();
+
+  if (params?.page)
+    queryParams.append("page", params.page.toString());
+
+  if (params?.pageSize)
+    queryParams.append("pageSize", params.pageSize.toString());
+
+  if (params?.search)
+    queryParams.append("search", params.search);
+
+  const query = queryParams.toString();
+
+  return apiClient.get(
+    `/stores/seller/${encodeURIComponent(sellerId)}${
+      query ? `?${query}` : ""
+    }`,
+    undefined,
+    { authRequired: true }
+  );
+},
 
   getSellerStoreById: async (sellerId: string, storeId: string): Promise<ApiResponse<Store>> => 
     apiClient.get(`/stores/seller/${encodeURIComponent(sellerId)}/${encodeURIComponent(storeId)}`, undefined, { authRequired: true }),
@@ -530,9 +666,6 @@ export const sellerApi = {
     apiClient.delete(`/stores/${encodeURIComponent(storeId)}`, undefined, { authRequired: true }),
 
   // Notifications
-  getNotifications: async (): Promise<ApiResponse<SellerNotification[]>> => 
-    apiClient.get('/seller/notifications', undefined, { authRequired: true }),
-
   markNotificationAsRead: async (notificationId: string): Promise<ApiResponse<null>> => 
     apiClient.put(`/seller/notifications/${encodeURIComponent(notificationId)}/read`, {}, undefined, { authRequired: true }),
 };
@@ -574,7 +707,6 @@ export const markReviewHelpful = reviewApi.markReviewHelpful;
 
 // Seller convenience exports
 export const getDashboardStats = sellerApi.getDashboardStats;
-export const getAnalytics = sellerApi.getAnalytics;
 
 export const getSellerProducts = sellerApi.getSellerProducts;
 export const getSellerProductById = sellerApi.getSellerProductById;
@@ -586,7 +718,6 @@ export const getSellerOrders = sellerApi.getSellerOrders;
 export const getSellerOrderById = sellerApi.getSellerOrderById;
 export const updateOrderStatus = sellerApi.updateOrderStatus;
 
-export const getSellerStore = sellerApi.getSellerStore;
 export const getSellerStores = sellerApi.getSellerStores;
 export const getSellerStoreById = sellerApi.getSellerStoreById;
 export const createSellerStore = sellerApi.createSellerStore;

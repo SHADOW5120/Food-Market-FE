@@ -36,7 +36,7 @@ export default function SellerOrdersPage() {
   const loadOrders = async () => {
     try {
       setIsLoading(true);
-      const response = await sellerApi.getSellerOrders(page, 10, statusFilter);
+      const response = await sellerApi.getSellerOrders(page, 10);
 
       if (response.success && response.data?.items) {
         setOrders(response.data.items);
