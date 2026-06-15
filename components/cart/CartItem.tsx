@@ -9,22 +9,8 @@ interface CartItemProps {
 }
 
 export function CartItem({ item }: CartItemProps) {
-  const { updateQuantity, removeItem } = useCart();
-  const [isUpdating, setIsUpdating] = useState(false);
+  const { removeItem } = useCart();
   const [isRemoving, setIsRemoving] = useState(false);
-
-  const handleQuantityChange = async (newQuantity: number) => {
-    if (newQuantity < 1) return;
-    
-    setIsUpdating(true);
-    try {
-      await updateQuantity(item.id, newQuantity);
-    } catch (error) {
-      console.error('Failed to update quantity:', error);
-    } finally {
-      setIsUpdating(false);
-    }
-  };
 
   const handleRemove = async () => {
     if (!confirm('Remove this item from your cart?')) return;
@@ -85,30 +71,8 @@ export function CartItem({ item }: CartItemProps) {
         {/* Quantity Selector and Subtotal */}
         <div className="flex items-center justify-between mt-3">
           {/* Quantity Controls */}
-          <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
-            <button
-              onClick={() => handleQuantityChange(item.quantity - 1)}
-              disabled={isUpdating || item.quantity <= 1}
-              className="p-1 hover:bg-card rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label="Decrease quantity"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-              </svg>
-            </button>
-
-            <span className="w-8 text-center font-semibold">{item.quantity}</span>
-
-            <button
-              onClick={() => handleQuantityChange(item.quantity + 1)}
-              disabled={isUpdating}
-              className="p-1 hover:bg-card rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label="Increase quantity"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
+          <div className="flex items-center gap-2 bg-muted rounded-lg p-3 text-sm font-semibold">
+            <span>Qty: {item.quantity}</span>
           </div>
 
           {/* Subtotal */}

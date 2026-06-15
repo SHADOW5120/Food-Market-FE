@@ -10,6 +10,7 @@ import { Navbar } from '@/components/ui/Navbar';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { AppToaster } from '@/components/ui/shadcn/toast';
 import './globals.css';
+import MockInitializer from '@/components/MockInitializer';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,6 +47,7 @@ export default function RootLayout({
                 <OrderProvider>
                   <VoucherProvider>
                     <Navbar />
+                    <MockInitializer />
                     <main className="flex-1 pt-16 md:pt-20">
                       <PageTransition>{children}</PageTransition>
                     </main>

@@ -8,13 +8,13 @@ import { SellerLayout } from '@/components/seller/SellerLayout';
 import { Button } from '@/components/auth/Button';
 import { Input } from '@/components/auth/Input';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { sellerApi } from '@/lib/api';
+import { sellerApi, shouldRunOnce } from '@/lib/api';
 import { Store } from '@/lib/types';
 import toast from 'react-hot-toast';
 import { USER_ROLES } from '@/lib/constants';
 
 export default function SellerSettingsPage() {
-  const { user, role, hasHydrated } = useAuth();
+  const { user, role, hasHydrated, isAuthenticated } = useAuth();
   const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -39,9 +39,13 @@ export default function SellerSettingsPage() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (!hasHydrated || !isSeller) {
+    if (!hasHydrated || !isSeller || !isAuthenticated || !user?.id) {
       return;
     }
+
+    const key = `stores:settings:${user.id}`;
+    if (!shouldRunOnce(key)) return;
+
     loadStoreData();
   }, [hasHydrated, isSeller]);
 
@@ -75,7 +79,8 @@ export default function SellerSettingsPage() {
   const loadStoreData = async () => {
     try {
       setIsLoading(true);
-      const response = await sellerApi.getSellerStore();
+      if (!user) return;
+      const response = await sellerApi.getSellerStores(user.id);
 
       if (response.success && Array.isArray(response.data) && response.data.length) {
         setStores(response.data);

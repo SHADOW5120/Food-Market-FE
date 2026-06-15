@@ -147,7 +147,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems([]);
   };
 
-  const loadCart = async (): Promise<void> => {
+  const loadCart = useCallback(async (): Promise<void> => {
     setIsLoading(true);
     try {
       let storedCartId = localStorage.getItem('cartId');
@@ -168,7 +168,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   return (
     <CartContext.Provider

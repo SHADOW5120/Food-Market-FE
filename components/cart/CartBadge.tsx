@@ -1,11 +1,10 @@
 ﻿'use client';
 
 import Link from 'next/link';
-import { useCartStore } from '@/store/cart';
+import { useCart } from '@/lib/cart-context';
 
 export default function CartBadge() {
-  const { getTotalItems } = useCartStore();
-  const totalItems = getTotalItems();
+  const { totalItems } = useCart();
 
   return (
     <Link href="/cart" className="relative">

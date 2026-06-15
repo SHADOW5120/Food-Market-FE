@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { SellerLayout } from '@/components/seller/SellerLayout';
 import { StatusBadge } from '@/components/seller/StatusBadge';
-import { sellerApi } from '@/lib/api';
+import { sellerApi, shouldRunOnce } from '@/lib/api';
 import { Order } from '@/lib/types';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { USER_ROLES } from '@/lib/constants';
@@ -15,7 +15,7 @@ import toast from 'react-hot-toast';
 const statusOptions = ['All', 'pending', 'confirmed', 'delivering', 'completed'];
 
 export default function OrdersPage() {
-  const { user, role, hasHydrated } = useAuth();
+  const { user, role, hasHydrated, isAuthenticated } = useAuth();
   const isSeller = role === USER_ROLES.SELLER;
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,14 +47,15 @@ export default function OrdersPage() {
       }
     };
 
-    if (!hasHydrated || !isSeller) {
+    if (!hasHydrated || !isSeller || !isAuthenticated || !user?.id) {
       setLoading(false);
       return;
     }
 
-    if (user) {
-      fetchOrders();
-    }
+    const key = `orders:for:${user.id}:page:${currentPage}:status:${statusFilter}`;
+    if (!shouldRunOnce(key)) return;
+
+    fetchOrders();
   }, [user, statusFilter, currentPage, hasHydrated, isSeller]);
 
   const filteredOrders = useMemo(() => {

@@ -131,14 +131,14 @@ export interface Product {
 }
 
 export interface PagedProductResponse {
-  items: ProductDto[];
+  items: Product[];
   total: number;
   page: number;
   pageSize: number;
 }
 
 export type ProductsResponse = PagedProductResponse;
-export type ProductDetailResponse = ProductDetailDto;
+export type ProductDetailResponse = Product;
 
 export interface CategoryDto {
   id: string;
@@ -652,6 +652,7 @@ export interface CreateOrderPayload {
   paymentMethod: 'COD' | string;
   notes?: string;
   voucherCode?: string;
+  items?: CartItem[];
 }
 
 export interface CancelOrderResponse {

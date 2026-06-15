@@ -8,13 +8,13 @@ import { SellerLayout } from '@/components/seller/SellerLayout';
 import { Button } from '@/components/auth/Button';
 import { StatusBadge } from '@/components/seller/StatusBadge';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { sellerApi } from '@/lib/api';
+import { sellerApi, shouldRunOnce } from '@/lib/api';
 import { Order } from '@/lib/types';
 import toast from 'react-hot-toast';
 import { USER_ROLES } from '@/lib/constants';
 
 export default function SellerOrderDetailPage() {
-  const { user, role, hasHydrated } = useAuth();
+  const { user, role, hasHydrated, isAuthenticated } = useAuth();
   const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const params = useParams();
@@ -26,10 +26,12 @@ export default function SellerOrderDetailPage() {
   const [newStatus, setNewStatus] = useState<string>('');
 
   useEffect(() => {
-    if (!hasHydrated || !isSeller) {
+    if (!hasHydrated || !isSeller || !isAuthenticated || !user?.id) {
       setIsLoading(false);
       return;
     }
+    const key = `order:detail:${user.id}:${orderId}`;
+    if (!shouldRunOnce(key)) return;
     loadOrder();
   }, [orderId, hasHydrated, isSeller]);
 

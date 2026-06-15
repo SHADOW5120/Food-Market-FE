@@ -7,19 +7,21 @@ import { useAuth } from '@/lib/auth-context';
 import { SellerLayout } from '@/components/seller/SellerLayout';
 import { ProductRow } from '@/components/seller/ProductRow';
 import { Button } from '@/components/auth/Button';
-import { sellerApi } from '@/lib/api';
+import { sellerApi, shouldRunOnce } from '@/lib/api';
 import { Product } from '@/lib/types';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { USER_ROLES } from '@/lib/constants';
 import toast from 'react-hot-toast';
 
 export default function ProductsPage() {
-  const { user, role, hasHydrated } = useAuth();
+  const { user, role, hasHydrated, isAuthenticated } = useAuth();
   const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<'all' | 'available' | 'unavailable'>('all');
   const [products, setProducts] = useState<Product[]>([]);
+  const [stores, setStores] = useState<any[]>([]);
+  const [selectedStoreId, setSelectedStoreId] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -29,8 +31,14 @@ export default function ProductsPage() {
       try {
         setLoading(true);
         const status = filterStatus === 'all' ? undefined : filterStatus;
-        const response = await sellerApi.getSellerProducts(currentPage, 10, status);
-        
+        if (!selectedStoreId) {
+          setProducts([]);
+          setTotalPages(1);
+          return;
+        }
+
+        const response = await sellerApi.getSellerProducts(selectedStoreId, currentPage, 10, status);
+
         if (response.success && response.data) {
           setProducts(response.data.items);
           setTotalPages(response.data.totalPages);
@@ -45,15 +53,34 @@ export default function ProductsPage() {
       }
     };
 
-    if (!hasHydrated || !isSeller) {
+    if (!hasHydrated || !isSeller || !isAuthenticated || !user?.id) {
       setLoading(false);
       return;
     }
 
-    if (user) {
-      fetchProducts();
-    }
-  }, [user, filterStatus, currentPage, hasHydrated, isSeller]);
+    const key = `products:${user.id}:store:${selectedStoreId}:page:${currentPage}:status:${filterStatus}`;
+    if (!shouldRunOnce(key)) return;
+
+    fetchProducts();
+  }, [user, filterStatus, currentPage, hasHydrated, isSeller, selectedStoreId]);
+
+  // Load seller stores for selection
+  useEffect(() => {
+    const loadStores = async () => {
+      try {
+        if (!user) return;
+        const res = await sellerApi.getSellerStores(user.id);
+        if (res.success && Array.isArray(res.data)) {
+          setStores(res.data);
+          if (res.data.length === 1) setSelectedStoreId(res.data[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to load stores', err);
+      }
+    };
+
+    if (hasHydrated && isSeller && user) loadStores();
+  }, [user, hasHydrated, isSeller]);
 
   const filteredProducts = products
     .filter((p) => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -68,7 +95,8 @@ export default function ProductsPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const response = await sellerApi.deleteSellerProduct(id);
+      const product = products.find(p => p.id === id);
+      const response = await sellerApi.deleteSellerProduct(id, product?.storeId || selectedStoreId);
       if (response.success) {
         setProducts((prev) => prev.filter((p) => p.id !== id));
         toast.success('Product deleted successfully');
@@ -88,7 +116,7 @@ export default function ProductsPage() {
     const newStatus = product.status === 'available' ? 'unavailable' : 'available';
     
     try {
-      const response = await sellerApi.updateSellerProduct(id, { status: newStatus });
+      const response = await sellerApi.updateSellerProduct(id, { status: newStatus, storeId: product.storeId || selectedStoreId });
       if (response.success) {
         setProducts((prev) =>
           prev.map((p) =>
@@ -115,10 +143,24 @@ export default function ProductsPage() {
             <h1 className="text-3xl font-bold text-foreground">Products</h1>
             <p className="text-muted-foreground">Manage your menu items</p>
           </div>
-          <Button onClick={handleAddProduct} variant="primary">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Product
-          </Button>
+          <div className="flex items-center gap-4">
+            {stores.length > 0 && (
+              <select
+                value={selectedStoreId}
+                onChange={(e) => setSelectedStoreId(e.target.value)}
+                className="px-3 py-2 rounded-lg border border-border bg-input text-foreground"
+              >
+                <option value="">Select store</option>
+                {stores.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            )}
+            <Button onClick={handleAddProduct} variant="primary">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Product
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -151,7 +193,12 @@ export default function ProductsPage() {
         </div>
 
         {/* Products Table */}
-        {loading ? (
+        {!selectedStoreId && stores.length > 0 ? (
+          <div className="bg-card rounded-lg shadow p-8 text-center border border-border">
+            <p className="text-muted-foreground mb-4">Please select a store to view its products.</p>
+            <Button onClick={() => {}} variant="outline">Select Store</Button>
+          </div>
+        ) : loading ? (
           <div className="bg-card rounded-lg shadow border border-border p-8 text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
             <p className="text-muted-foreground mt-2">Loading products...</p>

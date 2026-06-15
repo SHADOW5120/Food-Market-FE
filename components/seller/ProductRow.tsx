@@ -31,7 +31,14 @@ export function ProductRow({ product, onEdit, onDelete, onToggle }: ProductRowPr
           )}
           <div>
             <p className="font-semibold text-foreground">{product.name}</p>
-            <p className="text-sm text-muted-foreground">{product.categoryId}</p>
+            <p className="text-sm text-muted-foreground">
+              {product.category?.name ??
+                (typeof product.categoryId === 'string'
+                  ? product.categoryId
+                  : product.categoryId
+                  ? ((product.categoryId as any).name || (product.categoryId as any).id || 'Unknown')
+                  : 'Unknown')}
+            </p>
           </div>
         </div>
       </td>

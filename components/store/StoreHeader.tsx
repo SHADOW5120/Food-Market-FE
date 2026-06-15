@@ -10,14 +10,19 @@ export default function StoreHeader({ store }: StoreHeaderProps) {
   return (
     <div className="relative">
       {/* Banner Image */}
-      <div className="h-64 relative overflow-hidden">
-        <Image
-          src={store.banner || '/placeholder-store.jpg'}
-          alt={store.name}
-          fill
-          className="object-cover"
-        />
-        {/* Overlay gradient for readability */}
+      <div className="h-64 relative overflow-hidden bg-muted">
+        {store.banner ? (
+          <Image
+            src={store.banner}
+            alt={store.name}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="h-full w-full flex items-center justify-center text-muted-foreground">
+            No banner available
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-muted/80 via-muted/40 to-transparent" />
       </div>
 
@@ -25,14 +30,18 @@ export default function StoreHeader({ store }: StoreHeaderProps) {
       <div className="absolute bottom-0 left-0 right-0 p-6">
         <div className="flex items-end">
           {/* Store Logo */}
-          <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-[color:hsl(var(--border))] shadow-lg mr-4">
-            <Image
-              src={store.logo || '/placeholder-logo.jpg'}
-              alt={`${store.name} logo`}
-              width={80}
-              height={80}
-              className="w-full h-full object-cover"
-            />
+          <div className="w-20 h-20 rounded-full overflow-hidden border-4 border-[color:hsl(var(--border))] shadow-lg mr-4 bg-muted flex items-center justify-center text-muted-foreground">
+            {store.logo ? (
+              <Image
+                src={store.logo}
+                alt={`${store.name} logo`}
+                width={80}
+                height={80}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-xs font-semibold">No logo</span>
+            )}
           </div>
 
           {/* Store Details */}

@@ -37,16 +37,12 @@ const menuSections: {
     title: 'Overview',
     items: [
       { label: 'Dashboard', href: '/seller/dashboard', icon: Home },
-      { label: 'Orders', href: '/seller/orders', icon: ShoppingCart },
-      { label: 'Products', href: '/seller/products', icon: Package },
-      { label: 'Stores', href: '/seller/stores', icon: Store },
     ],
   },
   {
     title: 'Insights',
     items: [
       { label: 'Analytics', href: '/seller/analytics', icon: TrendingUp },
-      { label: 'Notifications', href: '/seller/notifications', icon: Bell },
     ],
   },
 ];
@@ -103,25 +99,8 @@ export function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             </div>
           </div>
 
-          <div className={isCollapsed ? 'grid gap-3 px-4 py-4 md:px-5' : 'grid gap-2 px-4 py-4 md:px-5'}>
-              {[
-                { label: 'Add product', href: '/seller/products/new', icon: Package },
-                { label: 'Stores', href: '/seller/stores', icon: Store },
-                { label: 'Settings', href: '/seller/settings', icon: Settings },
-              ].map((action) => (
-                <Link
-                  key={action.href}
-                  href={action.href}
-                  title={isCollapsed ? action.label : undefined}
-                  className={`group flex items-center gap-3 rounded-2xl border border-border bg-card px-3 py-3 text-sm font-medium text-foreground transition hover:border-primary hover:bg-primary/5 ${
-                    isCollapsed ? 'justify-center' : ''
-                  }`}
-                >
-                  <action.icon className="w-5 h-5 text-primary" />
-                  {!isCollapsed ? <span>{action.label}</span> : null}
-                </Link>
-              ))}
-            </div>
+          {/* compact spacer */}
+          <div className={isCollapsed ? 'h-4' : 'h-6'} />
 
           <nav className="flex-1 overflow-y-auto px-2 pb-6 md:px-4">
             {menuSections.map((section) => (

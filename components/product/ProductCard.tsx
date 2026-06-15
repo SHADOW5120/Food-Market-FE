@@ -6,9 +6,39 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Product } from '@/lib/types';
 import { FavoriteButton } from '@/components/favorite/FavoriteButton';
+import { useState } from 'react';
+import { useCart } from '@/lib/cart-context';
 
 interface ProductCardProps {
   product: Product;
+}
+
+function AddInlineCart({ product }: { product: Product }) {
+  const { addItem } = useCart();
+  const [loading, setLoading] = useState(false);
+
+  const handleAdd = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (loading) return;
+    setLoading(true);
+    try {
+      await addItem(product, 1);
+    } catch (err) {
+      console.error('Failed to add inline:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleAdd}
+      disabled={loading}
+      className="px-3 py-1 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
+    >
+      {loading ? 'Adding...' : 'Add'}
+    </button>
+  );
 }
 
 export function ProductCard({ product }: ProductCardProps) {
@@ -66,12 +96,20 @@ export function ProductCard({ product }: ProductCardProps) {
 
         <div className="flex items-center justify-between">
           <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-            {product.categoryId}
+            {product.category?.name ??
+              (typeof product.categoryId === 'string'
+                ? product.categoryId
+                : product.categoryId
+                ? ((product.categoryId as any).name || (product.categoryId as any).id || 'Unknown')
+                : 'Unknown')}
           </span>
-          <div className="text-accent group-hover:translate-x-1 transition-transform duration-200">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+          <div className="flex items-center gap-3">
+            <div className="text-accent group-hover:translate-x-1 transition-transform duration-200">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+            <AddInlineCart product={product} />
           </div>
         </div>
       </div>

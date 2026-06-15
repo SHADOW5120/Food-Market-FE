@@ -11,7 +11,8 @@ import { StatusBadge } from '@/components/seller/StatusBadge';
 import { ChartCard } from '@/components/seller/ChartCard';
 import { SimpleBarChart, SimpleLineChart } from '@/components/seller/Charts';
 import { Button } from '@/components/auth/Button';
-import { sellerApi } from '@/lib/api';
+import { sellerApi, shouldRunOnce } from '@/lib/api';
+import { getFakeStores, getFakeProducts, getFakeDashboardStats } from '@/lib/fakeData';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import toast from 'react-hot-toast';
 import type { SellerDashboardStats } from '@/lib/types';
@@ -20,7 +21,7 @@ import { USER_ROLES } from '@/lib/constants';
 interface DashboardStats extends SellerDashboardStats {}
 
 export default function SellerDashboard() {
-  const { user, role, hasHydrated } = useAuth();
+  const { user, role, hasHydrated, isAuthenticated } = useAuth();
   const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -38,12 +39,43 @@ export default function SellerDashboard() {
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [storeName, setStoreName] = useState('My Store');
+  const [stores, setStores] = useState<any[]>([]);
+  const [selectedStoreId, setSelectedStoreId] = useState<string>('');
+  const previewProducts = getFakeProducts(selectedStoreId).slice(0, 4);
 
   useEffect(() => {
     if (!hasHydrated || !isSeller) {
       return;
     }
     loadDashboardData();
+    // load seller stores for optional per-store selection
+    const loadStores = async () => {
+      try {
+        if (!user) return;
+        const res = await sellerApi.getSellerStores(user.id);
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          setStores(res.data);
+          if (res.data.length === 1) {
+            setSelectedStoreId(res.data[0].id);
+            setStoreName(res.data[0].name);
+          }
+        } else {
+          // Fallback to fake stores so the UI looks populated in dev
+          const fake = getFakeStores();
+          setStores(fake);
+          if (fake.length > 0 && !selectedStoreId) {
+            setSelectedStoreId(fake[0].id);
+            setStoreName(fake[0].name);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load seller stores', err);
+      }
+    };
+
+    if (!isAuthenticated || !user?.id) return;
+    const key = `dashboard:stores:${user.id}`;
+    if (shouldRunOnce(key)) loadStores();
   }, [hasHydrated, isSeller]);
 
   const loadDashboardData = async () => {
@@ -91,12 +123,26 @@ export default function SellerDashboard() {
               <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
               <p className="text-muted-foreground">Welcome back, {user?.username}!</p>
             </div>
-            <Link href="/seller/products/new">
-              <Button className="flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                Add Product
-              </Button>
-            </Link>
+            <div className="flex items-center gap-4">
+              {stores.length > 0 && (
+                <select
+                  value={selectedStoreId}
+                  onChange={(e) => setSelectedStoreId(e.target.value)}
+                  className="px-3 py-2 rounded-lg border border-border bg-input text-foreground"
+                >
+                  <option value="">All stores</option>
+                  {stores.map((s) => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              )}
+              <Link href="/seller/products/new">
+                <Button className="flex items-center gap-2">
+                  <Plus className="w-4 h-4" />
+                  Add Product
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Stats Grid */}
@@ -151,6 +197,82 @@ export default function SellerDashboard() {
                 height={300}
               />
             </ChartCard>
+          </div>
+
+          {/* My Stores & Products */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-bold text-foreground">My Stores</h2>
+                  <p className="text-sm text-muted-foreground">Manage and view your storefronts.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Link href="/seller/stores">
+                    <Button variant="outline">View Stores</Button>
+                  </Link>
+                  <Link href="/seller/settings">
+                    <Button>Create Store</Button>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {stores && stores.length > 0 ? (
+                  stores.slice(0, 3).map((s) => (
+                    <div key={s.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-foreground">{s.name}</p>
+                        <p className="text-sm text-muted-foreground">{s.city || s.address || '—'}</p>
+                      </div>
+                      <div className="text-sm text-muted-foreground">{s.productCount ?? '—'} products</div>
+                    </div>
+                  ))
+                ) : (
+                  getFakeStores().slice(0, 3).map((s) => (
+                    <div key={s.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-foreground">{s.name}</p>
+                        <p className="text-sm text-muted-foreground">{s.city || s.address || '—'}</p>
+                      </div>
+                      <div className="text-sm text-muted-foreground">{s.productCount ?? '—'} products</div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="bg-card rounded-xl shadow-sm border border-border p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-bold text-foreground">My Products</h2>
+                  <p className="text-sm text-muted-foreground">Quick access to your product listings.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Link href="/seller/products">
+                    <Button variant="outline">View Products</Button>
+                  </Link>
+                  <Link href="/seller/products/new">
+                    <Button>Create Product</Button>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {previewProducts.map((p) => (
+                  <div key={p.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <img src={p.imageUrl} alt={p.name} className="w-12 h-12 rounded object-cover" />
+                      <div>
+                        <p className="font-medium text-foreground">{p.name}</p>
+                        <p className="text-sm text-muted-foreground">${p.price.toFixed(2)}</p>
+                      </div>
+                    </div>
+                    <div className="text-sm text-muted-foreground">{p.status}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Recent Orders Section */}

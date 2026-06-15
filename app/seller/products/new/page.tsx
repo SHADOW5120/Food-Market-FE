@@ -8,13 +8,13 @@ import { SellerLayout } from '@/components/seller/SellerLayout';
 import { Button } from '@/components/auth/Button';
 import { Input } from '@/components/auth/Input';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { sellerApi } from '@/lib/api';
+import { sellerApi, shouldRunOnce } from '@/lib/api';
 import { CreateProductPayload, Store } from '@/lib/types';
 import toast from 'react-hot-toast';
 import { USER_ROLES } from '@/lib/constants';
 
 export default function NewProductPage() {
-  const { user, role, hasHydrated } = useAuth();
+  const { user, role, hasHydrated, isAuthenticated } = useAuth();
   const isSeller = role === USER_ROLES.SELLER;
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +37,8 @@ export default function NewProductPage() {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await sellerApi.getSellerStore();
+        if (!user) return;
+        const response = await sellerApi.getSellerStores(user.id);
         if (response.success && response.data) {
           const stores = response.data;
           setStores(stores);
@@ -54,14 +55,15 @@ export default function NewProductPage() {
       }
     };
 
-    if (!hasHydrated || !isSeller) {
+    if (!hasHydrated || !isSeller || !isAuthenticated || !user?.id) {
       setLoadingStores(false);
       return;
     }
 
-    if (user) {
-      fetchStores();
-    }
+    const key = `stores:for:${user.id}:newproduct`;
+    if (!shouldRunOnce(key)) return;
+
+    fetchStores();
   }, [user, hasHydrated, isSeller]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

@@ -15,27 +15,36 @@ export default function StoreCard({ store }: StoreCardProps) {
     >
       <div className="relative">
         {/* Store Banner/Image */}
-        <div className="aspect-[4/3] relative overflow-hidden">
-          <Image
-            src={store.banner || '/placeholder-store.jpg'}
-            alt={store.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-200"
-          />
-          {/* Overlay gradient */}
+        <div className="aspect-[4/3] relative overflow-hidden bg-muted">
+          {store.banner ? (
+            <Image
+              src={store.banner}
+              alt={store.name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-200"
+            />
+          ) : (
+            <div className="h-full w-full flex items-center justify-center text-muted-foreground">
+              No banner available
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-muted/20 to-transparent" />
         </div>
 
         {/* Store Logo */}
         <div className="absolute bottom-3 left-3">
-          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[color:hsl(var(--border))] shadow-lg">
-            <Image
-              src={store.logo || '/placeholder-logo.jpg'}
-              alt={`${store.name} logo`}
-              width={48}
-              height={48}
-              className="w-full h-full object-cover"
-            />
+          <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[color:hsl(var(--border))] shadow-lg bg-muted flex items-center justify-center text-muted-foreground">
+            {store.logo ? (
+              <Image
+                src={store.logo}
+                alt={`${store.name} logo`}
+                width={48}
+                height={48}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="text-[10px] font-semibold">No logo</span>
+            )}
           </div>
         </div>
       </div>

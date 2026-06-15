@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { SellerLayout } from '@/components/seller/SellerLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { sellerApi } from '@/lib/api';
+import { sellerApi, shouldRunOnce } from '@/lib/api';
 import { Store } from '@/lib/types';
 import { MapPin, Plus, Settings } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/shadcn/button';
 import { USER_ROLES } from '@/lib/constants';
 
 export default function SellerStoresPage() {
-  const { user, role, hasHydrated } = useAuth();
+  const { user, role, hasHydrated, isAuthenticated } = useAuth();
   const isSeller = role === USER_ROLES.SELLER;
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,7 +22,8 @@ export default function SellerStoresPage() {
     async function loadStores() {
       try {
         setLoading(true);
-        const response = await sellerApi.getSellerStore();
+        if (!user) return;
+        const response = await sellerApi.getSellerStores(user.id);
         if (response.success && Array.isArray(response.data)) {
           setStores(response.data);
         } else {
@@ -36,9 +37,13 @@ export default function SellerStoresPage() {
       }
     }
 
-    if (!hasHydrated || !isSeller) {
+    if (!hasHydrated || !isSeller || !isAuthenticated || !user?.id) {
       return;
     }
+
+    const key = `stores:list:${user.id}`;
+    if (!shouldRunOnce(key)) return;
+
     loadStores();
   }, [hasHydrated, isSeller]);
 

@@ -61,6 +61,13 @@ export default function CheckoutPage() {
         paymentMethod: 'COD',
         notes: specialInstructions,
         voucherCode: appliedVoucher?.code,
+        items: items.map((item) => ({
+          id: item.id,
+          productId: item.productId,
+          product: item.product,
+          quantity: item.quantity,
+          subtotal: item.subtotal,
+        })),
       };
 
       const response = await createOrder(orderPayload);

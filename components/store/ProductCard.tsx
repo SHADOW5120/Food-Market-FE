@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import Image from 'next/image';
-import { useCartStore } from '@/store/cart';
+import { useCart } from '@/lib/cart-context';
 import type { Product } from '@/lib/types';
 
 interface ProductCardProps {
@@ -9,12 +9,11 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { addItem } = useCartStore();
+  const { addItem } = useCart();
 
   const handleAddToCart = async () => {
     try {
-      await addItem(product);
-      // You can add toast notification here
+      await addItem(product, 1);
       console.log('Product added to cart');
     } catch (error) {
       console.error('Failed to add product to cart:', error);
@@ -26,13 +25,17 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="flex gap-4">
         {/* Product Image */}
         <div className="flex-shrink-0">
-          <div className="w-20 h-20 relative rounded-lg overflow-hidden">
-            <Image
-              src={product.image || '/placeholder-product.jpg'}
-              alt={product.name}
-              fill
-              className="object-cover"
-            />
+          <div className="w-20 h-20 relative rounded-lg overflow-hidden bg-muted flex items-center justify-center text-muted-foreground">
+            {product.image ? (
+              <Image
+                src={product.image}
+                alt={product.name}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <span className="text-xs text-center px-2">No image</span>
+            )}
           </div>
         </div>
 

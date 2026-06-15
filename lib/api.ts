@@ -228,6 +228,17 @@ class ApiClient {
 
 export const apiClient = new ApiClient(API_BASE_URL);
 
+// Simple in-browser request dedupe helper to avoid duplicate requests
+export function shouldRunOnce(key: string): boolean {
+  if (typeof window === 'undefined') return true;
+  const win = window as any;
+  if (!win.__fm_request_cache) win.__fm_request_cache = new Set();
+  const cache: Set<string> = win.__fm_request_cache;
+  if (cache.has(key)) return false;
+  cache.add(key);
+  return true;
+}
+
 // Auth API functions
 export const authApi = {
   login: async (payload: { email: string; password: string }): Promise<AuthLoginResponse> => {
@@ -274,11 +285,124 @@ export const productApi = {
     queryParams.append('pageSize', String(pageSize));
 
     const query = queryParams.toString();
-    return apiClient.get(`/products?${query}`);
+    const response = await apiClient.get<any>(`/products?${query}`);
+    const payload = response?.data ?? response;
+
+    // Normalize items from various backend shapes (e.g., _id, Name, IsAvailable)
+    const normalize = (dto: any) => {
+      if (!dto) return dto;
+      const id = dto.id || dto._id || dto.Id || dto.ID;
+      const name = dto.name || dto.Name || dto.NameText || '';
+      const description = dto.description || dto.Description || '';
+      const price = Number(dto.price ?? dto.Price ?? 0);
+      const images = dto.images || dto.Images || [];
+      const image = dto.image || dto.imageUrl || images?.[0]?.imageUrl || images?.[0] || dto.ImageUrl || undefined;
+      const options = dto.options || dto.Options || [];
+      const normalizeCategory = (value: any) => {
+        if (!value) return undefined;
+        if (typeof value === 'string') return value;
+        return value.name || value.id || undefined;
+      };
+      const categoryId = dto.categoryId || dto.CategoryId || normalizeCategory(dto.category) || undefined;
+      const storeId = dto.storeId || dto.StoreId || (typeof dto.store === 'object' ? dto.store.id || undefined : dto.store) || undefined;
+      const isAvailable = dto.isAvailable ?? dto.IsAvailable ?? (dto.IsDeleted === true ? false : true);
+      const status = dto.status || (isAvailable ? 'available' : 'unavailable');
+
+      return {
+        id,
+        name,
+        description,
+        price,
+        image,
+        images,
+        options,
+        categoryId,
+        storeId,
+        isAvailable,
+        status,
+      } as any;
+    };
+
+    if (payload && payload.items && Array.isArray(payload.items)) {
+      const out: ProductsResponse = {
+        items: payload.items.map(normalize),
+        total: payload.total ?? (payload.items.length || 0),
+        page: payload.page ?? 1,
+        pageSize: payload.pageSize ?? (payload.items.length || 0),
+      };
+      return out;
+    }
+
+    // If it's a plain array
+    if (Array.isArray(payload)) {
+      const out: ProductsResponse = {
+        items: payload.map(normalize),
+        total: payload.length,
+        page: 1,
+        pageSize: payload.length,
+      };
+      return out;
+    }
+
+    if (payload && typeof payload === 'object') {
+      const out: ProductsResponse = {
+        items: [normalize(payload)],
+        total: 1,
+        page: 1,
+        pageSize: 1,
+      };
+      return out;
+    }
+
+    const emptyOut: ProductsResponse = {
+      items: [],
+      total: 0,
+      page: 1,
+      pageSize: 0,
+    };
+    return emptyOut;
   },
 
   getProduct: async (id: string): Promise<ProductDetailResponse> => {
-    return apiClient.get(`/products/${id}`);
+    const response = await apiClient.get<any>(`/products/${id}`);
+    const payload = response?.data ?? response;
+
+    const dto = payload && payload.items ? payload.items[0] : payload;
+    const normalizeSingle = (dto: any) => {
+      if (!dto) return dto;
+      const id = dto.id || dto._id || dto.Id || dto.ID;
+      const name = dto.name || dto.Name || '';
+      const description = dto.description || dto.Description || '';
+      const price = Number(dto.price ?? dto.Price ?? 0);
+      const images = dto.images || dto.Images || [];
+      const image = dto.image || dto.imageUrl || images?.[0]?.imageUrl || images?.[0] || dto.ImageUrl || undefined;
+      const options = dto.options || dto.Options || [];
+      const normalizeCategory = (value: any) => {
+        if (!value) return undefined;
+        if (typeof value === 'string') return value;
+        return value.name || value.id || undefined;
+      };
+      const categoryId = dto.categoryId || dto.CategoryId || normalizeCategory(dto.category) || undefined;
+      const storeId = dto.storeId || dto.StoreId || (typeof dto.store === 'object' ? dto.store.id || undefined : dto.store) || undefined;
+      const isAvailable = dto.isAvailable ?? dto.IsAvailable ?? (dto.IsDeleted === true ? false : true);
+      const status = dto.status || (isAvailable ? 'available' : 'unavailable');
+
+      return {
+        id,
+        name,
+        description,
+        price,
+        image,
+        images,
+        options,
+        categoryId,
+        storeId,
+        isAvailable,
+        status,
+      } as any;
+    };
+
+    return normalizeSingle(dto);
   },
 
   createProduct: async (data: any) => {
@@ -381,7 +505,8 @@ export const sellerApi = {
     apiClient.get('/seller/dashboard/summary', undefined, { authRequired: true }),
   
   getAnalytics: async (period: 'week' | 'month' | 'year' = 'month'): Promise<ApiResponse<SellerAnalytics[]>> => 
-    apiClient.get(`/seller/dashboard/analytics?period=${period}`, undefined, { authRequired: true }),
+    // Use the charts endpoint for time-series analytics (order-revenue grouped by period)
+    apiClient.get(`/seller/dashboard/charts/order-revenue?period=${period}`, undefined, { authRequired: true }),
 
   // Chart endpoints matching backend contract
   getStoreRevenueChart: async (params?: { from?: string; to?: string; groupBy?: 'day' | 'week' | 'month' | 'year' }): Promise<ApiResponse<any[]>> => {
@@ -444,16 +569,17 @@ export const sellerApi = {
     apiClient.get('/seller/counts/orders', undefined, { authRequired: true }),
 
   // Products (use existing Product type with storeId)
-  getSellerProducts: async (page = 1, limit = 10, status?: string): Promise<PaginatedResponse<Product>> => {
+  // Fetch seller products for a specific store context
+  getSellerProducts: async (storeId: string, page = 1, limit = 10, status?: string): Promise<PaginatedResponse<Product>> => {
     const params = new URLSearchParams();
     params.append('page', String(page));
     params.append('limit', String(limit));
     if (status) params.append('status', status);
-    return apiClient.get(`/seller/products?${params}`, undefined, { authRequired: true });
+    return apiClient.get(`/stores/${encodeURIComponent(storeId)}/products/my?${params}`, undefined, { authRequired: true });
   },
 
   getSellerProductById: async (productId: string): Promise<ApiResponse<Product>> => 
-    apiClient.get(`/seller/products/${encodeURIComponent(productId)}`, undefined, { authRequired: true }),
+    apiClient.get(`/products/${encodeURIComponent(productId)}`, undefined, { authRequired: true }),
 
   createSellerProduct: async (data: CreateProductPayload) => {
     const formData = new FormData();
@@ -466,7 +592,10 @@ export const sellerApi = {
         }
       }
     });
-    return apiClient.postForm<ApiResponse<Product>>('/seller/products', formData, undefined, { authRequired: true });
+    // Create product within a store context - payload must include `storeId`
+    const storeId = (data as any).storeId;
+    if (!storeId) throw new ApiError('storeId is required to create a product', 400, null, false);
+    return apiClient.postForm<ApiResponse<Product>>(`/stores/${encodeURIComponent(storeId)}/products`, formData, undefined, { authRequired: true });
   },
 
   updateSellerProduct: async (productId: string, data: UpdateProductPayload) => {
@@ -480,11 +609,20 @@ export const sellerApi = {
         }
       }
     });
-    return apiClient.postForm<ApiResponse<Product>>(`/seller/products/${encodeURIComponent(productId)}`, formData, undefined, { authRequired: true });
+    // Update product within store context if provided
+    const storeId = (data as any).storeId;
+    const endpoint = storeId
+      ? `/stores/${encodeURIComponent(storeId)}/products/${encodeURIComponent(productId)}`
+      : `/products/${encodeURIComponent(productId)}`;
+    return apiClient.postForm<ApiResponse<Product>>(endpoint, formData, undefined, { authRequired: true });
   },
 
-  deleteSellerProduct: async (productId: string): Promise<ApiResponse<null>> => 
-    apiClient.delete(`/seller/products/${encodeURIComponent(productId)}`, undefined, { authRequired: true }),
+  deleteSellerProduct: async (productId: string, storeId?: string): Promise<ApiResponse<null>> => {
+    const endpoint = storeId
+      ? `/stores/${encodeURIComponent(storeId)}/products/${encodeURIComponent(productId)}`
+      : `/products/${encodeURIComponent(productId)}`;
+    return apiClient.delete(endpoint, undefined, { authRequired: true });
+  },
 
   // Orders
   getSellerOrders: async (page = 1, limit = 10, status?: string): Promise<PaginatedResponse<Order>> => {
@@ -511,11 +649,14 @@ export const sellerApi = {
       if (params.minRating !== undefined) queryParams.append('minRating', String(params.minRating));
     }
     const query = queryParams.toString();
+    // Primary backend contract for seller stores - use seller-specific stores endpoint
     return apiClient.get(`/stores/seller/${encodeURIComponent(sellerId)}${query ? `?${query}` : ''}`, undefined, { authRequired: true });
   },
-
+  
+  // Legacy single-call removed; use `getSellerStores(sellerId)` instead.
   getSellerStore: async (): Promise<ApiResponse<Store[]>> =>
-    apiClient.get('/seller/stores', undefined, { authRequired: true }),
+    // Fallback to calling /stores (may return all stores) - keep for compatibility
+    apiClient.get('/stores', undefined, { authRequired: true }),
 
   getSellerStoreById: async (sellerId: string, storeId: string): Promise<ApiResponse<Store>> => 
     apiClient.get(`/stores/seller/${encodeURIComponent(sellerId)}/${encodeURIComponent(storeId)}`, undefined, { authRequired: true }),

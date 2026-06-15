@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useStoreStore } from '@/store/store';
-import { useCartStore } from '@/store/cart';
+import { useCart } from '@/lib/cart-context';
 import StoreHeader from '@/components/store/StoreHeader';
 import CategoryTabs from '@/components/store/CategoryTabs';
 import StoreMenu from '@/components/store/StoreMenu';
@@ -14,7 +14,7 @@ export default function StoreDetailPage() {
   const storeId = params.id as string;
 
   const { currentStore, products, categories, loading, error, fetchStoreById, fetchStoreProducts } = useStoreStore();
-  const { getTotalItems } = useCartStore();
+  const { totalItems } = useCart();
 
   const [activeCategory, setActiveCategory] = useState<string>('');
 
@@ -106,7 +106,7 @@ export default function StoreDetailPage() {
       />
 
       {/* Sticky Cart Badge */}
-      {getTotalItems() > 0 && (
+      {totalItems > 0 && (
         <div className="fixed bottom-4 right-4 z-50">
           <CartBadge />
         </div>

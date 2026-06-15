@@ -144,7 +144,12 @@ export function FavoriteList({
                 ${favorite.product.price.toFixed(2)}
               </span>
               <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                {favorite.product.categoryId}
+                {favorite.product.category?.name ??
+                  (typeof favorite.product.categoryId === 'string'
+                    ? favorite.product.categoryId
+                    : favorite.product.categoryId
+                    ? ((favorite.product.categoryId as any).name || (favorite.product.categoryId as any).id || 'Unknown')
+                    : 'Unknown')}
               </span>
             </div>
 

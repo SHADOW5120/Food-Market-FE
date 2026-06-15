@@ -165,7 +165,12 @@ export default function ProductDetailPage() {
                 <FavoriteButton product={product} variant="button" />
               </div>
               <span className="inline-block px-3 py-1 bg-muted text-muted-foreground rounded-full text-sm font-medium mb-4">
-                {product.categoryId}
+                {product.category?.name ??
+                  (typeof product.categoryId === 'string'
+                    ? product.categoryId
+                    : product.categoryId
+                    ? ((product.categoryId as any).name || (product.categoryId as any).id || 'Unknown')
+                    : 'Unknown')}
               </span>
             </div>
 
@@ -203,7 +208,14 @@ export default function ProductDetailPage() {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <span className="text-muted-foreground">Category:</span>
-                  <span className="ml-2 font-medium">{product.categoryId}</span>
+                  <span className="ml-2 font-medium">
+                    {product.category?.name ??
+                      (typeof product.categoryId === 'string'
+                        ? product.categoryId
+                        : product.categoryId
+                        ? ((product.categoryId as any).name || (product.categoryId as any).id || 'Unknown')
+                        : 'Unknown')}
+                  </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Status:</span>

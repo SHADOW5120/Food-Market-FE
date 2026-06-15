@@ -7,11 +7,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { SearchBar } from '@/components/filter/SearchBar';
 import { ProductCard } from '@/components/product/ProductCard';
+import StoreList from '@/components/store/StoreList';
 import { VoucherList } from '@/components/voucher';
 import { AuthFooterLink } from '@/components/ui/AuthFooterLink';
 import { HeroCTA } from '@/components/home/HeroCTA';
 import { CTASection } from '@/components/home/CTASection';
 import { productApi, categoryApi } from '@/lib/api';
+import { useStoreStore } from '@/store/store';
 import { Product, Category, ProductsResponse, CategoriesResponse } from '@/lib/types';
 import { fadeInUp, sectionStagger, gentleSlideUp, subtleFade } from '@/components/ui/motion';
 
@@ -23,6 +25,7 @@ export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const { stores, fetchStores } = useStoreStore();
   const { scrollYProgress } = useScroll();
   const heroYOffset = useTransform(scrollYProgress, [0, 0.3], [0, 24]);
   const heroInitial = 'hidden';
@@ -41,6 +44,9 @@ export default function HomePage() {
         if (Array.isArray(categoriesResponse)) {
           setCategories(categoriesResponse);
         }
+
+        // Load stores for homepage preview
+        await fetchStores();
       } catch (error) {
         console.error('Failed to load home page data:', error);
       } finally {
@@ -221,6 +227,59 @@ export default function HomePage() {
               ))}
             </div>
           )}
+        </div>
+      </motion.section>
+
+      {/* Stores Showcase */}
+      <motion.section
+        variants={sectionStagger}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.18, margin: "-50px" }}
+        className="py-16 bg-muted"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div variants={gentleSlideUp} className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-12">
+            <div>
+              <h3 className="text-3xl font-bold text-foreground mb-2">Discover Local Stores</h3>
+              <p className="text-muted-foreground">Shop from nearby kitchens and restaurants.</p>
+            </div>
+            <Link
+              href="/stores"
+              className="inline-flex items-center gap-1 text-primary font-semibold transition-colors duration-300 hover:text-primary/90"
+            >
+              Browse Stores
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
+
+          {stores.length === 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <motion.div
+                  key={index}
+                  variants={fadeInUp}
+                  className="bg-card rounded-3xl border border-white/10 p-6 shadow-[0_18px_64px_rgba(15,23,42,0.04)]"
+                >
+                  <div className="h-48 rounded-3xl bg-muted mb-5 animate-pulse"></div>
+                  <div className="h-5 bg-muted rounded w-2/3 mb-3 animate-pulse"></div>
+                  <div className="h-4 bg-muted rounded w-1/2 mb-4 animate-pulse"></div>
+                  <div className="space-y-2">
+                    <div className="h-3 bg-muted rounded w-full animate-pulse"></div>
+                    <div className="h-3 bg-muted rounded w-5/6 animate-pulse"></div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <StoreList stores={stores.slice(0, 6)} />
+          )}
+
+          <div className="mt-10 text-center">
+            <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+              Need a specific cuisine or vendor? Browse all stores to see menus, reviews, and delivery details.
+            </p>
+          </div>
         </div>
       </motion.section>
 

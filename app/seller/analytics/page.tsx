@@ -8,14 +8,14 @@ import { ChartCard } from '@/components/seller/ChartCard';
 import { SimpleBarChart, SimpleLineChart } from '@/components/seller/Charts';
 import { StatCard } from '@/components/seller/StatCard';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { sellerApi } from '@/lib/api';
+import { sellerApi, shouldRunOnce } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { USER_ROLES } from '@/lib/constants';
 
 type PeriodType = 'week' | 'month' | 'year';
 
 export default function SellerAnalyticsPage() {
-  const { user, role, hasHydrated } = useAuth();
+  const { user, role, hasHydrated, isAuthenticated } = useAuth();
   const isSeller = role === USER_ROLES.SELLER;
   const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState<PeriodType>('month');
@@ -29,9 +29,11 @@ export default function SellerAnalyticsPage() {
   });
 
   useEffect(() => {
-    if (!hasHydrated || !isSeller) {
+    if (!hasHydrated || !isSeller || !isAuthenticated || !user?.id) {
       return;
     }
+    const key = `analytics:${user.id}:period:${period}`;
+    if (!shouldRunOnce(key)) return;
     loadAnalytics();
   }, [period, hasHydrated, isSeller]);
 

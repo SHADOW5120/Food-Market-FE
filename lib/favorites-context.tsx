@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, useCallback, ReactNode 
 import { useAuth } from '@/lib/auth-context';
 import { Favorite, Product } from './types';
 import { getFavorites, addToFavorites, removeFromFavorites } from './api';
+import { getFakeFavorites } from './fakeData';
 
 interface FavoritesContextType {
   favorites: Favorite[];
@@ -30,11 +31,18 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     try {
-      const response = await getFavorites();
+      // If seeded fake data is enabled, use that for faster local testing
+      if (typeof window !== 'undefined' && (window as any).__USE_FAKE_DATA__) {
+        const fake = getFakeFavorites();
+        setFavorites(fake as any);
+        setFavoriteIds(new Set((fake as any).map((f: any) => f.productId)));
+      } else {
+        const response = await getFavorites();
 
-      if (response.success && response.data) {
-        setFavorites(response.data);
-        setFavoriteIds(new Set(response.data.map(fav => fav.productId)));
+        if (response.success && response.data) {
+          setFavorites(response.data);
+          setFavoriteIds(new Set(response.data.map(fav => fav.productId)));
+        }
       }
     } catch (error) {
       console.error('Failed to load favorites', error);
